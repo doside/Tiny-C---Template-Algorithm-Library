@@ -1,4 +1,4 @@
-#include <functional>
+﻿#include <functional>
 #include "core.h"
 #include "test_suits.h"
 #include "strippe_qualifier.h"
@@ -30,17 +30,17 @@ struct Slot:std::function<F>{
 		return stored_ptr!=nullptr;
 	}
 
-	template<class P>
-	bool operator==(P* ptr)const noexcept {
-		auto stored_ptr = Base::template target<P>();
+	template<class ObjT>
+	bool operator==(ObjT* ptr)const noexcept {
+		auto stored_ptr = Base::template target<ObjT>();
 		if (stored_ptr) {
 			return stored_ptr == ptr;
 		}
 		return false;
 	}
 
-	template<class P>
-	bool operator==(const Slot<P>&)const noexcept{
+	template<class ObjT>
+	bool operator==(const Slot<ObjT>&)const noexcept{
 		return false;
 	}
 	bool operator==(const Base& )const noexcept {
@@ -118,21 +118,14 @@ struct MatchParam
 		static U declParam();
 		static int f(T);
 		static void f(...);
-		//std::is_same<int, decltype(f(declParam()))>::value;
 	public:
 		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
 			&& std::is_convertible<U,T>::value;
-	
 	};
 };
 
 template<class T,class S>
 using FindParam = Find_if_svt<MatchParam, T, S>;
-
-//template<class T, class S>using FindParam_s = OMIT_T( Find_if_svt<MatchParam, T, S>);
-
-
-
 
 
 template<class F>
@@ -154,7 +147,7 @@ struct CallableTraits<std::function<R(Ts...)>> : CallableTraits<R(Ts...)>{};
 
 
 template<class T, class StandarType>
-struct FunctorImp
+struct FunctorImp:T
 {
 	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
 	using ParameterIndex = 
@@ -165,15 +158,14 @@ struct FunctorImp
 			typename CallableTraits<StandarType>::arg_type
 		>
 	>;
-	T func_m;
 public:
 	constexpr FunctorImp(const T& f)noexcept(std::is_nothrow_copy_constructible<T>::value)
-		:func_m(f)
+		:T(f)
 	{
 
 	}
 	constexpr FunctorImp(T&& f)noexcept(std::is_nothrow_move_constructible<T>::value)
-		: func_m(std::move(f))
+		: T(std::move(f))
 	{
 
 	}
@@ -181,22 +173,23 @@ public:
 	template<class...Ts>
 	decltype(auto) operator()(Ts&&...args)
 		except_when(
-			apply(ParameterIndex{},func_m, forward_m(args)...)
+			apply(ParameterIndex{},T::operator(),this, forward_m(args)...)
 		)
 	{
-		return apply(ParameterIndex{},func_m, forward_m(args)...);
+		return apply(ParameterIndex{},T::operator(), this, forward_m(args)...);
 	}
 
 
 	template<class...Ts>
 	constexpr decltype(auto) operator()(Ts&&...args)const
 		except_when(
-			apply(ParameterIndex{}, func_m, forward_m(args)...)
+			apply(ParameterIndex{}, T::operator(), this, forward_m(args)...)
 		)
 	{
-		return apply(ParameterIndex{}, func_m, forward_m(args)...);
+		return apply(ParameterIndex{}, T::operator(), this, forward_m(args)...);
 	}
 #if 0
+	//todo fix:  如果T有相等比较，则应该比较相等
 	constexpr auto operator==(const FunctorImp& rhs)const
 		except_when(func_m == rhs.func_m)
 		->decltype(func_m == rhs.func_m)
@@ -219,11 +212,11 @@ public:
 
 };
 
-template<class P,class Obj,class StandarType>
-struct FunctorImp<Obj P::*,StandarType>:private P{
-	Obj P::*ptr_m;
+template<class ObjT,class MemF,class StandarType>
+struct FunctorImp<MemF ObjT::*,StandarType>{
+	MemF ObjT::*ptr_m;
 
-	using T = RemoveCvrp<Obj (P::*)>;
+	using T = RemoveCvrp<MemF (ObjT::*)>;
 	using ParameterIndex =
 	std::conditional_t<std::is_same<T, StandarType>::value,
 		Seq<>,
@@ -233,54 +226,45 @@ struct FunctorImp<Obj P::*,StandarType>:private P{
 		>
 	>;
 public:
-	constexpr FunctorImp(P&& val, Obj(P::*ptr))noexcept(std::is_nothrow_move_constructible<P>::value)
-	:P(std::move(val)),ptr_m(ptr){
+	constexpr FunctorImp( MemF ObjT::*ptr )noexcept
+		:ptr_m(ptr) {	}
 
-	}
-	constexpr FunctorImp(const P& val, Obj(P::*ptr))noexcept(std::is_nothrow_copy_constructible<P>::value)
-		:P(val), ptr_m(ptr) {
-
-	}
 	template<class...Ts>
 	decltype(auto) operator()(Ts&&...args)
 		except_when(
-			apply(ParameterIndex{}, ptr_m, std::declval<FunctorImp&>(), forward_m(args)...)
+			apply(ParameterIndex{}, ptr_m,forward_m(args)...)
 		)
 	{
 		AssertInform(
 			"Can't find any parameters match the function call: ",
 			NotSame<Seq<NoType>, ParameterIndex>
 		);
-		return apply(ParameterIndex{}, ptr_m, *this, forward_m(args)...);
+		return apply(ParameterIndex{}, ptr_m, forward_m(args)...);
 	}
 
 
 	template<class...Ts>
 	constexpr decltype(auto) operator()(Ts&&...args)const
 		except_when(
-			apply(ParameterIndex{}, ptr_m, std::declval<const FunctorImp&>(), forward_m(args)...)
+			apply(ParameterIndex{}, ptr_m, forward_m(args)...)
 		)
 	{
 		AssertInform(
 			"Can't find any parameters match the function call: ",
 			NotSame<Seq<NoType>, ParameterIndex>
 		);
-		return apply(ParameterIndex{}, ptr_m, *this, forward_m(args)...);
+		return apply(ParameterIndex{}, ptr_m, forward_m(args)...);
 	}
 
-#if 0
-	constexpr auto operator==(const FunctorImp& rhs)const
-		except_when( P::operator==(rhs) )
-		->decltype( P::operator==(rhs) )
-	{
-		return ptr_m == rhs.ptr_m && P::operator==(rhs);
-	}
-#endif
 
-	template<class=void>
 	constexpr bool operator==(const FunctorImp& rhs)const noexcept
 	{
-		return true;
+		return ptr_m == rhs.ptr_m;
+	}
+
+	template<class... Us>
+	constexpr bool operator==(const FunctorImp<Us...>&)const noexcept {
+		return false;
 	}
 
 	constexpr bool operator!=(const FunctorImp& rhs)const
@@ -297,28 +281,7 @@ constexpr decltype(auto) makeFunctor(T&& src_func) {
 	return FunctorImp<std::remove_reference_t<T>, F>(forward_m(src_func));
 }
 
-template<class F, class T>
-decltype(auto) makeFunctor2(T&& src_func)
-	except_when( std::remove_reference_t<T>(forward_m(src_func)) )
-{
-	using ParameterIndex = Multiop_n<FindParam,
-		typename CallableTraits<T>::arg_type,
-		typename CallableTraits<F>::arg_type
-	>;
 
-	AssertInform(
-		"Can't find any parameters match the function call: ",
-		NotSame<Seq<NoType>,ParameterIndex>
-	);
-
-	//!! we don't use type alias in lambda, because it is possible to cause some compiler bug.
-	return [src_func=forward_m(src_func)](auto&&...args) {
-		apply(Multiop_n<FindParam,
-			typename CallableTraits<T>::arg_type,
-			typename CallableTraits<F>::arg_type
-		>{},src_func, forward_m(args)...);
-	};
-}
 
 template<class F>
 struct Functor:public std::function<F> 

@@ -1,4 +1,4 @@
-#ifndef STRIPPE_QUALIFIER_H_INCLUDED
+ï»¿#ifndef STRIPPE_QUALIFIER_H_INCLUDED
 #define STRIPPE_QUALIFIER_H_INCLUDED
 #include <type_traits>
 
@@ -9,15 +9,15 @@
 
 
 
-//Ô­±¾rm_cvrImp¾ÍÊÇrm_cvr,ÎÒÃÇ¾ö¶¨¶à¼ÓÒ»²ã,ÊÇÎªÁË·ÀÖ¹ÕÒ²»µ½ÌØ»¯°æ±¾Ê±typeÎŞÏŞµİ¹é
-//¾¡¹ÜÎÒÃÇÈÏÎªÌØ»¯°æ±¾ÒÑ¾­¸²¸Çµ½ÁËËùÓĞ¿ÉÄÜµÄ±ßÔµÇé¿ö.
+//åŸæœ¬rm_cvrImpå°±æ˜¯rm_cvr,æˆ‘ä»¬å†³å®šå¤šåŠ ä¸€å±‚,æ˜¯ä¸ºäº†é˜²æ­¢æ‰¾ä¸åˆ°ç‰¹åŒ–ç‰ˆæœ¬æ—¶typeæ— é™é€’å½’
+//å°½ç®¡æˆ‘ä»¬è®¤ä¸ºç‰¹åŒ–ç‰ˆæœ¬å·²ç»è¦†ç›–åˆ°äº†æ‰€æœ‰å¯èƒ½çš„è¾¹ç¼˜æƒ…å†µ.
 template<class T>
 struct rm_cvr {
 	struct helper
 	{
 		T a;
 	};
-	//todo: ÎÒÃÇÈÔÎ´ÖªµÀÒ»¸öÖ¸Ïò²»´æÔÚµÄ³ÉÔ±º¯ÊıµÄ³ÉÔ±Ö¸ÕëÊÇ·ñºÏ·¨¹Ê¶øÇ¿ĞĞÊ¹ÓÃÁËÕâ¸öhelper
+	//todo: æˆ‘ä»¬ä»æœªçŸ¥é“ä¸€ä¸ªæŒ‡å‘ä¸å­˜åœ¨çš„æˆå‘˜å‡½æ•°çš„æˆå‘˜æŒ‡é’ˆæ˜¯å¦åˆæ³•æ•…è€Œå¼ºè¡Œä½¿ç”¨äº†è¿™ä¸ªhelper
 	using type = typename rm_cvr< T(helper::*)>::type;
 	using seq_type = typename rm_cvr< T(helper::*)>::seq_type;
 };
@@ -87,69 +87,69 @@ struct rm_cvr<R(Ts...) const volatile&&> {
 #endif
 
 
-template<class R, class P>
-struct rm_cvr<R(P::*)> {
+template<class R, class ObjT>
+struct rm_cvr<R(ObjT::*)> {
 	using type = R();
 	using seq_type = Seq<R>;
 };
 
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...)> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...)> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) const> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) const> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) volatile> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) volatile> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) const volatile> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) const volatile> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) &> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) &> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) && > {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) && > {
 	using type = R(Ts...);
 
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) const &> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) const &> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) volatile&> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) volatile&> {
 	using type = R(Ts...);
 
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) const volatile&> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) const volatile&> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) const &&> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) const &&> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) volatile&&> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) volatile&&> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };
-template<class R, class P, class...Ts>
-struct rm_cvr<R(P::*)(Ts...) const volatile&&> {
+template<class R, class ObjT, class...Ts>
+struct rm_cvr<R(ObjT::*)(Ts...) const volatile&&> {
 	using type = R(Ts...);
 	using seq_type = Seq<R, Ts...>;
 };

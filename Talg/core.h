@@ -1,23 +1,23 @@
-#pragma once
+ï»¿#pragma once
 
 #include <utility>
 #include <cstddef>
 
 /*
-ÃüÃû¹«Ô¼£º
-??±íÊ¾Áã¸ö»ò¶à¸öÀàÐÍ(ÀýÈç,Ä£°å(template<class>class)²»ÊÇÀàÐÍ,Êý×Ö(size_t,int...)²»ÊÇÀàÐÍ)
+å‘½åå…¬çº¦ï¼š
+??è¡¨ç¤ºé›¶ä¸ªæˆ–å¤šä¸ªç±»åž‹(ä¾‹å¦‚,æ¨¡æ¿(template<class>class)ä¸æ˜¯ç±»åž‹,æ•°å­—(size_t,int...)ä¸æ˜¯ç±»åž‹)
 
-²»´øºó×º±íÊ¾¶Ô²ÎÊýÓÃÁËSeqfy,×¢Òâ¶Ô T Ê¹ÓÃSeqfy¿ÉÒÔ±£Ö¤ÊÇSeq<T>,¶ÔA<??>ÓÃÔò±£Ö¤ÊÇSeq<??>
-²»´øºó×ºÊ±²»¶ÔÊä³ö½á¹ûÀàÐÍ×÷ÈÎºÎ¼Ù¶¨ ÓÐÊ±¿ÉÄÜµÈÍ¬ÓÚ_t,¶øÓÐÊ±ÔòÓÖ¿ÉÄÜÐèÒªÊ¹ÓÃOMIT_T
+ä¸å¸¦åŽç¼€è¡¨ç¤ºå¯¹å‚æ•°ç”¨äº†Seqfy,æ³¨æ„å¯¹ T ä½¿ç”¨Seqfyå¯ä»¥ä¿è¯æ˜¯Seq<T>,å¯¹A<??>ç”¨åˆ™ä¿è¯æ˜¯Seq<??>
+ä¸å¸¦åŽç¼€æ—¶ä¸å¯¹è¾“å‡ºç»“æžœç±»åž‹ä½œä»»ä½•å‡å®š æœ‰æ—¶å¯èƒ½ç­‰åŒäºŽ_t,è€Œæœ‰æ—¶åˆ™åˆå¯èƒ½éœ€è¦ä½¿ç”¨OMIT_T
 
-_s±íÊ¾ÊäÈëÒ»¶¨ÊÇSeq<??>,Êä³öÈç¹ûÔÚÓïÒåÉÏ²»¿ÉÄÜ´æÔÚ·µ»Ø¶à¸öÀàÐÍµÄ»°ÄÇÃ´½á¹û¾ÍÊÇ T, ·ñÔò½á¹ûÊÇSeq<??>»òSeq<T>
-_n±íÊ¾·µ»Ø::value_type Ò»°ãÊÇstd::index_sequence<...>
-_t±íÊ¾·µ»Ø::type
-_v±íÊ¾·µ»Ø::value(ÏÖ½×¶ÎÓÉÓÚmsvc²»Ö§³Östd::??_v¶øÃ»ÓÐÊ¹ÓÃÕâÖÖÃüÃû)
-_ss±íÊ¾_s,´ËÍâ»¹Ò»¶¨·µ»ØÒ»¸öSeq<??>
-_sv±íÊ¾·µ»ØÒ»¸öÀàÐÍ,ÀïÃæ¾ßÓÐ::value¿É¹©Ê¹ÓÃ
-_sv±íÊ¾·µ»ØÒ»¸öÀàÐÍ,ÀïÃæ¾ßÓÐ::type ¿É¹©Ê¹ÓÃ
-_svt±íÊ¾·µ»ØÒ»¸öÀàÐÍ,ÀïÃæ¾ßÓÐ::valueºÍ::type¿É¹©Ê¹ÓÃ
+_sè¡¨ç¤ºè¾“å…¥ä¸€å®šæ˜¯Seq<??>,è¾“å‡ºå¦‚æžœåœ¨è¯­ä¹‰ä¸Šä¸å¯èƒ½å­˜åœ¨è¿”å›žå¤šä¸ªç±»åž‹çš„è¯é‚£ä¹ˆç»“æžœå°±æ˜¯ T, å¦åˆ™ç»“æžœæ˜¯Seq<??>æˆ–Seq<T>
+_nè¡¨ç¤ºè¿”å›ž::value_type ä¸€èˆ¬æ˜¯std::index_sequence<...>
+_tè¡¨ç¤ºè¿”å›ž::type
+_vè¡¨ç¤ºè¿”å›ž::value(çŽ°é˜¶æ®µç”±äºŽmsvcä¸æ”¯æŒstd::??_vè€Œæ²¡æœ‰ä½¿ç”¨è¿™ç§å‘½å)
+_ssè¡¨ç¤º_s,æ­¤å¤–è¿˜ä¸€å®šè¿”å›žä¸€ä¸ªSeq<??>
+_svè¡¨ç¤ºè¿”å›žä¸€ä¸ªç±»åž‹,é‡Œé¢å…·æœ‰::valueå¯ä¾›ä½¿ç”¨
+_stè¡¨ç¤ºè¿”å›žä¸€ä¸ªç±»åž‹,é‡Œé¢å…·æœ‰::type å¯ä¾›ä½¿ç”¨
+_svtè¡¨ç¤ºè¿”å›žä¸€ä¸ªç±»åž‹,é‡Œé¢å…·æœ‰::valueå’Œ::typeå¯ä¾›ä½¿ç”¨
 
 */
 
@@ -59,7 +59,7 @@ struct WrapperT {  //In some context ,we need a wrapper to use T which does't ha
 template<class...Args>
 struct Seq { };
 template<class T>
-using Seqfy = Transform<Seq, T>;  //½« blabla<abcde>×ª»»³ÉSeq<abcde>
+using Seqfy = Transform<Seq, T>;  //å°† blabla<abcde>è½¬æ¢æˆSeq<abcde>
 
 
 template<class>struct SeqSize_sv;

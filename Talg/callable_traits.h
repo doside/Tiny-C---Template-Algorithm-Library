@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "seqop.h"
 #include <utility>
 #include <type_traits>
@@ -113,17 +113,17 @@ struct LongFirstCall<Seq<Ts...>> :public LongFirstCall<Pop_back_s<Seq<Ts...>>> {
 	using LongFirstCall<Pop_back_s<Seq<Ts...>>>::pcall;
 	using self = LongFirstCall<Seq<Ts...>>;
 
-	//Us&&...µÄÄ¿µÄÊÇÈÃËùÓĞpcall¶¼ÄÜÒÔÍ¬ÑùµÄ·½Ê½µ÷ÓÃ
-	//self* ÊÇÎªÁËÀûÓÃÅÉÉúÀàµ½»ùÀàµÄ×ª»»Ë³ĞòÀ´Öğ¸ösfinaeµô²»ºÏ·¨µÄµ÷ÓÃ
+	//Us&&...çš„ç›®çš„æ˜¯è®©æ‰€æœ‰pcalléƒ½èƒ½ä»¥åŒæ ·çš„æ–¹å¼è°ƒç”¨
+	//self* æ˜¯ä¸ºäº†åˆ©ç”¨æ´¾ç”Ÿç±»åˆ°åŸºç±»çš„è½¬æ¢é¡ºåºæ¥é€ä¸ªsfinaeæ‰ä¸åˆæ³•çš„è°ƒç”¨
 	template<class F, class...Us>
 	auto pcall(self*, F&& f, Ts&&...args, Us&&...)
 		->Seq< decltype(forward_m(f)(forward_m(args)...)), Ts...>;
-	//·µ»ØµÄÀàĞÍÎª Seq<·µ»ØÖµÀàĞÍ, ²ÎÊıÀàĞÍ>
-	//ÈôÕâµ÷ÓÃ²»ºÏ·¨ÄÇÃ´Ò»¶¨»áSubstitution Failure£¬È»ºó°ÑÖ¸ÕëµÄÀàĞÍ×Ô¶¯×ª»»Îª»ùÀàÖ¸Õë
+	//è¿”å›çš„ç±»å‹ä¸º Seq<è¿”å›å€¼ç±»å‹, å‚æ•°ç±»å‹>
+	//è‹¥è¿™è°ƒç”¨ä¸åˆæ³•é‚£ä¹ˆä¸€å®šä¼šSubstitution Failureï¼Œç„¶åæŠŠæŒ‡é’ˆçš„ç±»å‹è‡ªåŠ¨è½¬æ¢ä¸ºåŸºç±»æŒ‡é’ˆ
 
 
-	//fix: Èôµ÷ÓÃ²»ÊÇSubstitution Failure¶øÊÇAmbiguousµÄ»°,ÊÇ·ñ¿ÉÒÔ¼ÌĞø×ª»»³É»ùÀàÖ¸ÕëÔÙÅĞ¶¨£¿
-	//todo: fix: vs2015 update2Ö®Ç°ÊÇÎŞ·¨ÔÚdecltypeÄÚ²¿Ê¹ÓÃpack expansion µÄ
+	//fix: è‹¥è°ƒç”¨ä¸æ˜¯Substitution Failureè€Œæ˜¯Ambiguousçš„è¯,æ˜¯å¦å¯ä»¥ç»§ç»­è½¬æ¢æˆåŸºç±»æŒ‡é’ˆå†åˆ¤å®šï¼Ÿ
+	//todo: fix: vs2015 update2ä¹‹å‰æ˜¯æ— æ³•åœ¨decltypeå†…éƒ¨ä½¿ç”¨pack expansion çš„
 };
 template<>
 struct LongFirstCall<Seq<>> {
@@ -199,12 +199,17 @@ struct ShortParser
 };
 
 
-
+struct EatParam {
+	constexpr EatParam(...)noexcept {}
+};
+template<class>
+using EatParam_t = EatParam;
 
 template<class...Ts>
 struct GetImp {
+	
 	template<class T>
-	static constexpr decltype(auto) fetch(Ts&&..., T&& obj, ...)noexcept {
+	static constexpr decltype(auto) fetch(EatParam_t<Ts>&&..., T&& obj, ...)noexcept {
 		return std::forward<T>(obj);
 	}
 	template<class T>
@@ -234,9 +239,7 @@ struct GetImp {
 
 
 
-struct EatParam {
-	constexpr EatParam(...)noexcept {}
-};
+
 
 template<size_t n>
 struct IgnoreSeqImp {
