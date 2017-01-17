@@ -1,4 +1,4 @@
-#ifndef SEQOP_H_INCLUDED
+ï»¿#ifndef SEQOP_H_INCLUDED
 #define SEQOP_H_INCLUDED
 #include "core.h"
 
@@ -33,14 +33,14 @@ struct Erase_frontImp< Seq<U>, Seq<T, Us...> > {
 template<class del, class from>
 using Erase_front = OMIT_T(Erase_frontImp<Seqfy<del>, Seqfy<from>>);
 template<class del, class from>
-using Erase_front_s = OMIT_T(Erase_frontImp<assert_is_seq(del), assert_is_seq(from)>);
+using Erase_front_s = OMIT_T(Erase_frontImp<del, from>);
 
 
 
 
 
 
-//rotate(s1(abc),s2(abcdef)) is seq(defabc) ²¢²»ÒªÇós1,s2ÊÇÏàÍ¬µÄÔªĞòÁĞÀàĞÍ
+//rotate(s1(abc),s2(abcdef)) is seq(defabc) å¹¶ä¸è¦æ±‚s1,s2æ˜¯ç›¸åŒçš„å…ƒåºåˆ—ç±»å‹
 template<class Obj, class Src>
 using RotateLeft = Merge_s<Erase_front<Obj, Src>, Seqfy<Obj>>;
 template<class Obj, class Src>
@@ -66,7 +66,7 @@ struct Pop_backImp<Seq<T, U>> {
 template<class T>
 using Pop_back = OMIT_T(Pop_backImp<Seqfy<T>>);
 template<class T>
-using Pop_back_s = OMIT_T(Pop_backImp<assert_is_seq(T)>);
+using Pop_back_s = OMIT_T(Pop_backImp<T>);
 
 
 
@@ -84,7 +84,7 @@ struct HeadImp<Seq<T>> {
 	using type = T;
 };
 template<class T>
-using Head_s = OMIT_T(HeadImp<assert_is_seq(T)>);
+using Head_s = OMIT_T(HeadImp<T>);
 template<class T>
 using Head = OMIT_T(HeadImp<Seqfy<T>>);
 
@@ -114,7 +114,7 @@ struct BeforeImp<n, Seq<>> {
 template<size_t n, class T>
 using Before = OMIT_T(BeforeImp<n, Seqfy<T>>);
 template<size_t n, class T>
-using Before_s = OMIT_T(BeforeImp<n, assert_is_seq(T)>);
+using Before_s = OMIT_T(BeforeImp<n, T>);
 
 
 
@@ -143,7 +143,7 @@ struct AfterImp<n, Seq<>> {
 template<size_t n, class T>
 using After = OMIT_T(AfterImp<n, Seqfy<T>>);
 template<size_t n, class T>
-using After_s = OMIT_T(AfterImp<n, assert_is_seq(T)>);
+using After_s = OMIT_T(AfterImp<n, T>);
 //For any n,any Tuple:
 //Merge_s< Before<n,Tuple<Ts...>>,
 //         Seq<At<n,Tuple<Ts...>>>,
@@ -162,7 +162,7 @@ struct Erase_backImp<Seq<Ts...>, Seq<Us...>> {
 };
 
 template<class T,class U>
-using Erase_back_s = OMIT_T(Erase_backImp<T,assert_is_seq(U)>);
+using Erase_back_s = OMIT_T(Erase_backImp<T,U>);
 template<class T, class U>
 using Erase_back = OMIT_T(Erase_backImp<T, Seqfy<U>>);
 
@@ -170,10 +170,10 @@ using Erase_back = OMIT_T(Erase_backImp<T, Seqfy<U>>);
 template<class Obj, class Src>
 using RotateRight = Merge_s<Seqfy<Obj>, Erase_back<Obj, Src>>;
 template<class Obj, class Src>
-using RotateRight_s = Merge_s<Obj, Erase_back_s<Obj, assert_is_seq(Src)>>;
+using RotateRight_s = Merge_s<Obj, Erase_back_s<Obj, Src>>;
 
 
-//ÓÃÓÚ¸ßĞ§ÊµÏÖget<T>(args...)ÒÔ¼°apply<EndTagType>(func,args...)µÄÄÚ²¿Àà
+//ç”¨äºé«˜æ•ˆå®ç°get<T>(args...)ä»¥åŠapply<EndTagType>(func,args...)çš„å†…éƒ¨ç±»
 template<class...>struct type_atImp;
 
 template<class T,class...Ts>

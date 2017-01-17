@@ -24,14 +24,6 @@ _svt表示返回一个类型,里面具有::value和::type可供使用
 
 
 
-
-
-
-
-
-
-using std::size_t;
-
 #define forward_m(...) std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
 #define except_when(...) noexcept(noexcept(__VA_ARGS__))
 #define OMIT_T(...) typename __VA_ARGS__::type
@@ -48,8 +40,6 @@ struct TransformImp
 };
 template< template<class...> class Dst, class T>
 using Transform = decltype(TransformImp<Dst>::from(std::declval<T>()));
-
-
 
 
 template<class T>
@@ -76,10 +66,6 @@ constexpr size_t countSeqSize(const Seq<Ts...>&)noexcept {
 
 
 
-
-#define assert_is_seq(...) __VA_ARGS__
-
-
 template<class...>struct MergeImp;
 template<class...Ts, class...Others>
 struct MergeImp<Seq<Ts...>, Seq<Others...>>
@@ -89,7 +75,7 @@ struct MergeImp<Seq<Ts...>, Seq<Others...>>
 template<class first, class second>
 using Merge = OMIT_T(MergeImp<Seqfy<first>, Seqfy<second> >);
 template<class T, class U>
-using Merge_s = OMIT_T(MergeImp<assert_is_seq(T), assert_is_seq(U)>);
+using Merge_s = OMIT_T(MergeImp<T, U>);
 
 
 template<class...>struct ReverseImp;
@@ -106,7 +92,7 @@ struct ReverseImp<Seq<T>> {
 template<class T>
 using Reverse = OMIT_T(ReverseImp<Seqfy<T>>);
 template<class obj>
-using Reverse_s = OMIT_T(ReverseImp<assert_is_seq(obj)>);
+using Reverse_s = OMIT_T(ReverseImp<obj>);
 
 
 

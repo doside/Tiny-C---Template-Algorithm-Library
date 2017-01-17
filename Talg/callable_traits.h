@@ -278,7 +278,7 @@ struct AtImp<n, Seq<Ts...>> {
 	using type = typename tmp::type;
 };
 template<size_t n, class T>
-using At_s = OMIT_T(AtImp<n, assert_is_seq(T)>) ;
+using At_s = OMIT_T(AtImp<n, T>) ;
 template<size_t n, class T>
 using At = OMIT_T(AtImp<n, Seqfy<T>>);
 

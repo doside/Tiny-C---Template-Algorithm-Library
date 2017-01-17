@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "core.h"
 #include "index_seq.h"
 
@@ -6,7 +6,7 @@
 #include <utility>
 
 enum :size_t {
-	no_index = std::numeric_limits<size_t>::max() - 1 //ÒÖÖÆVCµÄ¾¯¸æC4307
+	no_index = std::numeric_limits<size_t>::max() - 1 //æŠ‘åˆ¶VCçš„è­¦å‘ŠC4307
 };
 struct NoType :public Seq<NoType> {};
 
@@ -52,7 +52,7 @@ struct MultiopImp<OpImp, Seq<>, Seq<Us...>> {
 
 
 template<template<class...>class OpImp, class Var, class Konst>  //Konst means const
-using Multiop_s = OMIT_T(MultiopImp<OpImp, assert_is_seq(Var), assert_is_seq(Konst)>);
+using Multiop_s = OMIT_T(MultiopImp<OpImp, Var, Konst>);
 
 template<template<class...>class OpImp, class Var, class Konst>
 using Multiop = MultiopImp<OpImp, Seqfy<Var>, Seqfy<Konst>>;
@@ -71,11 +71,11 @@ struct iSeqImp<n, Seq<Ts...>> {
 	using type = Seq<Ts...>;
 };
 
-//iSeqÖ»ÊÇ¶àÁË¸ösize_tµÄSeq°ÕÁË,¿ÉÒÔÍ¨¹ıvalue·ÃÎÊËü
+//iSeqåªæ˜¯å¤šäº†ä¸ªsize_tçš„Seqç½¢äº†,å¯ä»¥é€šè¿‡valueè®¿é—®å®ƒ
 template<size_t n, class... Ts>
 using iSeq = iSeqImp<n, Seq<Ts...>>;
 
-//½á¹û°ü×°Æ÷,Ëü¿ÉÒÔ×Ô¶¯½øĞĞµİ¹é¼ÆËã(Ò²¼´,+1»òno_index),Èô¼ÆËã½á¹ûÎªno_indexÔòÍ£Ö¹.
+//ç»“æœåŒ…è£…å™¨,å®ƒå¯ä»¥è‡ªåŠ¨è¿›è¡Œé€’å½’è®¡ç®—(ä¹Ÿå³,+1æˆ–no_index),è‹¥è®¡ç®—ç»“æœä¸ºno_indexåˆ™åœæ­¢.
 template<class T>
 struct NextSeq {
 	static constexpr size_t value = T::value != no_index ? T::value + 1 : no_index;
@@ -104,9 +104,9 @@ using Find = FindImp<Dst, Seqfy<Src>>;
 template<class Dst, class Src>
 using Find_t = OMIT_T(FindImp<Dst, Seqfy<Src>>);
 template<class Dst, class Src>
-using Find_ss = OMIT_T(FindImp<Dst, assert_is_seq(Src)>);
+using Find_ss = OMIT_T(FindImp<Dst, Src>);
 template<class Dst, class Src>
-using Find_svt = FindImp<Dst, assert_is_seq(Src)>;
+using Find_svt = FindImp<Dst, Src>;
 
 
 
@@ -132,7 +132,7 @@ struct Find_if_svt<Pred,T, Seq<U>> :
 template<class Pred,class Dst, class Src>
 using Find_if_t = OMIT_T(Find_if_svt<Pred,Dst, Seqfy<Src>>);
 template<class Pred,class Dst, class Src>
-using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, assert_is_seq(Src)>);
+using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, Src>);
 //template<class Pred, class Dst, class Src>
 //using Find_if = OMIT_T(Find_if_svt<Pred, Dst, Seqfy<Src>>);
 
