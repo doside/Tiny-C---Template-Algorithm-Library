@@ -101,11 +101,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <UseMultiToolTask>true</UseMultiToolTask>

@@ -173,20 +173,20 @@ public:
 	template<class...Ts>
 	decltype(auto) operator()(Ts&&...args)
 		except_when(
-			apply(ParameterIndex{},T::operator(),this, forward_m(args)...)
+			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
 		)
 	{
-		return apply(ParameterIndex{},T::operator(), this, forward_m(args)...);
+		return apply(ParameterIndex{},*static_cast<T*>(this), forward_m(args)...);
 	}
 
 
 	template<class...Ts>
 	constexpr decltype(auto) operator()(Ts&&...args)const
 		except_when(
-			apply(ParameterIndex{}, T::operator(), this, forward_m(args)...)
+			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
 		)
 	{
-		return apply(ParameterIndex{}, T::operator(), this, forward_m(args)...);
+		return apply(ParameterIndex{}, *static_cast<const T*>(this), forward_m(args)...);
 	}
 #if 0
 	//todo fix:  如果T有相等比较，则应该比较相等
@@ -212,6 +212,8 @@ public:
 
 };
 
+#if 0
+//暂时不知道该如何实现这个特化
 template<class ObjT,class MemF,class StandarType>
 struct FunctorImp<MemF ObjT::*,StandarType>{
 	MemF ObjT::*ptr_m;
@@ -274,7 +276,7 @@ public:
 	}
 
 };
-
+#endif 
 
 template<class F, class T>
 constexpr decltype(auto) makeFunctor(T&& src_func) {

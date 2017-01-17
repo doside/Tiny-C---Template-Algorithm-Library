@@ -328,7 +328,7 @@ constexpr decltype(auto) apply(Seq<>, F&& func, Ts&&... args) {
 
 
 template<class F, class...Ts>
-void repeatAny(F&& func, Ts&&...args);
+void mapAny(F&& func, Ts&&...args);
 
 
 template<class...Ts>
@@ -345,12 +345,12 @@ struct GetSeqImp {
 	}
 
 	template<class F, class...Us>
-	static void any(F&& func, Ts&&...args, Us&&...last) {
+	static void mapAny(F&& func, Ts&&...args, Us&&...last) {
 		forward_m(func)(forward_m(args)...);
-		repeatAny(forward_m(func), forward_m(last)...);
+		mapAny(forward_m(func), forward_m(last)...);
 	}
 	template<class F, class...Us>
-	static void any(F&& func, Ts&&...args) {
+	static void mapAny(F&& func, Ts&&...args) {
 		forward_m(func)(forward_m(args)...);
 	}
 
@@ -373,12 +373,12 @@ decltype(auto) repeat(F&& func, Ts&&... args) {
 }
 
 template<class F, class...Ts>
-void repeatAny(F&& func, Ts&&...args) {
+void mapAny(F&& func, Ts&&...args) {
 	using param_parser = decltype(ShortParser{}(forward_m(func), forward_m(args)...));
 	constexpr size_t param_length = SeqSize<param_parser>::value - 1;
 	using begin = Before_s<param_length, Seq<Ts...>>;
 
-	return Transform<GetSeqImp, begin>::any(forward_m(func), forward_m(args)...);
+	return Transform<GetSeqImp, begin>::mapAny(forward_m(func), forward_m(args)...);
 }
 
 
