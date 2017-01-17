@@ -204,17 +204,5 @@ struct type_atImp<T, Seq<Ts...>, Seq<U, Us...>> {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #endif //SEQOP_H_INCLUDED
 

@@ -143,6 +143,8 @@
     <ClInclude Include="core.h" />
     <ClInclude Include="find_val.h" />
     <ClInclude Include="index_seq.h" />
+    <ClInclude Include="invoke_impl.h" />
+    <ClInclude Include="select_type.h" />
     <ClInclude Include="seqop.h" />
     <ClInclude Include="strippe_qualifier.h" />
     <ClInclude Include="test_suits.h" />

@@ -10,11 +10,29 @@ enum :size_t {
 };
 struct NoType :public Seq<NoType> {};
 
+
+
+
+/*
+todo fix 这个类过于特殊,没多少实际意义,似乎将index_type并入type中更为合理.
+用于实现多次查找,第一个序列是所有要查找的东西,第二个序列是查找范围
+在type中把当前查找的结果类型并入最终的结果类型,
+在index_type中把当前的下标并入最终的下标序列.
+*/
 template<template<class...>class OpImp, class, class>
 struct MultiopImp;
 
 template<template<class...>class OpImp, class T, class...Ts, class...Us>
 struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
+	using index_type = std::conditional_t<
+		OpImp<T, Seq<Us...>>::value == no_index,
+
+		typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type,
+
+		MergeIndex< iTag< OpImp<T, Seq<Us...>>::value >,
+			typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>
+	>;
+public:
 	using type = Merge_s<
 		OMIT_T(OpImp<
 			T,
@@ -26,18 +44,12 @@ struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
 			Seq<Us...>
 		>::type
 	>;
-	using value_type = std::conditional_t<
-		OpImp<T, Seq<Us...>>::value == no_index,
-		typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::value_type,
-		MergeIndex< iTag< OpImp<T, Seq<Us...>>::value >,
-			typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::value_type>
-	>;
 };
 
 template<template<class...>class OpImp, class T, class...Us>
 struct MultiopImp<OpImp, Seq<T>, Seq<Us...>> {
 	using type = OMIT_T(OpImp<T, Seq<Us...>>);
-	using value_type = std::conditional_t<
+	using index_type = std::conditional_t<
 		OpImp<T, Seq<Us...>>::value == no_index,
 		typename OpImp<T, Seq<Us...>>::type,//index_sequence<>,
 		iTag<OpImp<T, Seq<Us...>>::value>
@@ -47,7 +59,7 @@ struct MultiopImp<OpImp, Seq<T>, Seq<Us...>> {
 template<template<class...>class OpImp, class...Us>
 struct MultiopImp<OpImp, Seq<>, Seq<Us...>> {
 	using type = Seq<>;
-	using value_type = index_sequence<>;
+	using index_type = index_sequence<>;
 };
 
 
@@ -58,7 +70,7 @@ template<template<class...>class OpImp, class Var, class Konst>
 using Multiop = MultiopImp<OpImp, Seqfy<Var>, Seqfy<Konst>>;
 
 template<template<class...>class OpImp, class Var, class Konst>
-using Multiop_n = typename MultiopImp<OpImp, Seqfy<Var>, Seqfy<Konst>>::value_type;
+using Multiop_n = typename MultiopImp<OpImp, Seqfy<Var>, Seqfy<Konst>>::index_type;
 
 
 
@@ -85,28 +97,27 @@ struct NextSeq {
 
 
 
-template<class, class>struct FindImp;
+template<class, class>struct Find_svt;
 
 template<class T, class...Ts>
-struct FindImp<T, Seq<T, Ts...>> : iSeq<0, Ts...> {};
+struct Find_svt<T, Seq<T, Ts...>> : iSeq<0, Ts...> {};
 
 template<class T, class U, class...Ts>
-struct FindImp<T, Seq<U, Ts...>> :NextSeq<FindImp<T, Seq<Ts...>>> {};
+struct Find_svt<T, Seq<U, Ts...>> :NextSeq<Find_svt<T, Seq<Ts...>>> {};
 
 template<class T, class U>
-struct FindImp<T, Seq<U>> :iSeq<no_index, NoType> {};
+struct Find_svt<T, Seq<U>> :iSeq<no_index, NoType> {};
 
 template<class T>
-struct FindImp<T, Seq<T>> : iSeq<0> {};
+struct Find_svt<T, Seq<T>> : iSeq<0> {};
 
 template<class Dst, class Src>
-using Find = FindImp<Dst, Seqfy<Src>>;
+using Find_vt = Find_svt<Dst, Seqfy<Src>>; 
 template<class Dst, class Src>
-using Find_t = OMIT_T(FindImp<Dst, Seqfy<Src>>);
+using Find_t = OMIT_T(Find_svt<Dst, Seqfy<Src>>);
 template<class Dst, class Src>
-using Find_ss = OMIT_T(FindImp<Dst, Src>);
-template<class Dst, class Src>
-using Find_svt = FindImp<Dst, Src>;
+using Find_ss = OMIT_T(Find_svt<Dst, Src>);
+
 
 
 
@@ -116,16 +127,16 @@ template<class,class, class>struct Find_if_svt;
 template<class Pred,class T, class U,class...Ts>
 struct Find_if_svt<Pred,T, Seq<U, Ts...>> : 
 	std::conditional_t< Pred::template pred<T,U>::value,
-	iSeq<0, Ts...>,
-	NextSeq< Find_if_svt<Pred,T,Seq<Ts...>>>
+		iSeq<0, Ts...>,
+		NextSeq< Find_if_svt<Pred,T,Seq<Ts...>>>
 	>
 { };
 
 template<class Pred,class T, class U>
 struct Find_if_svt<Pred,T, Seq<U>> :
 	std::conditional_t< Pred::template pred<T, U>::value,
-	iSeq<0>,
-	iSeq<no_index, NoType>
+		iSeq<0>,
+		iSeq<no_index, NoType>
 	>
 { };
 
@@ -133,7 +144,6 @@ template<class Pred,class Dst, class Src>
 using Find_if_t = OMIT_T(Find_if_svt<Pred,Dst, Seqfy<Src>>);
 template<class Pred,class Dst, class Src>
 using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, Src>);
-//template<class Pred, class Dst, class Src>
-//using Find_if = OMIT_T(Find_if_svt<Pred, Dst, Seqfy<Src>>);
+
 
 

@@ -53,5 +53,11 @@
     <ClInclude Include="seqop.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="select_type.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="invoke_impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

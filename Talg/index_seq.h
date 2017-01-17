@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "core.h"
 #include <utility>
 
@@ -16,6 +16,7 @@ struct IndexTag
 };
 #endif
 
+//一个将数字绑定到类型的模板类
 template<size_t n>
 using iTag = index_sequence<n>;
 
