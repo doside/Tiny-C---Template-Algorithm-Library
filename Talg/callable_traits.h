@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "seqop.h"
 #include "invoke_impl.h"
-
+#include "select_type.h"
 
 
 
@@ -58,9 +58,6 @@ struct LongParser
 	Seq<> operator()(F&& f...);
 };
 
-
-
-
 template<class...Ts>struct ShortFirstCall;
 
 template<class...Ts, class U, class...Us>
@@ -98,81 +95,13 @@ struct ShortParser
 };
 
 
-struct EatParam {
-	constexpr EatParam(...)noexcept {}
-};
-template<class>
-using EatParam_t = EatParam;
-
-template<class...Ts>
-struct GetImp {
-	
-	template<class T>
-	static constexpr decltype(auto) fetch(EatParam_t<Ts>&&..., T&& obj, ...)noexcept {
-		return std::forward<T>(obj);
-	}
-	template<class T>
-	static WrapperT<T> deduce(Ts..., Seq<T>* obj, ...);
-
-	template<class F, class...Us>
-	static constexpr decltype(auto) applyFrontImp(F&& func, Ts&&...args, Us&&...)
-		noexcept(noexcept(forward_m(func)(forward_m(args)...)))
-	{
-		return forward_m(func)(forward_m(args)...);
-	}
-
-	template<class F, class...Us>
-	static constexpr decltype(auto) applyBackImp(F&& func, Ts&&..., Us&&...args)
-		noexcept(noexcept(forward_m(func)(forward_m(args)...)))
-	{
-		return forward_m(func)(forward_m(args)...);
-	}
-
-	template<class...Us>
-	static constexpr auto subSeq(Ts&&...args, Us&&...)
-		noexcept(noexcept(std::forward_as_tuple(forward_m(args)...)))
-	{
-		return std::forward_as_tuple(forward_m(args)...);
-	}
-};
-
-
-
-
-
-template<size_t n>
-struct IgnoreSeqImp {
-	using type = Merge_s<OMIT_T(IgnoreSeqImp<n / 2>), OMIT_T(IgnoreSeqImp<n - n / 2>)>;
-};
-template<>
-struct IgnoreSeqImp<0> {
-	using type = Seq<>;
-};
-template<>
-struct IgnoreSeqImp<1> {
-	using type = Seq<EatParam>;
-};
-
-template<size_t n>
-using IgnoreSeq = OMIT_T(IgnoreSeqImp<n>);
-
-
-template<size_t n>
-using ExcludeParam = Transform<GetImp, IgnoreSeq<n>>;
-
-
-
-
-
-
-
 
 template<class F, class...Ts>
 void mapAny(F&& func, Ts&&...args);
 
 
 template<class...Ts>
-struct GetSeqImp {
+struct RepeatImp {
 	template<class F>
 	static decltype(auto) repeat(F&& func, Ts&&...args) {
 		return forward_m(func)(forward_m(args)...);
@@ -180,7 +109,7 @@ struct GetSeqImp {
 	template<class F, class...Us>
 	static decltype(auto) repeat(F&& func, Ts&&...args, Us&&...last) {
 		forward_m(func)(forward_m(args)...);
-		return Transform< ::GetSeqImp, Before_s<sizeof...(Ts), Seq<Us...>> >
+		return Transform< ::RepeatImp, Before_s<sizeof...(Ts), Seq<Us...>> >
 			::repeat(forward_m(func), forward_m(last)...);
 	}
 
@@ -194,14 +123,6 @@ struct GetSeqImp {
 		forward_m(func)(forward_m(args)...);
 	}
 
-	template<class ResCombiner, class F, class...Us>
-	static decltype(auto) repeatSave(ResCombiner&& res, F&& func, Ts&&...args, Us&&...last) {
-		//call ResCombiner::operator() to save res.
-		forward_m(res) ((func)(forward_m(args)...));
-		return forward_m(res) (Transform< ::GetSeqImp, Before_s<sizeof...(Ts), Seq<Us...>> >
-			::repeat(forward_m(func), forward_m(last)...));
-	}
-
 };
 
 
@@ -209,7 +130,7 @@ template<size_t n, class F, class...Ts>
 decltype(auto) repeat(F&& func, Ts&&... args) {
 	using begin = Before_s<n, Seq<Ts...>>;
 	static_assert(sizeof...(args) % n == 0, "m args should be divide into m/n group");
-	return Transform<GetSeqImp, begin>::repeat(forward_m(func), forward_m(args)...);
+	return Transform<RepeatImp, begin>::repeat(forward_m(func), forward_m(args)...);
 }
 
 template<class F, class...Ts>
@@ -218,7 +139,7 @@ void mapAny(F&& func, Ts&&...args) {
 	constexpr size_t param_length = SeqSize<param_parser>::value - 1;
 	using begin = Before_s<param_length, Seq<Ts...>>;
 
-	return Transform<GetSeqImp, begin>::mapAny(forward_m(func), forward_m(args)...);
+	return Transform<RepeatImp, begin>::mapAny(forward_m(func), forward_m(args)...);
 }
 
 

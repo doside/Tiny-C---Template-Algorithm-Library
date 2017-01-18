@@ -7,32 +7,6 @@ struct EatParam {
 template<class>
 using EatParam_t = EatParam;
 
-template<class...Ts>
-struct GetImp {
-
-	template<class T>
-	static constexpr decltype(auto) fetch(EatParam_t<Ts>&&..., T&& obj, ...)noexcept {
-		return std::forward<T>(obj);
-	}
-	template<class T>
-	static WrapperT<T> deduce(Ts..., Seq<T>* obj, ...);
-
-	template<class F, class...Us>
-	static constexpr decltype(auto) applyFrontImp(F&& func, Ts&&...args, Us&&...)
-		noexcept(noexcept(invoke(forward_m(func), forward_m(args)...)))
-	{
-		return invoke( forward_m(func),forward_m(args)...);
-	}
-	template<class F, class...Us>
-	static constexpr decltype(auto) applyBackImp(F&& func, Ts&&..., Us&&...args)
-		noexcept(noexcept(invoke(forward_m(func), forward_m(args)...)))
-	{
-		return invoke(forward_m(func), forward_m(args)...);
-	}
-};
-
-
-
 template<size_t n>
 struct IgnoreSeqImp {
 	using type = Merge_s<OMIT_T(IgnoreSeqImp<n / 2>), OMIT_T(IgnoreSeqImp<n - n / 2>)>;
@@ -50,8 +24,32 @@ template<size_t n>
 using IgnoreSeq = OMIT_T(IgnoreSeqImp<n>);
 
 
+template<class...Ts>
+struct GetImp {
+
+	template<class T>
+	static constexpr decltype(auto) fetch(EatParam_t<Ts>&&..., T&& obj, ...)noexcept {
+		return std::forward<T>(obj);
+	}
+	template<class T>
+	static WrapperT<T> deduce(Ts..., Seq<T>* obj, ...);
+
+	template<class F>
+	static constexpr decltype(auto) applyFrontImp(F&& func, Ts&&...args, ...)
+		noexcept(noexcept(invoke(forward_m(func), forward_m(args)...)))
+	{
+		return invoke( forward_m(func),forward_m(args)...);
+	}
+	template<class F, class...Us>
+	static constexpr decltype(auto) applyBackImp(F&& func, Ts&&..., Us&&...args)
+		noexcept(noexcept(invoke(forward_m(func), forward_m(args)...)))
+	{
+		return invoke(forward_m(func), forward_m(args)...);
+	}
+};
 template<size_t n>
 using ExcludeParam = Transform<GetImp, IgnoreSeq<n>>;
+
 
 
 template<size_t n, class...Ts>
@@ -85,20 +83,6 @@ decltype(auto) applyBack(F&& func, Ts&&... args) {
 	return ExcludeParam<n>::applyBackImp(forward_m(func), forward_m(args)...);
 }
 
-template<class...Ts>
-struct ApplyRagImp {
-	template<size_t end, class F, class...Us>
-	static decltype(auto) call(std::index_sequence<end>, F&& func, Ts&&..., Us&&...args) {
-		return applyFront<end>(forward_m(func), forward_m(args)...);
-	}
-};
-
-template<size_t beg, size_t end, class F, class...Ts>
-decltype(auto) applyRag(F&& func, Ts&&... args) {
-	return Transform<ApplyRagImp, IgnoreSeq<beg> >
-		::call(std::index_sequence<end - beg >{}, forward_m(func), forward_m(args)...);
-}
-
 
 template<size_t... Indices, class F, class...Ts>
 constexpr decltype(auto) apply(std::index_sequence<Indices...>, F&& func, Ts&&... args) {
@@ -111,4 +95,23 @@ constexpr decltype(auto) apply(std::index_sequence<>, F&& func, Ts&&... args) {
 template<class F, class...Ts>
 constexpr decltype(auto) apply(Seq<>, F&& func, Ts&&... args) {
 	return invoke(forward_m(func), forward_m(args)...);
+}
+
+
+
+
+
+
+template<class...Ts>
+struct ApplyRagImp {
+	template<size_t end, class F, class...Us>
+	static decltype(auto) call(std::index_sequence<end>, F&& func, Ts&&..., Us&&...args) {
+		return applyFront<end>(forward_m(func), forward_m(args)...);
+	}
+};
+
+template<size_t beg, size_t end, class F, class...Ts>
+decltype(auto) applyRag(F&& func, Ts&&... args) {
+	return Transform<ApplyRagImp, IgnoreSeq<beg> >
+		::call(std::index_sequence<end - beg >{}, forward_m(func), forward_m(args)...);
 }

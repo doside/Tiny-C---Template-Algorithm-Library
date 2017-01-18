@@ -135,12 +135,14 @@
   <ItemGroup>
     <ClCompile Include="functor.cpp" />
     <ClCompile Include="testErase.cpp" />
+    <ClCompile Include="testExString.cpp" />
     <ClCompile Include="test_repeat.cpp" />
     <ClCompile Include="test_rm_fptr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
+    <ClInclude Include="exString.h" />
     <ClInclude Include="find_val.h" />
     <ClInclude Include="index_seq.h" />
     <ClInclude Include="invoke_impl.h" />
