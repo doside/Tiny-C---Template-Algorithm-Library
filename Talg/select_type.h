@@ -1,11 +1,18 @@
-#include "core.h"
+﻿#include "core.h"
 #include "invoke_impl.h"
 
+/*
+	\brief	具有接受任意参数的构造子,并且不做任何事
+	\param	anything
+	\note	典型地,用于忽略函数调用的参数从而实现各种编译期元操作,参见@get
+*/
 struct EatParam {
 	constexpr EatParam(...)noexcept {}
 };
 template<class>
 using EatParam_t = EatParam;
+
+
 
 template<size_t n>
 struct IgnoreSeqImp {
@@ -20,6 +27,13 @@ struct IgnoreSeqImp<1> {
 	using type = Seq<EatParam>;
 };
 
+
+/*
+	\brief	这个类产生n个EatParam组成的序列
+	\param
+	\return
+	\note
+*/
 template<size_t n>
 using IgnoreSeq = OMIT_T(IgnoreSeqImp<n>);
 
