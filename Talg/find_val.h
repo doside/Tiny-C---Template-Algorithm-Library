@@ -29,7 +29,7 @@ struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
 
 		typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type,
 
-		MergeIndex< iTag< OpImp<T, Seq<Us...>>::value >,
+		MergeIndex< Tagi< OpImp<T, Seq<Us...>>::value >,
 			typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>
 	>;
 public:
@@ -51,15 +51,15 @@ struct MultiopImp<OpImp, Seq<T>, Seq<Us...>> {
 	using type = OMIT_T(OpImp<T, Seq<Us...>>);
 	using index_type = std::conditional_t<
 		OpImp<T, Seq<Us...>>::value == no_index,
-		typename OpImp<T, Seq<Us...>>::type,//index_sequence<>,
-		iTag<OpImp<T, Seq<Us...>>::value>
+		typename OpImp<T, Seq<Us...>>::type,//IdSeq<>,
+		Tagi<OpImp<T, Seq<Us...>>::value>
 	>;
 };
 
 template<template<class...>class OpImp, class...Us>
 struct MultiopImp<OpImp, Seq<>, Seq<Us...>> {
 	using type = Seq<>;
-	using index_type = index_sequence<>;
+	using index_type = IdSeq<>;
 };
 
 
@@ -75,17 +75,17 @@ using Multiop_n = typename MultiopImp<OpImp, Seqfy<Var>, Seqfy<Konst>>::index_ty
 
 
 template<size_t n, class Seq_res>
-struct iSeqImp;
+struct SeqiImp;
 
 template< size_t n, class... Ts>
-struct iSeqImp<n, Seq<Ts...>> {
+struct SeqiImp<n, Seq<Ts...>> {
 	static constexpr size_t value = n;
 	using type = Seq<Ts...>;
 };
 
-//iSeq只是多了个size_t的Seq罢了,可以通过value访问它
+//Seqi只是多了个size_t的Seq罢了,可以通过value访问它
 template<size_t n, class... Ts>
-using iSeq = iSeqImp<n, Seq<Ts...>>;
+using Seqi = SeqiImp<n, Seq<Ts...>>;
 
 //结果包装器,它可以自动进行递归计算(也即,+1或no_index),若计算结果为no_index则停止.
 template<class T>
@@ -100,16 +100,16 @@ struct NextSeq {
 template<class, class>struct Find_svt;
 
 template<class T, class...Ts>
-struct Find_svt<T, Seq<T, Ts...>> : iSeq<0, Ts...> {};
+struct Find_svt<T, Seq<T, Ts...>> : Seqi<0, Ts...> {};
 
 template<class T, class U, class...Ts>
 struct Find_svt<T, Seq<U, Ts...>> :NextSeq<Find_svt<T, Seq<Ts...>>> {};
 
 template<class T, class U>
-struct Find_svt<T, Seq<U>> :iSeq<no_index, NoType> {};
+struct Find_svt<T, Seq<U>> :Seqi<no_index, NoType> {};
 
 template<class T>
-struct Find_svt<T, Seq<T>> : iSeq<0> {};
+struct Find_svt<T, Seq<T>> : Seqi<0> {};
 
 template<class Dst, class Src>
 using Find_vt = Find_svt<Dst, Seqfy<Src>>; 
@@ -127,7 +127,7 @@ template<class,class, class>struct Find_if_svt;
 template<class Pred,class T, class U,class...Ts>
 struct Find_if_svt<Pred,T, Seq<U, Ts...>> : 
 	std::conditional_t< Pred::template pred<T,U>::value,
-		iSeq<0, Ts...>,
+		Seqi<0, Ts...>,
 		NextSeq< Find_if_svt<Pred,T,Seq<Ts...>>>
 	>
 { };
@@ -135,8 +135,8 @@ struct Find_if_svt<Pred,T, Seq<U, Ts...>> :
 template<class Pred,class T, class U>
 struct Find_if_svt<Pred,T, Seq<U>> :
 	std::conditional_t< Pred::template pred<T, U>::value,
-		iSeq<0>,
-		iSeq<no_index, NoType>
+		Seqi<0>,
+		Seqi<no_index, NoType>
 	>
 { };
 

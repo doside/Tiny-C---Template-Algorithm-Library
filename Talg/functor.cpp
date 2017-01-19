@@ -362,7 +362,7 @@ template<class...Ts>
 using bs_signal = typename bs2::signal_type<Ts..., bs2::keywords::mutex_type<bs2::dummy_mutex>>::type;
 
 #include <iostream>
-	int main() {
+	int main22() {
 		{
 			int i = 0;
 			auto ci = [&i](int j){ std::cout << i<<" " << j<<"\n"; return i++; };
@@ -420,7 +420,7 @@ using bs_signal = typename bs2::signal_type<Ts..., bs2::keywords::mutex_type<bs2
 
 		
 		bs_signal<void(double, int)> sig;
-		testSame(iTag<FindParam<int&&, Seq<double, int>>::value>, iTag<1>);
+		testSame(Tagi<FindParam<int&&, Seq<double, int>>::value>, Tagi<1>);
 
 		
 		auto play2= [&sig](double, int) {

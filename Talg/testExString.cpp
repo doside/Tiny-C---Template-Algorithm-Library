@@ -49,8 +49,8 @@ namespace {
 	void f() {
 		auto dt = 123._test;
 		testSame(
-			iTag < exString{ "aksjla" }.find("jla") > ,
-			iTag<3>
+			Tagi < exString{ "aksjla" }.find("jla") > ,
+			Tagi<3>
 		);
 		static_assert(is_digit('0'), "");
 		static_assert(is_digit('1'), "");
