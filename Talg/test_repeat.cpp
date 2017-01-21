@@ -39,7 +39,6 @@ namespace {
 	}
 }
 
-#include <iostream>
 
 template<size_t n>
 struct Selector {
@@ -56,17 +55,16 @@ struct testGatherConstexpr {
 	}
 };
 
-	template<class...Ts>
-	constexpr decltype(auto) testDeclAuto(Ts&&...args){
-		return get<2>(args...);
-	}
+template<class...Ts>
+constexpr decltype(auto) testDeclAuto(Ts&&...args){
+	return get<2>(args...);
+}
 
 
 int main()
 {
 	using namespace std;
 	static_assert(Selector<3>{}(1, 2, 3, 4, 5), "");
-	//static_assert(testDeclAuto(1, 2, 3, 4) == 0, "");
 	static_assert(
 		gather<3>(
 			Selector<3>{},

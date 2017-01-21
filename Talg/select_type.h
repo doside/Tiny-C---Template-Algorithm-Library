@@ -233,34 +233,88 @@ constexpr decltype(auto) applyRag(IdSeq<beg,end>&&, F&& func, Ts&&... args) {
 		::call(Tagi<end - beg >{}, forward_m(func), forward_m(args)...);
 }
 
-template<class T>
-struct ApplyRag;
-
-template<size_t beg,size_t end>
-struct ApplyRag<IdSeq<beg,end>> {
-	using caller = Transform<ApplyRagImp, IgnoreSeq<beg> >;
-	template<class F, class...Ts>
-	static constexpr decltype(auto) call(F&& func, Ts&&... args) {
-		return caller::call(Tagi<end - beg >{}, forward_m(func), forward_m(args)...);
-	}
-};
-
-
-template<size_t IntervalCount,size_t IntervalLen,size_t Start=0>
-struct IntervalPartion_st {
+/*
+	\brief	生成一个形如[beg,end)的半闭半开区间的序列
+	\param	Count 生成的序列中有多少区间
+			Len 每个区间的长度(end-beg)
+			Start=0 起始区间的起始点
+	\return	Seq<IdSeq<Start,Start+Len>..> if Len!=0
+			otherwise Seq<>
+*/
+template<size_t Count,size_t Len,size_t Start=0>
+struct GenInterval_st {
 	using type =
 		Merge_s<
-			Seq<IdSeq<Start,Start+IntervalLen>>,
-			typename IntervalPartion_st<IntervalCount-1,IntervalLen, Start+IntervalLen>::type
+			Seq<IdSeq<Start,Start+Len>>,
+			typename GenInterval_st<Count-1,Len, Start+Len>::type
 		>;
 };
 template<size_t Len,size_t Start>
-struct IntervalPartion_st<0,Len,Start> {
+struct GenInterval_st<0,Len,Start> {
 	using type = Seq<>;
 };
 
-template<size_t TotalRag,size_t IntervalLen>
-using IntervalPartion_s = typename IntervalPartion_st<TotalRag,IntervalLen>::type;
+
+
+/*
+	\brief	@GenInterval_st
+*/
+template<size_t Count,size_t Len>
+using GenInterval_s = typename GenInterval_st<Count,Len>::type;
+
+
+
+
+/*
+	\brief	用于实现接收对同一函数对象的多次调用的结果
+	\param	T==Seq<IdSeq<?,?>..>
+*/
+template<class T>
+struct GatherImp {};
+template<class... Ts>
+struct GatherImp<Seq<Ts...>> { 
+	template<class Receiver,class...Us>
+	static constexpr decltype(auto) call(Receiver&& dst, Us&&...args) {
+		//static_assert(Ts is IdSeq<?,?>)
+		//fix: 此处由于使用了decltype(auto)而使得某些constexpr通不过编译,原因不详.
+		//可改成auto,但那会导致运行期语义不对.所以目前仍然是decltype(auto)
+		return ct_invoke( forward_m(dst), applyRag(Ts{},forward_m(args)...)...);
+	}
+};
+
+/*
+	\brief	以一个函子接收另一个函子的多次调用的返回结果,
+	\param	args[0] is receiver, args[1] is the functor which be mapped.
+			\FuncArgCount args[1]函子的参数个数
+	\return	as like receiver( func( real_args...)... )
+			which receiver is args[0], func is args[1], real_args are other args.
+	\example	
+				auto show=[](auto&&...arg){
+					mapAny([](auto e){cout<<e;},args...);
+				};
+				auto double_val=[](auto&& arg){ return arg*2; };
+				auto sum=[](auto lhs,auto rhs){ return lhs+rhs;}
+				gather<1>(show,double_val,0,1,2,3);  //show(double_val(0),double_val(1),double_val(2),double_val(3))
+				cout<<endl;
+				gather<2>(show,sum,0,1,  2,3);  //show(sum(0,1),sum(2,3))
+				output:
+					0246
+					15
+	\todo	函数调用时若参数类型不匹配,会造成成吨的编译错误,比较难找到原因
+			比如auto double_val=[](auto& arg){ return arg*2; };是非法的
+			但是整份编译错误过于冗长,并且错误位点没有定位到调用上,而是错误地引进
+			了过多的实例化上下文,以至于关键信息被掩盖,上述写法错误理由其实很简单
+			不可将1之类的常量转换为auto&, 改成auto&& 或者 const auto&皆可
+*/
+template<size_t FuncArgCount,class...Ts>
+constexpr decltype(auto) gather(Ts&&...args) {
+	static_assert((sizeof...(args)-2) % FuncArgCount == 0, "group size no match total size.");
+	return GatherImp<GenInterval_s<(sizeof...(args)-2)/FuncArgCount,FuncArgCount>>::call(forward_m(args)...);
+}
+
+
+
+
 
 
 /*
@@ -284,46 +338,3 @@ template<size_t N,class T>
 using Partion_s = typename PartionImp<N, T>::type;
 template<size_t N,class T>
 using Partion = Partion_s<N, Seqfy<T>>;
-
-
-
-
-template<class T>
-struct GatherImp {};
-template<class... Ts>
-struct GatherImp<Seq<Ts...>> { 
-	template<class Receiver,class...Us>
-	static constexpr decltype(auto) call(Receiver&& dst, Us&&...args) {
-		//fix: 此处由于使用了decltype(auto)而没有通过编译,原因不详.可改成auto,但那会导致运行期语义不对.
-		return ct_invoke( forward_m(dst), applyRag(Ts{},forward_m(args)...)...);
-	}
-};
-
-/*
-	\brief	以一个函子接收另一个函子的多次调用的返回结果,
-	\param	args[0] is receiver, args[1] is the functor which be mapped.
-	\return	as like receiver( func( real_args...)... )
-			which receiver is args[0], func is args[1], real_args are other args.
-	\example	
-				auto show=[](auto&&...arg){
-					mapAny([](auto e){cout<<e;},args...);
-				};
-				auto double_val=[](auto&& arg){ return arg*2; };
-				auto sum=[](auto lhs,auto rhs){ return lhs+rhs;}
-				gather<1>(show,double_val,0,1,2,3);  //show(double_val(0),double_val(1),double_val(2),double_val(3))
-				cout<<endl;
-				gather<2>(show,sum,0,1,  2,3);  //show(sum(0,1),sum(2,3))
-				output:
-					0246
-					15
-	todo fix: 函数调用时若参数类型不匹配,会造成成吨的编译错误,比较难找到原因
-				比如auto double_val=[](auto& arg){ return arg*2; };是非法的
-				但是整份编译错误过于冗长,并且错误位点没有定位到调用上,而是错误地引进
-				了过多的实例化上下文,以至于关键信息被掩盖,上述写法错误理由其实很简单
-				不可将1之类的常量转换为auto&, 改成auto&& 或者 const auto&皆可
-*/
-template<size_t FuncArgCount,class...Ts>
-constexpr decltype(auto) gather(Ts&&...args) {
-	static_assert((sizeof...(args)-2) % FuncArgCount == 0, "group size no match total size.");
-	return GatherImp<IntervalPartion_s<(sizeof...(args)-2)/FuncArgCount,FuncArgCount>>::call(forward_m(args)...);
-}

@@ -10,37 +10,12 @@ template <char...cs> expstr<cs...> operator "" _test() {
 	return expstr<cs...>{};
 }
 
-#if 0
-//奇特的失败例子,只在msvc上通过
-template<class T>
-struct exRepeatImp {
-	template<T val,T...next_val>
-	struct Call
-	{
-		template<class F>
-		constexpr decltype(auto) operator()(F&& func)const{
-			return mapAny(forward_m(func), val, next_val...);
-		}
-	};
-	template<class T,T...args,class F>
-	constexpr decltype(auto) exMapAny(F&& func) {
-		return exRepeatImp<T,args...>{}(forward_m(func));//can't pass gcc or clang compile.
-	}
-};
-#endif
 
-template<class T,T...next_val>
-struct exRepeatImp{
-	template<class F>
-	constexpr decltype(auto) operator()(F&& func)const{
-		return mapAny(forward_m(func),next_val...);
-	}
-};
 
-template<class T,T...args,class F>
-constexpr decltype(auto) exMapAny(F&& func) {
-	return exRepeatImp<T,args...>{}(forward_m(func));
-}
+
+
+
+
 
 
 
@@ -89,8 +64,6 @@ namespace {
 		static_assert(is_alpha('y'), "");
 		static_assert(is_alpha('z'), "");
 
-		//exRepeatImp<char>::Call<'A', 'B', 'C'> 
-		decltype(exMapAny<char, 'A', 'B', 'C',':'>(is_alpha))* pp;
 		static_assert(exString{ "akshdka" }.find("asdjlakjd") == no_index, "");
 		static_assert(exString{ "akshdka" }.find("shdk") == 2, "");
 		static_assert(exString{ "akshdka" }.find("shdkae") == no_index, "");

@@ -6,7 +6,8 @@
 #include "callable_traits.h"
 
 #include <iostream>
-#include <boost\signals2.hpp>
+//#include <boost\signals2.hpp>
+#include <memory>
 #include <map>
 
 
@@ -172,9 +173,9 @@ public:
 
 	template<class...Ts>
 	decltype(auto) operator()(Ts&&...args)
-		except_when(
+		noexcept(noexcept(
 			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
-		)
+		))
 	{
 		return apply(ParameterIndex{},*static_cast<T*>(this), forward_m(args)...);
 	}
@@ -182,9 +183,9 @@ public:
 
 	template<class...Ts>
 	constexpr decltype(auto) operator()(Ts&&...args)const
-		except_when(
+		noexcept(noexcept(
 			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
-		)
+		))
 	{
 		return apply(ParameterIndex{}, *static_cast<const T*>(this), forward_m(args)...);
 	}
@@ -205,7 +206,7 @@ public:
 	}
 
 	constexpr bool operator!=(const FunctorImp& rhs)const
-		except_when(operator==(rhs))
+		noexcept(noexcept(operator==(rhs)))
 	{
 		return !operator==(rhs);
 	}
@@ -352,9 +353,8 @@ void test_fun() {
 
 	sig(1.0, 0);
 }
-#else
-#include <chrono>
 
+#include <chrono>
 
 
 namespace bs2 = boost::signals2;
