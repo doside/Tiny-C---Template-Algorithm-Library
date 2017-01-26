@@ -55,10 +55,7 @@ struct testGatherConstexpr {
 	}
 };
 
-template<class...Ts>
-constexpr decltype(auto) testDeclAuto(Ts&&...args){
-	return get<2>(args...);
-}
+
 
 
 int main()
@@ -100,4 +97,18 @@ int main()
 
 
 
+/*
+	fmt("hello,%!",name);
+	fmt("var:%3.5f  %d  %1$   %*.*3$  %n  %s   ", printf, 
+		 f, d, w, &cnt, "asdaf")
+	rtfmt(name)
+	G<find(name)>(name,#name)
 
+
+	return 	res_func(
+				Output( Ts::call(Cs...).width,
+						Ts::call(Cs...).precision )...
+			);
+
+	F(G<1>("abde").width,G<1>("abde").precision)...
+*/

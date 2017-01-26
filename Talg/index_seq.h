@@ -5,6 +5,13 @@
 using std::size_t;
 
 template<size_t... nums>
+using IdSeq = std::index_sequence<nums...>;
+/*
+如果自己实现一个IdSeq的话,还要写个makeIdSeq<N>(),
+这种设施的高效实现比较复杂,并且有可能是直接由编译器内建从而加快编译速度的,
+此外如果两者不同的话, 用户混用了index_sequence和IdSeq会使得产生不必要的实例化
+干脆还是用std算了
+template<size_t... nums>
 struct IdSeq {
 	using value_type = size_t;
 
@@ -17,6 +24,7 @@ struct IdSeq {
 		return sizeof...(nums);
 	}
 };
+*/
 
 #if 0
 todo plan idea
