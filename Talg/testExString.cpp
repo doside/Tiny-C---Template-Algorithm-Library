@@ -2,6 +2,7 @@
 #include "index_seq.h"
 #include "test_suits.h"
 #include "callable_traits.h"
+#include <tuple>
 
 
 template <char...cs>
@@ -123,6 +124,7 @@ namespace {
 		static_assert(exStringView{ "aaaaaaaab" }.find("aaab") == 5, "");
 		{
 			constexpr auto res=append(ctString<4>{"abc"},ctString<4>{"abc"});
+			static_assert(std::make_tuple(1, 2, 3) == std::make_tuple(1, 2, 3), "");
 			//constexpr auto res2 = std::array<int, 3>{1, 2, 3};
 			//static_assert(res2 == res2, "");
 		}
