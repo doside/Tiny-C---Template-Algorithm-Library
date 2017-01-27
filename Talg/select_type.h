@@ -14,6 +14,27 @@ template<class>
 using EatParam_t = EatParam;
 
 
+/*
+	\brief	产生n个T组成的序列
+	\param	n表示T的个数
+	\return	n==0时产生Seq<>,n==1时产生Seq<T>,n==2时产生Seq<T,T> 类推.
+	\note	采用了二分实现来减少实例化深度.
+*/
+template<size_t n,class T>
+struct GenerateSeqImp {
+	using type = Merge_s<OMIT_T(GenerateSeqImp<n / 2,T>), OMIT_T(GenerateSeqImp<n - n / 2,T>)>;
+};
+template<class T>
+struct GenerateSeqImp<0,T> {
+	using type = Seq<>;
+};
+template<class T>
+struct GenerateSeqImp<1,T> {
+	using type = Seq<T>;
+};
+template<size_t N,class T>
+using GeneratorSeq_t = OMIT_T(GenerateSeqImp<N, T>);
+
 
 /*
 	\brief	产生n个EatParam组成的序列
