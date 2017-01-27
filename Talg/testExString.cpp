@@ -121,8 +121,12 @@ namespace {
 		static_assert(exStringView{ "akshdka" }.find("hdks") == no_index, "");
 		static_assert(exStringView{ "aaaaa" }.find("aa") == 0, "");
 		static_assert(exStringView{ "aaaaaaaab" }.find("aaab") == 5, "");
-
-		constexpr auto res=append(ctString<4>{"abc"},ctString<4>{"abc"});
+		{
+			constexpr auto res=append(ctString<4>{"abc"},ctString<4>{"abc"});
+			//constexpr auto res2 = std::array<int, 3>{1, 2, 3};
+			//static_assert(res2 == res2, "");
+		}
+		
 		//static_assert(exStringView{res}[0] == 'a', "");
 		//ctString<8> a{"abc", "cde"};
 	}

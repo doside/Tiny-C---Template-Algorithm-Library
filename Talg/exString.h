@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "core.h"
 #include "find_val.h"  //for no_index
-
+#include <array>
 
 
 template<class T>
