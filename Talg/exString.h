@@ -32,12 +32,6 @@ struct CharSeq {
 	}*/
 };
 
-struct exStringView;
-
-
-
-
-
 
 struct exStringView{
 public:
