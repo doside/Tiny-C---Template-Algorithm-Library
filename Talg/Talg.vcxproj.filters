@@ -33,6 +33,9 @@
     <ClCompile Include="testExString.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="testCtStringcpp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="index_seq.h">
@@ -63,6 +66,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="exString.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ctstring.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

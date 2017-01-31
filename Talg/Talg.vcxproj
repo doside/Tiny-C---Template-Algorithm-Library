@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="functor.cpp" />
+    <ClCompile Include="testCtStringcpp.cpp" />
     <ClCompile Include="testErase.cpp" />
     <ClCompile Include="testExString.cpp" />
     <ClCompile Include="test_repeat.cpp" />
@@ -142,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
+    <ClInclude Include="ctstring.h" />
     <ClInclude Include="exString.h" />
     <ClInclude Include="find_val.h" />
     <ClInclude Include="index_seq.h" />

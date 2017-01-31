@@ -1,8 +1,13 @@
 ﻿#pragma once
 #include "core.h"
 #include <utility>
+#include <limits>
+//using std::size_t;
 
-using std::size_t;
+enum :size_t {
+	no_index = std::numeric_limits<size_t>::max() - 1 //抑制VC的警告C4307
+};
+struct NoType :public Seq<NoType> {};
 
 template<size_t... nums>
 using IdSeq = std::index_sequence<nums...>;

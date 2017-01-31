@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include <type_traits>
 
-//±àÒë±¨´íÊ±¿ÉÒÔ¸ù¾İitag<?>À´¼ÆËã³öÊÇµÚ?+1¶ÔÎ¥·´ÁËis_same,²¢ÇÒ¿ÉÒÔ¸ù¾İitag<0>À´¶¨Î»ºêµÄµ÷ÓÃµã
+//ç¼–è¯‘æŠ¥é”™æ—¶å¯ä»¥æ ¹æ®itag<?>æ¥è®¡ç®—å‡ºæ˜¯ç¬¬?+1å¯¹è¿åäº†is_same,å¹¶ä¸”å¯ä»¥æ ¹æ®itag<0>æ¥å®šä½å®çš„è°ƒç”¨ç‚¹
 #define testSame(...) static_assert(AssertIsSame<itag<0>,__VA_ARGS__>::value,"Look here");
 
-///ÄÚ²¿Ê¹ÓÃ
+///å†…éƒ¨ä½¿ç”¨
 template<size_t n>struct itag{};
 
 
@@ -28,8 +28,8 @@ template<class...Ts>
 struct AssertIsSame;
 
 
-//¾¡¹Üclang¼°cl¶¼¿ÉÒÔÏÔÊ¾³öitagµÄÕıÈ·Öµ,µ«gccÈ´Ã»ÓĞÍêÕûÏÔÊ¾³ö¹ıÉîµÄÊµÀı»¯
-//ËùÒÔ´Ë´¦½«itagµÄĞÅÏ¢Ö±½Ó²åÈëµ½¶ÏÑÔÖĞ,Õâ»áÔö¼ÓÒ»¶¨µÄ±àÒë¸ºµ£.
+//å°½ç®¡clangåŠcléƒ½å¯ä»¥æ˜¾ç¤ºå‡ºitagçš„æ­£ç¡®å€¼,ä½†gccå´æ²¡æœ‰å®Œæ•´æ˜¾ç¤ºå‡ºè¿‡æ·±çš„å®ä¾‹åŒ–
+//æ‰€ä»¥æ­¤å¤„å°†itagçš„ä¿¡æ¯ç›´æ¥æ’å…¥åˆ°æ–­è¨€ä¸­,è¿™ä¼šå¢åŠ ä¸€å®šçš„ç¼–è¯‘è´Ÿæ‹….
 template<size_t n,class L, class R, class... Ts>
 struct AssertIsSame<itag<n>,L, R, Ts...>: StaticAssert<std::is_same<L, R>,itag<n>>
 {
@@ -69,3 +69,18 @@ static_assert( StaticAssert<__VA_ARGS__>{},msg " "#__VA_ARGS__ );
 
 template<class... Ts>
 using NotSame = NotValue<std::is_same<Ts...>>;
+
+
+
+template<size_t index,bool cur,bool...res>
+struct TestConstexprImp: TestConstexprImp<index+1,res...>
+{
+	static_assert(cur, "");
+};
+template<size_t index,bool res>
+struct TestConstexprImp<index,res>
+{
+	static_assert(res, "");
+};
+template<bool...res>
+using TestConstexpr = TestConstexprImp<0, res...>;

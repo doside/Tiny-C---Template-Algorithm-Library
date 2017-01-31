@@ -5,10 +5,7 @@
 #include <limits>
 #include <utility>
 
-enum :size_t {
-	no_index = std::numeric_limits<size_t>::max() - 1 //抑制VC的警告C4307
-};
-struct NoType :public Seq<NoType> {};
+
 
 
 
