@@ -58,7 +58,7 @@ struct testGatherConstexpr {
 
 
 
-int main()
+int test_repeat_main()
 {
 	using namespace std;
 	static_assert(Selector<3>{}(1, 2, 3, 4, 5), "");

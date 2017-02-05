@@ -1,14 +1,16 @@
-﻿#include <functional>
-#include "core.h"
-#include "test_suits.h"
-#include "strippe_qualifier.h"
-#include "find_val.h"
-#include "callable_traits.h"
-
+﻿//#include <boost\signals2.hpp>
+#include <functional>
 #include <iostream>
-//#include <boost\signals2.hpp>
+#include <algorithm>
+#include <chrono>
+#include <string>
 #include <memory>
 #include <map>
+#include <cassert>
+
+#include "test_suits.h"
+#include "signal_wrapper.h"
+
 
 
 template<class F>
@@ -56,12 +58,12 @@ struct DefaultKey:std::tuple<T> {
 	using Base = std::tuple<T>;
 	static constexpr int default_value = 0;
 	using Base::Base;
-	operator T&()noexcept { return get<0>(*this); }
-	operator T&()const noexcept { return get<0>(*this); }
+	operator T&()noexcept { return std::get<0>(*this); }
+	operator T&()const noexcept { return std::get<0>(*this); }
 };
 
 template<class F, class Key=DefaultKey<int>>
-class Signals {
+class SignalBase {
 public:
 	using SlotType = Slot<F>;
 	using Connection = std::shared_ptr<SlotType>;
@@ -101,117 +103,18 @@ public:
 	}
 };
 
+template<class...Ts>
+using Signal = SignalWrapper<SignalBase, Ts...>;
+
 template<class T>
 struct ScopedConnection {
-	typename Signals<T>::Connection connection;
+	typename SignalBase<T>::Connection connection;
 	~ScopedConnection() {
 		connection->disconnect();
 	}
 };
 
 
-struct MatchParam
-{
-	template<class T, class U>
-	struct pred
-	{
-	private:
-		static U declParam();
-		static int f(T);
-		static void f(...);
-	public:
-		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
-			&& std::is_convertible<U,T>::value;
-	};
-};
-
-template<class T,class S>
-using FindParam = Find_if_svt<MatchParam, T, S>;
-
-
-template<class F>
-struct CallableTraits :
-	std::conditional_t<std::is_function<F>::value,
-	CallableTraits<RemoveCvrp<F>>,
-	CallableTraits<RemoveCvrp<decltype(& std::remove_reference_t<F>::operator())>>
-	> 
-{ };
-
-template<class R ,class...Ts>
-struct CallableTraits<R(Ts...)>:std::integral_constant<size_t,sizeof...(Ts)> {
-	using arg_type = Seq<Ts...>;
-	using ret_type = R;
-};
-
-template<class R, class...Ts>
-struct CallableTraits<std::function<R(Ts...)>> : CallableTraits<R(Ts...)>{};
-
-
-template<class T, class StandarType>
-struct FunctorImp:T
-{
-	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
-	using ParameterIndex = 
-		std::conditional_t<std::is_same<T,StandarType>::value,
-		Seq<>,
-		Multiop_n<FindParam,
-			typename CallableTraits<T>::arg_type,
-			typename CallableTraits<StandarType>::arg_type
-		>
-	>;
-public:
-	constexpr FunctorImp(const T& f)noexcept(std::is_nothrow_copy_constructible<T>::value)
-		:T(f)
-	{
-
-	}
-	constexpr FunctorImp(T&& f)noexcept(std::is_nothrow_move_constructible<T>::value)
-		: T(std::move(f))
-	{
-
-	}
-
-	template<class...Ts>
-	decltype(auto) operator()(Ts&&...args)
-		noexcept(noexcept(
-			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
-		))
-	{
-		return apply(ParameterIndex{},*static_cast<T*>(this), forward_m(args)...);
-	}
-
-
-	template<class...Ts>
-	constexpr decltype(auto) operator()(Ts&&...args)const
-		noexcept(noexcept(
-			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
-		))
-	{
-		return apply(ParameterIndex{}, *static_cast<const T*>(this), forward_m(args)...);
-	}
-#if 0
-	//todo fix:  如果T有相等比较，则应该比较相等
-	constexpr auto operator==(const FunctorImp& rhs)const
-		except_when(func_m == rhs.func_m)
-		->decltype(func_m == rhs.func_m)
-	{
-		return func_m == rhs.func_m;
-	}
-#endif
-
-	template<class=void>
-	constexpr bool operator==(const FunctorImp& rhs)const noexcept
-	{
-		return true;
-	}
-
-	constexpr bool operator!=(const FunctorImp& rhs)const
-		noexcept(noexcept(operator==(rhs)))
-	{
-		return !operator==(rhs);
-	}
-
-};
 
 #if 0
 //暂时不知道该如何实现这个特化
@@ -279,68 +182,86 @@ public:
 };
 #endif 
 
-template<class F, class T>
-constexpr decltype(auto) makeFunctor(T&& src_func) {
-	return FunctorImp<std::remove_reference_t<T>, F>(forward_m(src_func));
+
+
+
+
+
+
+namespace test {
+	struct A
+	{
+		void operator()(){}
+		bool operator==(const A&) { return false; }
+	};
+	struct B
+	{
+		void operator()(){}
+		bool operator==(const A&)const { return true; }
+	};
 }
 
 
 
-template<class F>
-struct Functor:public std::function<F> 
-{
-	using Base = std::function<F>;
-
-	//using Base::Base;
-	//using Base::swap;
-	//using Base::operator bool;
-	//using Base::operator=;
-
-	Functor():Base(){}
-	template<class T>
-	Functor(T&& f)
-	:Base(
-		makeFunctor<T>(forward_m(f))
-	) { }
-};
-
-
-template<template<class...>class Sig, class...Ts> 
-class Signal:public Sig<Ts...>
-{
-	using Base = Sig<Ts...>;
-public:
-	using ftype = Head_s<Seq<Ts...>>;
-	using Base::Base;
-	template<class F>
-	decltype(auto) operator+=(F&& func) 
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
-	{
-		return Base::connect(makeFunctor<ftype>(forward_m(func)));
-	}
-	template<class F>
-	decltype(auto) operator-=(F&& func)
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
-	{
-		return Base::disconnect(makeFunctor<ftype>(forward_m(func)));
-	}
-
-};
 
 
 
 
+void test_fptr() {
+	std::cout << "fptr called \n";
+}
+void test_fptr2() {
+	std::cout << "fptr2 called \n";
+}
 
+int main() {
+	Signal<void(std::string)> myslot;
+	auto make_f = [](auto&& func) {
+		return makeFunctor<void(int, std::string)>(forward_m(func));
+	};
+	TestConstexpr<
+		hasEqualCompare<test::A,test::A&&>::value==true,
+		hasEqualCompare<test::A,int>::value==false,
+		hasEqualCompare<int,test::A&&>::value==false,
+		hasEqualCompare<int,int>::value==true,
+		hasEqualCompare<test::B,test::A&>::value==true,
+		hasEqualCompare<test::A,test::B&>::value==false
+	>{};
+	//assert(make_f(test::A{})
+	auto Timer=[](auto f) {
+		using namespace std;
+		auto beg = std::chrono::steady_clock::now();
+		f();
+		decltype(1ms) end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-beg);
+		std::cout << end.count() << "ms" << "\n";
+	};
 
+	
+	auto callback1= [](std::string str) {
+		std::cout << str << std::endl;
+	};
+	
+	static_assert(sizeof(make_f(callback1)) == 1, "");
+	static_assert(sizeof(make_f(test_fptr)) == 4, "");
+	assert(make_f(callback1) == make_f(callback1));
+	assert(make_f(callback1) != make_f(test_fptr));
+	assert(make_f(test_fptr2) != make_f(&test_fptr));
+	assert(make_f(test::A{}) == make_f(test::A{})); //由于A没有const相等比较,所以采用默认的比较
+	assert(make_f(test::B{}) == make_f(test::A{})); 
+	assert(make_f(test::A{}) != make_f(test::B{}));
 
-
-
-
-
-
-
-
-
+	auto id=myslot.connect(callback1);
+	myslot("abcdefg");
+	auto id2=myslot.connect( 
+		[](std::string str) {
+			std::cout <<"2:"<< str << std::endl;
+		});
+	myslot+=test_fptr;
+	myslot+=&test_fptr;
+	//myslot.disconnect(callback1);
+	myslot("blabla");
+	return 0;
+}
 
 
 
@@ -395,7 +316,7 @@ using bs_signal = typename bs2::signal_type<Ts..., bs2::keywords::mutex_type<bs2
 
 		using namespace boost::signals2;
 		
-		Signal<Signals, void(double,int)> sig0;
+		Signal<SignalBase, void(double,int)> sig0;
 		auto play=[&sig0]() {
 			std::cout << "!!!+=[]{}";
 			sig0 += [] {

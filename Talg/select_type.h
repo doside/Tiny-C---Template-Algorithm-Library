@@ -1,4 +1,10 @@
-﻿#include "core.h"
+﻿#ifndef SELECT_TYPE_H_INCLUDED
+#define SELECT_TYPE_H_INCLUDED
+
+
+
+
+#include "core.h"
 #include "invoke_impl.h"
 #include "index_seq.h"
 
@@ -186,10 +192,13 @@ constexpr decltype(auto) applyBack(F&& func, Ts&&... args) {
 
 /*
 	\brief	对任意下标的参数进行函数调用
-	\param	\func	所用的函子,
-			\args	所有参数,包含了被忽略的及要用的.
+	\param	first	表示所使用的下标,
+					如果是Seq<>那么相当于invoke,
+					如果是IdSeq<>相当于空参数调用.
+			func	所用的函子,
+			args	所有参数,包含了被忽略的及要用的.
 	\return	同func
-	\example applyRag(IdSeq<0,3,4,1>{}, print, 0,1,2,3,4,5,6)
+	\example apply(IdSeq<0,3,4,1>{}, print, 0,1,2,3,4,5,6)
 			 等效于 print(0);print(3);print(4);return print(1);
 */
 template<size_t... Indices, class F, class...Ts>
@@ -340,3 +349,8 @@ template<size_t N,class T>
 using Partion_s = typename PartionImp<N, T>::type;
 template<size_t N,class T>
 using Partion = Partion_s<N, Seqfy<T>>;
+
+
+#endif // ! SELECT_TYPE_H_INCLUDED
+
+

@@ -1,7 +1,40 @@
-﻿#pragma once
+﻿#ifndef CALLBLE_TRAITS_H_INCLUDED
+#define CALLBLE_TRAITS_H_INCLUDED
+
+
+
+
 #include "seqop.h"
 #include "invoke_impl.h"
 #include "select_type.h"
+
+#include "strippe_qualifier.h"
+
+
+
+template<class F>
+struct CallableTraits :
+	std::conditional_t<std::is_function<F>::value,
+	CallableTraits<RemoveCvrp<F>>,
+	CallableTraits<RemoveCvrp<decltype(& std::remove_reference_t<F>::operator())>>
+	> 
+{ };
+
+template<class R ,class...Ts>
+struct CallableTraits<R(Ts...)>:std::integral_constant<size_t,sizeof...(Ts)> {
+	using arg_type = Seq<Ts...>;
+	using ret_type = R;
+};
+
+
+template<class R ,class...Ts>
+struct CallableTraits<R(*)(Ts...)>:std::integral_constant<size_t,sizeof...(Ts)> {
+	using arg_type = Seq<Ts...>;
+	using ret_type = R;
+};
+
+template<class R, class...Ts>
+struct CallableTraits<std::function<R(Ts...)>> : CallableTraits<R(Ts...)>{};
 
 
 
@@ -164,4 +197,6 @@ constexpr decltype(auto) mapCollect(Receiver&& dst, F&& func, Ts&&...args) {
 	return Transform<RepeatImp, begin>::mapCollect(forward_m(dst),forward_m(func), forward_m(args)...);
 }
 #endif
+
+#endif // !CALLBLE_TRAITS_H_INCLUDED
 

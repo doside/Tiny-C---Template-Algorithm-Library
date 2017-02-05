@@ -71,5 +71,11 @@
     <ClInclude Include="ctstring.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="signal_wrapper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="has_member.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
