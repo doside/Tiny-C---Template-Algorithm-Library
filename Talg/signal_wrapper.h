@@ -64,23 +64,6 @@ struct EqualableFunction :std::function<Func> {
 
 
 
-
-template<class T,bool=std::is_empty<T>::value>
-struct FunctorBaseObj {
-	T val;
-	template<class U>
-	constexpr FunctorBaseObj(U&& v):val(forward_m(v)){}
-	constexpr const T& get()const noexcept { return val; }
-};
-template<class T>
-struct FunctorBaseObj<T,true>:T{	//for empty base optimistion
-	template<class U>
-	constexpr FunctorBaseObj(U&& v):T(forward_m(v)){}
-	constexpr const T& get()const noexcept { return *this; }
-};
-
-
-
 template<class T,class StandarType,bool>
 struct FunctorImpHelper{
 	using type = Multiop_n<FindParam,
@@ -103,19 +86,15 @@ struct FunctorImpHelper<T,U,true>{
 			关于相等运算的语义参见\operator==
 */
 template<class T, class StandarType>
-struct FunctorImp:FunctorBaseObj<T>{
-	using Base = FunctorBaseObj<T>;	
+struct FunctorImp:private std::tuple<T>{	//派生有助于空基类优化,但由于T可能是基础类型,无法直接从其派生
+	using Base = std::tuple<T>;	
 	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
 	using ParameterIndex = typename FunctorImpHelper<T, StandarType,
 		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>(nullptr)
 	>::type;
 	constexpr const T& getFunc()const noexcept{
-		//return std::get<0>(static_cast<const Base&>(*this));
-		return Base::get();
+		return std::get<0>(*this);
 	}
-
-
-
 public:
 	constexpr FunctorImp(const T& f)noexcept(std::is_nothrow_copy_constructible<T>::value)
 		:Base(f)
@@ -204,30 +183,12 @@ public:
 	using ftype = Head_s<Seq<Ts...>>;
 	using Base::Base;
 	using Base::operator();
-private:
-	
-	/*using ParameterSeq=typename CallableTraits<ftype>::arg_type;
-	
-	template<class F>
-	decltype(auto) add(F&& func,decltype(& std::remove_reference_t<F>::operator())* ) 
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
-	{
-		return Base::connect(makeFunctor<ftype>(forward_m(func)));
-	}
-	template<class F>
-	decltype(auto) add(F&& func,...) 
-		except_when(std::declval<Base&>().connect(forward_m(func)))
-	{
-		return Base::connect(forward_m(func));
-	}*/
 	
 public:
 	template<class F>
 	decltype(auto) operator+=(F&& func) 
-		//except_when(std::declval<SignalWrapper&>().add(forward_m(func),0))
 		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
 	{
-		//return add(forward_m(func),0);
 		return Base::connect(makeFunctor<ftype>(forward_m(func)));
 	}
 
