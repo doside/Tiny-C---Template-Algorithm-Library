@@ -164,14 +164,20 @@ public:
 
 
 
-
-template<class F, class T>
+/*
+	\brief	如果可以分析函子的参数表,那么就提供StandarType到其的转化,否则直接保存.
+	\param	StandarType标准的回调类型,T需要被调整以适应标准型的函数对象.
+	\return 返回适当调整后的函数对象,它符合标准回调类型,并且可比较相等.
+	\note	T的参数个数必须比标准型少,少掉的参数视作忽略.
+	\todo	提供对成员函数指针的特别支持.
+*/
+template<class StandarType, class T>
 constexpr decltype(auto) makeFunctor(T&& src_func) {
-	return FunctorImp<std::remove_reference_t<T>, F>(forward_m(src_func));
+	return FunctorImp<std::remove_reference_t<T>, StandarType>(forward_m(src_func));
 }
-template<class F,class R,class...Ps>
+template<class StandarType,class R,class...Ps>
 constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
-	return FunctorImp<decltype(src_func), F>(src_func);
+	return FunctorImp<decltype(src_func), StandarType>(src_func);
 }
 
 
