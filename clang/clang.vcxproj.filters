@@ -4,5 +4,6 @@
     <ClCompile Include="test.cpp" />
     <ClCompile Include="..\Talg\testExString.cpp" />
     <ClCompile Include="..\Talg\test_repeat.cpp" />
+    <ClCompile Include="..\Talg\functor.cpp" />
   </ItemGroup>
 </Project>

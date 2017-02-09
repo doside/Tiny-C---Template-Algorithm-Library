@@ -212,6 +212,7 @@ constexpr decltype(auto) apply(IdSeq<>, F&& func, Ts&&... args) {
 template<class F, class...Ts>
 constexpr decltype(auto) apply(Seq<>, F&& func, Ts&&... args) {
 	return ct_invoke(forward_m(func), forward_m(args)...);
+	//return func(forward_m(args)...);
 }
 
 

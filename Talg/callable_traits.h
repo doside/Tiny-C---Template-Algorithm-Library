@@ -9,32 +9,52 @@
 #include "select_type.h"
 
 #include "strippe_qualifier.h"
+#include "has_member.h"
 
 
+struct NoCallableTraits{};
+
+template<class F,bool = hasOpCall<F>::value>
+struct DeduceCallParam{ 
+	using type = NoCallableTraits;
+};
+template<class F>
+struct DeduceCallParam<F,true>{
+	using type = RemoveCvrp<decltype(&std::remove_reference_t<F>::operator())>;
+};
 
 template<class F>
-struct CallableTraits :
+struct CallableTraits:
 	std::conditional_t<std::is_function<F>::value,
-	CallableTraits<RemoveCvrp<F>>,
-	CallableTraits<RemoveCvrp<decltype(& std::remove_reference_t<F>::operator())>>
+		CallableTraits<RemoveCvrp<F>>,
+		CallableTraits<typename DeduceCallParam<F>::type>
+		//CallableTraits<RemoveCvrp<decltype(& std::remove_reference_t<F>::operator())>>
 	> 
 { };
-
+template<>
+struct CallableTraits<NoCallableTraits>{};
 template<class R ,class...Ts>
 struct CallableTraits<R(Ts...)>:std::integral_constant<size_t,sizeof...(Ts)> {
 	using arg_type = Seq<Ts...>;
 	using ret_type = R;
 };
-
-
 template<class R ,class...Ts>
 struct CallableTraits<R(*)(Ts...)>:std::integral_constant<size_t,sizeof...(Ts)> {
 	using arg_type = Seq<Ts...>;
 	using ret_type = R;
 };
-
 template<class R, class...Ts>
 struct CallableTraits<std::function<R(Ts...)>> : CallableTraits<R(Ts...)>{};
+
+
+
+
+
+template<class T>
+constexpr bool isNonOverloadFunctor(typename CallableTraits<T>::arg_type* ) { return true; }
+template<class T>
+constexpr bool isNonOverloadFunctor(...) { return false; }
+
 
 
 

@@ -22,7 +22,10 @@ struct StaticAssert {
 
 template<class T>
 struct NotValue :std::integral_constant<bool, !T::value> { };
-
+template<class T,class...Ts>
+struct AndValue: AndValue<AndValue<T>,Ts...>{};
+template<class T>
+struct AndValue<T>:std::integral_constant<bool, T::value>{};
 
 template<class...Ts>
 struct AssertIsSame;

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <chrono>
 #include <string>
+#include <list>
 #include <memory>
 #include <map>
 #include <cassert>
@@ -33,22 +34,22 @@ struct Slot:std::function<F>{
 		return stored_ptr!=nullptr;
 	}
 
-	template<class ObjT>
+	/*template<class ObjT>
 	bool operator==(ObjT* ptr)const noexcept {
 		auto stored_ptr = Base::template target<ObjT>();
 		if (stored_ptr) {
 			return stored_ptr == ptr;
 		}
 		return false;
-	}
+	}*/
 
-	template<class ObjT>
+	/*template<class ObjT>
 	bool operator==(const Slot<ObjT>&)const noexcept{
 		return false;
 	}
 	bool operator==(const Base& )const noexcept {
 		return true;
-	}
+	}*/
 private:
 	State  state_m = enable;
 };
@@ -63,7 +64,7 @@ struct DefaultKey:std::tuple<T> {
 };
 
 template<class F, class Key=DefaultKey<int>>
-class SignalBase {
+class GrouppedSiganl {
 public:
 	using SlotType = Slot<F>;
 	using Connection = std::shared_ptr<SlotType>;
@@ -89,9 +90,11 @@ public:
 	}
 	template<class T>
 	void disconnect(const T& f) {
-		auto iter=find_if(slot_list.begin(), slot_list.end(), [&f](const auto&pair) {
-			return *(pair.second) == f;
-		});
+		auto iter=find_if(slot_list.begin(), slot_list.end(), 
+			[&f](const std::pair<const Key, Connection>&pair) {
+				return *(pair.second) == f;
+			}
+		);
 		if (iter != slot_list.end())
 			slot_list.erase(iter);
 	}
@@ -103,12 +106,13 @@ public:
 	}
 };
 
+
 template<class...Ts>
-using Signal = SignalWrapper<SignalBase, Ts...>;
+using Signal = SignalWrapper<BasicSignal, Ts...>; //SignalWrapper<GrouppedSiganl, Ts...>;
 
 template<class T>
 struct ScopedConnection {
-	typename SignalBase<T>::Connection connection;
+	typename GrouppedSiganl<T>::Connection connection;
 	~ScopedConnection() {
 		connection->disconnect();
 	}
@@ -249,6 +253,7 @@ int main() {
 	assert(make_f(test::A{}) == make_f(test::A{})); //由于A没有const相等比较,所以采用默认的比较
 	assert(make_f(test::B{}) == make_f(test::A{})); 
 	assert(make_f(test::A{}) != make_f(test::B{}));
+	//assert(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
 
 	auto id=myslot.connect(callback1);
 	myslot("abcdefg");
@@ -256,9 +261,13 @@ int main() {
 		[](std::string str) {
 			std::cout <<"2:"<< str << std::endl;
 		});
+	myslot += [](auto) {};
+	auto blabalabla = [](auto&) {};
+	//StaticAssert<hasOpCall<decltype(blabalabla)>> bbxb;
+	//static_assert(!isNonOverloadFunctor<decltype(blabalabla)>(0), "");
 	myslot+=test_fptr;
 	myslot+=&test_fptr;
-	//myslot.disconnect(callback1);
+	myslot.disconnect(callback1);
 	myslot("blabla");
 	return 0;
 }
@@ -316,7 +325,7 @@ using bs_signal = typename bs2::signal_type<Ts..., bs2::keywords::mutex_type<bs2
 
 		using namespace boost::signals2;
 		
-		Signal<SignalBase, void(double,int)> sig0;
+		Signal<GrouppedSiganl, void(double,int)> sig0;
 		auto play=[&sig0]() {
 			std::cout << "!!!+=[]{}";
 			sig0 += [] {

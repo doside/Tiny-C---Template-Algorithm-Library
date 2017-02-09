@@ -9,6 +9,7 @@
 #include "has_member.h"
 #include <type_traits>	
 #include <tuple>
+#include <forward_list>
 
 struct MatchParam
 {
@@ -31,6 +32,38 @@ using FindParam = Find_if_svt<MatchParam, T, S>;
 
 
 
+template<class Func>
+struct EqualableFunction :std::function<Func> {
+	using Base = std::function<Func>;
+	using Base::Base;
+	template<class F>
+	bool operator==(const F& rhs)const 
+		except_when(std::declval<const F&>()==std::declval<const F&>())
+	{
+		auto ptr = Base::template target<F>();
+		if (hasEqualCompare<const F&>::value) {
+			return *ptr==rhs;
+		}
+		return ptr != nullptr;
+	}
+	template<class F>
+	constexpr bool operator==(const std::function<F>& rhs)const noexcept
+	{
+		static_assert(std::is_same<const std::function<F>&,decltype(rhs)>::value,
+					"Can't support such comparation");
+		return false;
+	}
+
+	template<class F>
+	constexpr bool operator!=(const F& rhs)const
+		except_when(std::declval<EqualableFunction<Func>>()==rhs)
+	{
+		return !operator==(rhs);
+	}
+};
+
+
+
 
 template<class T,bool=std::is_empty<T>::value>
 struct FunctorBaseObj {
@@ -48,6 +81,18 @@ struct FunctorBaseObj<T,true>:T{	//for empty base optimistion
 
 
 
+template<class T,class StandarType,bool>
+struct FunctorImpHelper{
+	using type = Multiop_n<FindParam,
+		typename CallableTraits<T>::arg_type,
+		typename CallableTraits<StandarType>::arg_type
+	>;
+};
+template<class T,class U>
+struct FunctorImpHelper<T,U,true>{
+	using type = Seq<>;
+};
+
 /*
 	\brief	把T类型的函数对象适配成StandarType,并且提供相等比较.
 	\param	T 原函子,StandarType要适配成的类型
@@ -61,14 +106,9 @@ template<class T, class StandarType>
 struct FunctorImp:FunctorBaseObj<T>{
 	using Base = FunctorBaseObj<T>;	
 	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
-	using ParameterIndex = 
-		std::conditional_t<std::is_same<T,StandarType>::value,
-		Seq<>,
-		Multiop_n<FindParam,
-			typename CallableTraits<T>::arg_type,
-			typename CallableTraits<StandarType>::arg_type
-		>
-	>;
+	using ParameterIndex = typename FunctorImpHelper<T, StandarType,
+		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>(nullptr)
+	>::type;
 	constexpr const T& getFunc()const noexcept{
 		//return std::get<0>(static_cast<const Base&>(*this));
 		return Base::get();
@@ -116,23 +156,21 @@ public:
 		\todo	如果用户类型是std::function是否应该比较target？
 				当用户类型提供有相等比较时,是否应该允许与非StandarType的函数对象比较？
 	*/
-	template<class U,class S,
+	template<class U,
 		class= std::enable_if_t< hasEqualCompare<const T&,const U&>::value >
 	>
-	constexpr bool operator==(const FunctorImp<U,S>& rhs)const
+	constexpr bool operator==(const FunctorImp<U,StandarType>& rhs)const
 		except_when(std::declval<T>()== std::declval<U>())
 		//->decltype(std::declval<const T&>()== std::declval<const U&>())
 	{
-		//这个断言是为了保持一致性,实际上当用户类型提供有相等比较时可以放宽
-		static_assert(std::is_same<S, StandarType>::value,
-			"It is not allowed to compare two functor which have different StandarType.");
+
 		return	getFunc() == rhs.getFunc();
 	}
 
-	template<class F>
-	constexpr bool operator==(const FunctorImp<F,StandarType>& rhs)const noexcept
+	template<class F,class S>
+	constexpr bool operator==(const FunctorImp<F,S>& rhs)const noexcept
 	{
-		return std::is_same<T, F>::value;// &&std::is_same<StandarType, S>::value;
+		return std::is_same<T, F>::value && std::is_same<StandarType, S>::value;
 	}
 
 	template<class F,class S>
@@ -146,6 +184,8 @@ public:
 
 
 
+
+
 template<class F, class T>
 constexpr decltype(auto) makeFunctor(T&& src_func) {
 	return FunctorImp<std::remove_reference_t<T>, F>(forward_m(src_func));
@@ -156,33 +196,124 @@ constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
 }
 
 
-template<template<class...>class Sig, class...Ts> 
-class SignalWrapper:public Sig<Ts...>
+template<template<class...>class Sig,class...Ts> 
+class SignalWrapper:private Sig<Ts...>
 {
 	using Base = Sig<Ts...>;
 public:
 	using ftype = Head_s<Seq<Ts...>>;
 	using Base::Base;
-	template<class R,class...Ps>
-	decltype(auto) operator+=(R(*func)(Ps...))
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(func)))
-	{
-		return Base::connect(makeFunctor<ftype>(func));
-	}
+	using Base::operator();
+private:
+	
+	/*using ParameterSeq=typename CallableTraits<ftype>::arg_type;
+	
 	template<class F>
-	decltype(auto) operator+=(F&& func) 
+	decltype(auto) add(F&& func,decltype(& std::remove_reference_t<F>::operator())* ) 
 		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
 	{
 		return Base::connect(makeFunctor<ftype>(forward_m(func)));
 	}
 	template<class F>
-	decltype(auto) operator-=(F&& func)
+	decltype(auto) add(F&& func,...) 
+		except_when(std::declval<Base&>().connect(forward_m(func)))
+	{
+		return Base::connect(forward_m(func));
+	}*/
+	
+public:
+	template<class F>
+	decltype(auto) operator+=(F&& func) 
+		//except_when(std::declval<SignalWrapper&>().add(forward_m(func),0))
 		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
+	{
+		//return add(forward_m(func),0);
+		return Base::connect(makeFunctor<ftype>(forward_m(func)));
+	}
+
+
+	template<class F>
+	decltype(auto) operator-=(F&& func)
+		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func))))
 	{
 		return Base::disconnect(makeFunctor<ftype>(forward_m(func)));
 	}
 
+
+	template<class F>
+	decltype(auto) disconnect(F&& func)
+		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func))))
+	{
+		return Base::disconnect(makeFunctor<ftype>(forward_m(func)));
+	}
+	template<class F>
+	decltype(auto) disconnect_all(F&& func)
+		except_when(std::declval<Base&>().disconnect_all(makeFunctor<ftype>(forward_m(func))))
+	{
+		return Base::disconnect_all(makeFunctor<ftype>(forward_m(func)));
+	}
+	template<class F>
+	decltype(auto) connect(F&& func) 
+		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
+	{
+		return Base::connect(makeFunctor<ftype>(forward_m(func)));
+	}
 };
+
+template<class Func>
+class BasicSignal {
+	using SlotType = EqualableFunction<Func>;
+	using container = std::forward_list<SlotType>;
+	using iterator = typename container::iterator;
+	using const_iterator = typename container::const_iterator;
+	container slot_list;
+	iterator last;
+public:
+	struct Connection{
+		iterator node;
+		container* ref=nullptr;
+		Connection(iterator link,container& src):node(link),ref(&src){}
+		Connection(){}
+		void disconnect() {
+			ref->erase_after(node);
+		}
+	};
+public:
+	BasicSignal()
+	:slot_list(),last(slot_list.before_begin()){}
+
+	template<class T>
+	Connection connect(T&& func) {
+		slot_list.insert_after(last,forward_m(func));
+		return Connection(last++, slot_list);
+	}
+	template<class...Ts>
+	void operator()(Ts&&...args) {
+		for(auto&elem:slot_list){
+			elem(forward_m(args)...);
+		}
+	}
+	template<class F>
+	void disconnect(F&& func) {
+		auto iter = slot_list.cbegin();
+		auto prev = slot_list.cbefore_begin();
+		for(;iter!=slot_list.cend();++iter){
+			if (*iter==forward_m(func)) {
+				slot_list.erase_after(prev);
+				break;
+			}
+			prev = iter;
+		}
+	}
+	template<class F>
+	void disconnect_all(F&& func) {
+		slot_list.remove(forward_m(func));
+	}
+
+};
+
+template<class...Ts>
+using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;
 
 #endif // !SIGNAL_WRAPPER_H_INCLUDED
 
