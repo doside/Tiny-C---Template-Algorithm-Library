@@ -17,9 +17,9 @@ struct MatchParam
 	struct pred
 	{
 	private:
-		static U declParam();
-		static int f(T);
-		static void f(...);
+	//static U declParam();
+	//static int f(T);
+	//static void f(...);
 	public:
 		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
 			&& std::is_convertible<U,T>::value;
@@ -32,39 +32,15 @@ using FindParam = Find_if_svt<MatchParam, T, S>;
 
 
 
-template<class Func>
-struct EqualableFunction :std::function<Func> {
-	using Base = std::function<Func>;
-	using Base::Base;
-	template<class F>
-	bool operator==(const F& rhs)const 
-		except_when(std::declval<const F&>()==std::declval<const F&>())
-	{
-		auto ptr = Base::template target<F>();
-		if (hasEqualCompare<const F&>::value) {
-			return *ptr==rhs;
-		}
-		return ptr != nullptr;
-	}
-	template<class F>
-	constexpr bool operator==(const std::function<F>& rhs)const noexcept
-	{
-		static_assert(std::is_same<const std::function<F>&,decltype(rhs)>::value,
-					"Can't support such comparation");
-		return false;
-	}
-
-	template<class F>
-	constexpr bool operator!=(const F& rhs)const
-		except_when(std::declval<EqualableFunction<Func>>()==rhs)
-	{
-		return !operator==(rhs);
-	}
-};
 
 
 
-template<class T,class StandarType,bool>
+/*
+	\brief	辅助类型,用特化来延迟类型生成,直接使用conditional的话无法达成此效果.
+	\param	T将被适配的用户函子,StandarType标准回调类型,参见FunctorImp
+	\return	参数的索引号,例如 IdSeq<0,2,1,3>
+*/
+template<class T,class StandarType,bool is_direct_invoke>
 struct FunctorImpHelper{
 	using type = Multiop_n<FindParam,
 		typename CallableTraits<T>::arg_type,
@@ -91,6 +67,8 @@ struct FunctorImp:private std::tuple<T>{	//派生有助于空基类优化,但由
 	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
 	using ParameterIndex = typename FunctorImpHelper<T, StandarType,
 		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>(nullptr)
+		//在is_same成立时直接invoke节省编译时间,
+		//在没有可能推断出参数类型时(比如一个函数对象有多个operator())也只能直接invoke
 	>::type;
 	constexpr const T& getFunc()const noexcept{
 		return std::get<0>(*this);
@@ -163,7 +141,6 @@ public:
 
 
 
-
 /*
 	\brief	如果可以分析函子的参数表,那么就提供StandarType到其的转化,否则直接保存.
 	\param	StandarType标准的回调类型,T需要被调整以适应标准型的函数对象.
@@ -179,6 +156,9 @@ template<class StandarType,class R,class...Ps>
 constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
 	return FunctorImp<decltype(src_func), StandarType>(src_func);
 }
+
+
+
 
 
 template<template<class...>class Sig,class...Ts> 
@@ -227,60 +207,6 @@ public:
 	}
 };
 
-template<class Func>
-class BasicSignal {
-	using SlotType = EqualableFunction<Func>;
-	using container = std::forward_list<SlotType>;
-	using iterator = typename container::iterator;
-	using const_iterator = typename container::const_iterator;
-	container slot_list;
-	iterator last;
-public:
-	struct Connection{
-		iterator node;
-		container* ref=nullptr;
-		Connection(iterator link,container& src):node(link),ref(&src){}
-		Connection(){}
-		void disconnect() {
-			ref->erase_after(node);
-		}
-	};
-public:
-	BasicSignal()
-	:slot_list(),last(slot_list.before_begin()){}
-
-	template<class T>
-	Connection connect(T&& func) {
-		slot_list.insert_after(last,forward_m(func));
-		return Connection(last++, slot_list);
-	}
-	template<class...Ts>
-	void operator()(Ts&&...args) {
-		for(auto&elem:slot_list){
-			elem(forward_m(args)...);
-		}
-	}
-	template<class F>
-	void disconnect(F&& func) {
-		auto iter = slot_list.cbegin();
-		auto prev = slot_list.cbefore_begin();
-		for(;iter!=slot_list.cend();++iter){
-			if (*iter==forward_m(func)) {
-				slot_list.erase_after(prev);
-				break;
-			}
-			prev = iter;
-		}
-	}
-	template<class F>
-	void disconnect_all(F&& func) {
-		slot_list.remove(forward_m(func));
-	}
-
-};
-
-template<class...Ts>
-using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;
 
 #endif // !SIGNAL_WRAPPER_H_INCLUDED
 

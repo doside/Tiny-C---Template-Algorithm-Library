@@ -14,7 +14,9 @@
 	\note	典型地,用于忽略函数调用的参数从而实现各种编译期元操作,参见@get
 */
 struct EatParam {
-	constexpr EatParam(...)noexcept {}
+	// \note 原本使用的不是模板,而是... 但Wnon-pod-varargs会使其无法通过编译
+	template<class U>
+	constexpr EatParam(U&&)noexcept {}
 };
 template<class>
 using EatParam_t = EatParam;
@@ -61,9 +63,10 @@ struct GetImp {
 		\brief	用于高效实现get<n>(args...)
 		\param	从0开始,选取第n个参数
 		\return	完美转发选择的参数
+		\note	由于有-Wnon-pod-varargs,所以不可以使用...来实现,而必须使用Us&&...
 	*/
-	template<class T>
-	static constexpr decltype(auto) fetch(Ts&&..., T&& obj, ...)noexcept {
+	template<class T,class...Us>
+	static constexpr decltype(auto) fetch(Ts&&..., T&& obj, Us&&...)noexcept {
 		return std::forward<T>(obj);
 	}
 
@@ -74,8 +77,8 @@ struct GetImp {
 		\return	返回一个包装着所选类型的类
 		\note	无法直接返回T,如果T构造子被删
 	*/
-	template<class T>
-	static WrapperT<T> deduce(Ts..., Seq<T>* obj, ...);
+	template<class T,class...Us>
+	static WrapperT<T> deduce(Ts..., Seq<T>* obj, Us&&...);
 
 
 	/*
@@ -84,8 +87,8 @@ struct GetImp {
 				\args... 函调用时使用的参数
 		\return	同func的返回值一样
 	*/
-	template<class F>
-	static constexpr decltype(auto) applyFrontImp(F&& func, Ts&&...args, ...)
+	template<class F,class...Us>
+	static constexpr decltype(auto) applyFrontImp(F&& func, Ts&&...args, Us&&...)
 		noexcept(noexcept(ct_invoke(forward_m(func), forward_m(args)...)))
 	{
 		return ct_invoke( forward_m(func),forward_m(args)...);

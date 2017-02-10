@@ -10,7 +10,7 @@
 #include <cassert>
 
 #include "test_suits.h"
-#include "signal_wrapper.h"
+#include "slotlist.h"
 
 
 
@@ -261,7 +261,8 @@ int main() {
 		[](std::string str) {
 			std::cout <<"2:"<< str << std::endl;
 		});
-	myslot += [](auto) {};
+	myslot += [](auto&&...) {};
+	//myslot += [](int, std::string) {};
 	auto blabalabla = [](auto&) {};
 	//StaticAssert<hasOpCall<decltype(blabalabla)>> bbxb;
 	//static_assert(!isNonOverloadFunctor<decltype(blabalabla)>(0), "");
@@ -269,6 +270,13 @@ int main() {
 	myslot+=&test_fptr;
 	myslot.disconnect(callback1);
 	myslot("blabla");
+
+	{
+		Signal<void(double, char, const std::string&)> sig;
+		sig += [](std::string&, char) {return 1; };
+		//const auto str = std::string("af");
+		//std::string&& str_rRef = str;
+	}
 	return 0;
 }
 

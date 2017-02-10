@@ -21,14 +21,20 @@ struct MultiopImp;
 
 template<template<class...>class OpImp, class T, class...Ts, class...Us>
 struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
+	static_assert(OpImp<T, Seq<Us...>>::value != no_index, "fail to search the type of parameter.");
+	static_assert(sizeof...(Ts) < sizeof...(Us),"src sequence can't be longer than dst sequence's length.");
+	
+	//此处的conditional是很有必要的,因为在no_index的情况下,
+	//会导致编译器继续计算类型(尽管上面的断言会失败),最坏情况下导致gcc泄露了几GB内存然后崩溃
 	using index_type = std::conditional_t<
 		OpImp<T, Seq<Us...>>::value == no_index,
-
-		typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type,
-
+		void,
 		MergeIndex< Tagi< OpImp<T, Seq<Us...>>::value >,
 			typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>
 	>;
+	//typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type,
+	//using index_type = MergeIndex< Tagi< OpImp<T, Seq<Us...>>::value >,
+		//					typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>;
 public:
 	using type = Merge_s<
 		OMIT_T(OpImp<
