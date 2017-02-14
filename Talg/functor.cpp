@@ -286,9 +286,10 @@ int main() {
 		A a;
 		sig.connect(&a, &A::f);
 		{
-			//test::ConstOp a;
+			test::ConstOp a;
 			sig+=[sig]()mutable { sig.disconnect_all(); };
 			sig += [sig] {};
+			//sig += a;
 		}
 		//MemFn<A,void(A::*)()>
 		//const auto str = std::string("af");

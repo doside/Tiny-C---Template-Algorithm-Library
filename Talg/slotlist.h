@@ -61,13 +61,7 @@ public:
 };
 
 
-/*
-template<class StandarType,class T,class R,class...Ps>
-constexpr decltype(auto) makeFunctor(std::weak_ptr<T> ptr,R (T::*pmd)(Ps...)) {
-	return	FunctorImp<CrtpMaker<decltype(ptr),decltype(pmd)>, StandarType>(
-				CrtpMaker<std::weak_ptr<T>,decltype(pmd)>(std::move(ptr),pmd)
-			);
-}*/
+
 
 
 template<class Func>

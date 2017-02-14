@@ -227,33 +227,6 @@ struct MemFun<std::weak_ptr<T>,DataT,StandarT>
 		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
 	}
 };
-#if 0
-
-/*
-	\brief	workaround for MSVC bug
-	\param  Imp 实现了某些接口的派生类
-			Imp::template Base 基类接口模板,模板参数为Imp
-	\return	一个从Imp以及Imp::Base<Imp>派生的类
-	\note	使用CRTP惯用法时可能遭遇到unknown base type,
-			所以通过这个类来完成CRTP
-*/
-template<class Imp>
-struct CrtpMaker:public Imp, public Imp::template Base<CrtpMaker<Imp>>
-{
-	using Imp::Imp;
-	using imp_type = Imp;
-	using interface_type = typename Imp::template Base <CrtpMaker<Imp>>;
-};
-
-//因为公有继承非常危险,所以加多一个间接层来防止转换
-template<class...Ts>
-struct MemFn :private CrtpMaker<MemFnImp<Ts...>> {
-	using Base = CrtpMaker<MemFnImp<Ts...>>;
-	using Base::Base;
-	using Base::imp_type::operator==;
-	using Base::interface_type::operator();
-};
-#endif
 
 
 
@@ -304,10 +277,14 @@ constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
 
 template<class StandarType, class T,class Pmd>
 constexpr decltype(auto) makeFunctor(T* obj,Pmd pmd) {
-	return makeFunctor<StandarType>( MemFun<T*,Pmd,StandarType>{obj, pmd});
+	return MemFun<T*,Pmd,StandarType>{obj, pmd};
 }
 
 
+template<class StandarType,class T,class Pmd>
+decltype(auto) makeFunctor(std::weak_ptr<T> ptr,Pmd pmd) {
+	return	MemFun<std::weak_ptr<T>,Pmd,StandarType>{ptr, pmd};
+}
 
 
 
@@ -338,17 +315,17 @@ public:
 	}
 
 
-	template<class F>
-	decltype(auto) disconnect(F&& func)
-		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func))))
+	template<class... Fs>
+	decltype(auto) disconnect(Fs&&... func)
+		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func)...)))
 	{
-		return Base::disconnect(makeFunctor<ftype>(forward_m(func)));
+		return Base::disconnect(makeFunctor<ftype>(forward_m(func)...));
 	}
-	template<class F>
-	decltype(auto) disconnect_all(F&& func)
-		except_when(std::declval<Base&>().disconnect_all(makeFunctor<ftype>(forward_m(func))))
+	template<class... Fs>
+	decltype(auto) disconnect_all(Fs&&... func)
+		except_when(std::declval<Base&>().disconnect_all(makeFunctor<ftype>(forward_m(func)...)))
 	{
-		return Base::disconnect_all(makeFunctor<ftype>(forward_m(func)));
+		return Base::disconnect_all(makeFunctor<ftype>(forward_m(func)...));
 	}
 	template<class... Fs>
 	decltype(auto) connect(Fs&&... func) 
