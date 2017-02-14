@@ -1,22 +1,49 @@
 #pragma once
 #include "signal_wrapper.h"
+#include "has_member.h"
 
 template<class Func>
 struct EqualableFunction :std::function<Func> {
 	using Base = std::function<Func>;
 	using Base::Base;
+private:
 	template<class F>
-	bool operator==(const F& rhs)const 
+	bool isEqual(const F& rhs,EnableIfT<hasEqualCompare<const F&>>*)const 
 		except_when(std::declval<const F&>()==std::declval<const F&>())
 	{
-		if (!hasEqualCompare<const F&>::value)
-			return false;
-		auto ptr = Base::template target<F>();
-		if (ptr == nullptr) {
-			return false;
+		if(auto ptr = Base::template target<F>()) {
+			return *ptr==rhs;
 		}
-		return  *ptr==rhs;
+		return  false;
 	}
+	template<class F,
+		class =std::enable_if_t<
+		!hasEqualCompare<const F&>::value
+		>
+	>
+	bool isEqual(const F& rhs,int)const noexcept
+	{
+		return std::is_same<Func, F>::value;
+	}
+public:
+	template<class Src,class Other>
+	bool compare(Src&&,const Other& rhs)
+		except_when(std::declval<const Src&>()==std::declval<const Other&>())
+	{
+		if(auto ptr = Base::template target<Src>()) {
+			return *ptr==rhs;
+		}
+		return  false;
+	}
+
+	template<class F>
+	bool operator==(const F& rhs)const 
+		except_when(std::declval<EqualableFunction>().isEqual(rhs, 0))
+	{
+		return isEqual(rhs, 0);
+	}
+
+
 	template<class F>
 	constexpr bool operator==(const std::function<F>& rhs)const noexcept
 	{
@@ -32,6 +59,15 @@ struct EqualableFunction :std::function<Func> {
 		return !operator==(rhs);
 	}
 };
+
+
+/*
+template<class StandarType,class T,class R,class...Ps>
+constexpr decltype(auto) makeFunctor(std::weak_ptr<T> ptr,R (T::*pmd)(Ps...)) {
+	return	FunctorImp<CrtpMaker<decltype(ptr),decltype(pmd)>, StandarType>(
+				CrtpMaker<std::weak_ptr<T>,decltype(pmd)>(std::move(ptr),pmd)
+			);
+}*/
 
 
 template<class Func>
@@ -56,9 +92,9 @@ public:
 	BasicSignal()
 	:slot_list(),last(slot_list.before_begin()){}
 
-	template<class T>
-	Connection connect(T&& func) {
-		slot_list.insert_after(last,forward_m(func));
+	template<class... Ts>
+	Connection connect(Ts&&... func) {
+		slot_list.insert_after(last,forward_m(func)...);
 		return Connection(last++, slot_list);
 	}
 	template<class...Ts>
@@ -89,8 +125,30 @@ public:
 template<class...Ts>
 using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;
 
-template<class Obj,class DataT>
-struct MemFn
-{
 
-};
+template<class...Ts>
+using Signal = SignalWrapper<BasicSignal, Ts...>; 
+
+/*template<class Obj,class DataT,DataT Obj::*pmd>
+struct ObjFun
+{
+	Obj val;
+	template<class T>
+	constexpr ObjFun(T&& obj):val(forward_m(obj)){}
+
+	template<class...Ts>
+	decltype(auto) operator()(Ts&&...args) {
+		return ct_invoke(pmd, val, forward_m(args)...);
+	}
+	template<class...Ts>
+	decltype(auto) operator()(Ts&&...args)const{
+		return ct_invoke(pmd, val, forward_m(args)...);
+	}
+	template<class Other>
+	constexpr bool operator==(const ObjFun<Other,DataT,DataT Obj::*pmd>& rhs)const {
+		return val == rhs.val;
+	}
+};*/
+/*
+*/
+

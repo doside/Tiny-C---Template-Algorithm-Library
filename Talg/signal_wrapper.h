@@ -42,9 +42,11 @@ using FindParam = Find_if_svt<MatchParam, T, S>;
 */
 template<class T,class StandarType,bool is_direct_invoke>
 struct FunctorImpHelper{
-	using type = Multiop_n<FindParam,
-		typename CallableTraits<T>::arg_type,
-		typename CallableTraits<StandarType>::arg_type
+	using UserFunParam = typename CallableTraits<T>::arg_type;
+	using StandarParam = typename CallableTraits<StandarType>::arg_type;
+	using type = std::conditional_t<std::is_same<UserFunParam,StandarParam>::value,
+		Seq<>,
+		Multiop_n<FindParam,UserFunParam,StandarParam>
 	>;
 };
 template<class T,class U>
@@ -66,7 +68,7 @@ struct FunctorImp:private std::tuple<T>{	//派生有助于空基类优化,但由
 	using Base = std::tuple<T>;	
 	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
 	using ParameterIndex = typename FunctorImpHelper<T, StandarType,
-		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>(nullptr)
+		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>::value
 		//在is_same成立时直接invoke节省编译时间,
 		//在没有可能推断出参数类型时(比如一个函数对象有多个operator())也只能直接invoke
 	>::type;
@@ -139,6 +141,127 @@ public:
 
 };
 
+/*
+	\brief	函数签名限定
+	\param	Derived派生类,用于转换. 
+			Ret限定函数返回类型,
+			Ps...限定函数参数类型
+	\note	Ps或Ret皆可能是引用
+*/
+template<class...>struct FnSig;
+
+template<class Derived,class Ret,class...Ps>
+struct FnSig<Derived,Ret,Ps...> {
+	//using Derived = std::remove_pointer_t<DerivedPtr>;
+	/*Ret operator()(Ps...args);
+	constexpr Ret operator()(Ps...args)const;*/
+
+	//template<class DerivedPtr,class Ret,class...Ps> FnSig<DerivedPtr,Ret,Ps...>::
+	Ret operator()(Ps...args) {
+			return static_cast<Derived*>(this)->call(forward_m(args)...);
+	}
+	constexpr Ret operator()(Ps...args)const{
+		return static_cast<const Derived*>(this)->call(forward_m(args)...);
+	}
+
+};
+
+
+
+template<class Obj,class Pmd>
+struct MemFnImp
+{
+	template<class Derived>
+	using Base= Transform<
+			FnSig,
+			Merge<
+				Seq<Derived, 
+					typename CallableTraits<Pmd>::ret_type>,		
+				typename CallableTraits<Pmd>::arg_type
+			>
+	>;
+	//以上,相当于FnSig<CrtpMaker,ret_type,arg_type...>
+	//目的在于让operator()的参数表可以被callbletraits解析出来
+	//此处的call函数模板的参数表是不可能解析出来的.
+
+	static_assert(std::is_class<Obj>::value, "");
+	Obj* val;
+	Pmd pmd;
+	constexpr MemFnImp(Obj* obj,Pmd ptr):val(forward_m(obj)),pmd(ptr){}
+
+	template<class...Ts>
+	decltype(auto) call(Ts&&...args) {
+		return ct_invoke(pmd, val, forward_m(args)...);
+	}
+	template<class...Ts>
+	constexpr decltype(auto) call(Ts&&...args)const{
+		return ct_invoke(pmd, val, forward_m(args)...);
+	}
+	template<class Other,class DataU>
+	constexpr bool operator==(const MemFnImp<Other, DataU>& rhs)const {
+		return val == rhs.val && pmd == rhs.pmd;
+	}
+};
+template<class T,class DataT>
+struct MemFnImp<std::weak_ptr<T>,DataT>
+{
+	template<class Derived>
+	using Base = Transform<FnSig,
+		Merge_s< 
+			Seq<Derived, void>,
+			typename CallableTraits<DataT>::arg_type
+		>
+	>;
+	std::weak_ptr<T> val;
+	DataT T::*pmd;
+	template<class U,class P>
+	constexpr MemFnImp(U&& obj,P ptr):val(forward_m(obj)),pmd(ptr){}
+
+	template<class...Ts>
+	void call(Ts&&...args) {
+		if(auto ptr = val.lock()){
+			ptr->*pmd(forward_m(args)...);
+		}
+	}
+	template<class...Ts>
+	void call(Ts&&...args)const{
+		if(auto ptr = val.lock()){
+			ptr->*pmd(forward_m(args)...);
+		}
+	}
+	template<class Other,class DataU>
+	constexpr bool operator==(const MemFnImp<Other, DataU>& rhs)const {
+		return val == rhs.val && pmd == rhs.pmd;
+	}
+};
+
+template<class...Ts>
+using MemFn = CrtpMaker<MemFnImp<Ts...>>;
+
+
+/*
+template<class StandarType>
+class FuncSlot:private EqualableFunction<StandarType> {
+	using Base = EqualableFunction<StandarType>;
+public:
+	using Base::operator==;
+	using Base::operator!=;
+	using Base::operator();
+
+	template<class F>
+	FuncSlot(F&& func):Base(forward_m(func)){}
+
+	template<class T,class D>
+	FuncSlot(T obj, D T::*pmd)
+	:Base(makeFunctor<StandarType>(CrtpMaker<T,decltype(pmd)>(obj,pmd))){}
+
+	template<class T,class D>
+	FuncSlot(std::weak_ptr<T> ptr,D T::*pmd)
+	:Base(makeFunctor<StandarType>(
+			CrtpMaker<std::weak_ptr<T>,decltype(pmd)>(std::move(ptr),pmd)
+		)
+	){}
+};*/
 
 
 /*
@@ -156,6 +279,12 @@ template<class StandarType,class R,class...Ps>
 constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
 	return FunctorImp<decltype(src_func), StandarType>(src_func);
 }
+
+template<class StandarType, class T,class Pmd>
+constexpr decltype(auto) makeFunctor(T* obj,Pmd pmd) {
+	return makeFunctor<StandarType>( MemFn<T,Pmd>(obj, pmd));
+}
+
 
 
 
@@ -199,11 +328,11 @@ public:
 	{
 		return Base::disconnect_all(makeFunctor<ftype>(forward_m(func)));
 	}
-	template<class F>
-	decltype(auto) connect(F&& func) 
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
+	template<class... Fs>
+	decltype(auto) connect(Fs&&... func) 
+		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func)...)))
 	{
-		return Base::connect(makeFunctor<ftype>(forward_m(func)));
+		return Base::connect(makeFunctor<ftype>(forward_m(func)...));
 	}
 };
 

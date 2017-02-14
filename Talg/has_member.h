@@ -24,6 +24,10 @@ struct hasOpCall{
 };
 template<class T>
 using EnableIfT = std::enable_if_t<T::value>;
+
+
+
+
 /*template<class T>
 struct hasEqualCompare:decltype(isEqualAbleImp::detect<T>(0))
 {

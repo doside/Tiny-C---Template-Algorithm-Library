@@ -107,8 +107,8 @@ public:
 };
 
 
-template<class...Ts>
-using Signal = SignalWrapper<BasicSignal, Ts...>; //SignalWrapper<GrouppedSiganl, Ts...>;
+//template<class...Ts>
+//using Signal = SignalWrapper<BasicSignal, Ts...>; //SignalWrapper<GrouppedSiganl, Ts...>;
 
 template<class T>
 struct ScopedConnection {
@@ -203,6 +203,12 @@ namespace test {
 		void operator()(){}
 		bool operator==(const A&)const { return true; }
 	};
+
+	struct ConstOp {
+		void operator()(){}
+		int operator()(int)const { return 0; }
+	};
+
 }
 
 
@@ -263,9 +269,8 @@ int main() {
 		});
 	myslot += [](auto&&...) {};
 	//myslot += [](int, std::string) {};
-	auto blabalabla = [](auto&) {};
 	//StaticAssert<hasOpCall<decltype(blabalabla)>> bbxb;
-	//static_assert(!isNonOverloadFunctor<decltype(blabalabla)>(0), "");
+	//static_assert(!isNonOverloadFunctor<decltype(blabalabla)>::value, "");
 	myslot+=test_fptr;
 	myslot+=&test_fptr;
 	myslot.disconnect(callback1);
@@ -273,7 +278,13 @@ int main() {
 
 	{
 		Signal<void(double, char, const std::string&)> sig;
-		sig += [](std::string&, char) {return 1; };
+		sig += [](const std::string&, char) {return 1; };
+		struct A {
+			void f(double, char, const std::string&){}
+		};
+		A a;
+		sig.connect(&a, &A::f);
+		//MemFn<A,void(A::*)()>
 		//const auto str = std::string("af");
 		//std::string&& str_rRef = str;
 	}

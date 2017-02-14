@@ -46,14 +46,18 @@ struct CallableTraits<R(*)(Ts...)>:std::integral_constant<size_t,sizeof...(Ts)> 
 template<class R, class...Ts>
 struct CallableTraits<std::function<R(Ts...)>> : CallableTraits<R(Ts...)>{};
 
-
-
+template<class Obj,class R,class...Ts>
+struct CallableTraits<R(Obj::*)(Ts...)>:CallableTraits<R(Ts...)>{};
 
 
 template<class T>
-constexpr bool isNonOverloadFunctor(typename CallableTraits<T>::arg_type* ) { return true; }
-template<class T>
-constexpr bool isNonOverloadFunctor(...) { return false; }
+struct isNonOverloadFunctor {
+	template<class U>
+	static constexpr bool detect(typename CallableTraits<U>::arg_type* ) { return true; }
+	template<class U>
+	static constexpr bool detect(...) { return false; }
+	static constexpr bool value = detect<T>(nullptr);
+};
 
 
 
