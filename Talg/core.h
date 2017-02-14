@@ -96,17 +96,3 @@ using Reverse = OMIT_T(ReverseImp<Seqfy<T>>);
 template<class obj>
 using Reverse_s = OMIT_T(ReverseImp<obj>);
 
-/*
-	\brief	workaround for MSVC bug,
-	\param  Imp 实现了某些接口的派生类
-			Imp::template Base 基类接口模板,模板参数为Imp
-	\return	一个从Imp以及Imp::Base<Imp>派生的类
-	\note	使用CRTP惯用法时可能遭遇到unknown base type,
-			所以通过这个类来完成CRTP
-*/
-template<class Imp>
-struct CrtpMaker:public Imp, public Imp::template Base<CrtpMaker<Imp>>
-{
-	using Imp::Imp;
-};
-

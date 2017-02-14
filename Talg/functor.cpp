@@ -206,7 +206,7 @@ namespace test {
 
 	struct ConstOp {
 		void operator()(){}
-		int operator()(int)const { return 0; }
+		void operator()()const { }
 	};
 
 }
@@ -277,13 +277,19 @@ int main() {
 	myslot("blabla");
 
 	{
+		using namespace test;
 		Signal<void(double, char, const std::string&)> sig;
 		sig += [](const std::string&, char) {return 1; };
 		struct A {
-			void f(double, char, const std::string&){}
+			void f(double,char,std::string){}
 		};
 		A a;
 		sig.connect(&a, &A::f);
+		{
+			//test::ConstOp a;
+			sig+=[sig]()mutable { sig.disconnect_all(); };
+			sig += [sig] {};
+		}
 		//MemFn<A,void(A::*)()>
 		//const auto str = std::string("af");
 		//std::string&& str_rRef = str;

@@ -75,6 +75,9 @@ struct FunctorImp:private std::tuple<T>{	//派生有助于空基类优化,但由
 	constexpr const T& getFunc()const noexcept{
 		return std::get<0>(*this);
 	}
+	T& getFunc()noexcept{
+		return std::get<0>(*this);
+	}
 public:
 	constexpr FunctorImp(const T& f)noexcept(std::is_nothrow_copy_constructible<T>::value)
 		:Base(f)
@@ -93,6 +96,7 @@ public:
 			apply(ParameterIndex{},std::declval<T>(), forward_m(args)...)
 		))
 	{
+		//StaticAssert<NotSame<ParameterIndex, IdSeq<>>, T, ParameterIndex,CallableTraits<T>> {};
 		return apply(ParameterIndex{},getFunc(), forward_m(args)...);
 	}
 
@@ -147,16 +151,15 @@ public:
 			Ret限定函数返回类型,
 			Ps...限定函数参数类型
 	\note	Ps或Ret皆可能是引用
+			特别使用template<class...>
+			来使transform可行,然后再用特化,
+			如果不是如此FnSig不可作为template<class...>class传递
+			进而无法transform
 */
 template<class...>struct FnSig;
 
 template<class Derived,class Ret,class...Ps>
 struct FnSig<Derived,Ret,Ps...> {
-	//using Derived = std::remove_pointer_t<DerivedPtr>;
-	/*Ret operator()(Ps...args);
-	constexpr Ret operator()(Ps...args)const;*/
-
-	//template<class DerivedPtr,class Ret,class...Ps> FnSig<DerivedPtr,Ret,Ps...>::
 	Ret operator()(Ps...args) {
 			return static_cast<Derived*>(this)->call(forward_m(args)...);
 	}
@@ -168,7 +171,7 @@ struct FnSig<Derived,Ret,Ps...> {
 
 
 
-template<class Obj,class Pmd>
+template<class Ptr,class Pmd>
 struct MemFnImp
 {
 	template<class Derived>
@@ -184,22 +187,22 @@ struct MemFnImp
 	//目的在于让operator()的参数表可以被callbletraits解析出来
 	//此处的call函数模板的参数表是不可能解析出来的.
 
-	static_assert(std::is_class<Obj>::value, "");
-	Obj* val;
+	static_assert(std::is_pointer<Ptr>::value, "");
+	Ptr ptr_;
 	Pmd pmd;
-	constexpr MemFnImp(Obj* obj,Pmd ptr):val(forward_m(obj)),pmd(ptr){}
+	constexpr MemFnImp(Ptr obj,Pmd ptr):ptr_(forward_m(obj)),pmd(ptr){}
 
 	template<class...Ts>
 	decltype(auto) call(Ts&&...args) {
-		return ct_invoke(pmd, val, forward_m(args)...);
+		return ct_invoke(pmd, ptr_, forward_m(args)...);
 	}
 	template<class...Ts>
 	constexpr decltype(auto) call(Ts&&...args)const{
-		return ct_invoke(pmd, val, forward_m(args)...);
+		return ct_invoke(pmd, ptr_, forward_m(args)...);
 	}
 	template<class Other,class DataU>
 	constexpr bool operator==(const MemFnImp<Other, DataU>& rhs)const {
-		return val == rhs.val && pmd == rhs.pmd;
+		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
 	}
 };
 template<class T,class DataT>
@@ -212,31 +215,53 @@ struct MemFnImp<std::weak_ptr<T>,DataT>
 			typename CallableTraits<DataT>::arg_type
 		>
 	>;
-	std::weak_ptr<T> val;
+	std::weak_ptr<T> ptr_;
 	DataT T::*pmd;
 	template<class U,class P>
-	constexpr MemFnImp(U&& obj,P ptr):val(forward_m(obj)),pmd(ptr){}
+	constexpr MemFnImp(U&& obj,P ptr):ptr_(forward_m(obj)),pmd(ptr){}
 
 	template<class...Ts>
 	void call(Ts&&...args) {
-		if(auto ptr = val.lock()){
+		if(auto ptr = ptr_.lock()){
 			ptr->*pmd(forward_m(args)...);
 		}
 	}
 	template<class...Ts>
 	void call(Ts&&...args)const{
-		if(auto ptr = val.lock()){
+		if(auto ptr = ptr_.lock()){
 			ptr->*pmd(forward_m(args)...);
 		}
 	}
 	template<class Other,class DataU>
 	constexpr bool operator==(const MemFnImp<Other, DataU>& rhs)const {
-		return val == rhs.val && pmd == rhs.pmd;
+		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
 	}
 };
 
+/*
+	\brief	workaround for MSVC bug
+	\param  Imp 实现了某些接口的派生类
+			Imp::template Base 基类接口模板,模板参数为Imp
+	\return	一个从Imp以及Imp::Base<Imp>派生的类
+	\note	使用CRTP惯用法时可能遭遇到unknown base type,
+			所以通过这个类来完成CRTP
+*/
+template<class Imp>
+struct CrtpMaker:public Imp, public Imp::template Base<CrtpMaker<Imp>>
+{
+	using Imp::Imp;
+	using imp_type = Imp;
+	using interface_type = typename Imp::template Base <CrtpMaker<Imp>>;
+};
+
+//因为公有继承非常危险,所以加多一个间接层来防止转换
 template<class...Ts>
-using MemFn = CrtpMaker<MemFnImp<Ts...>>;
+struct MemFn :private CrtpMaker<MemFnImp<Ts...>> {
+	using Base = CrtpMaker<MemFnImp<Ts...>>;
+	using Base::Base;
+	using Base::imp_type::operator==;
+	using Base::interface_type::operator();
+};
 
 
 /*
@@ -282,7 +307,7 @@ constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
 
 template<class StandarType, class T,class Pmd>
 constexpr decltype(auto) makeFunctor(T* obj,Pmd pmd) {
-	return makeFunctor<StandarType>( MemFn<T,Pmd>(obj, pmd));
+	return makeFunctor<StandarType>( MemFn<T*,Pmd>{obj, pmd});
 }
 
 
@@ -334,6 +359,11 @@ public:
 	{
 		return Base::connect(makeFunctor<ftype>(forward_m(func)...));
 	}
+
+	void disconnect_all() {
+		return Base::disconnect_all();
+	}
+
 };
 
 

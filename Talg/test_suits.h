@@ -9,8 +9,6 @@ template<size_t n>struct itag{};
 
 
 //We use those struct to generate more information about static_assert failure. (Especially on msvc)
-
-
 template<class T, class... Ts>
 struct StaticAssert {
 	static_assert(T::value, "T::value is not true");

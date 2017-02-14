@@ -119,7 +119,9 @@ public:
 	void disconnect_all(F&& func) {
 		slot_list.remove(forward_m(func));
 	}
-
+	void disconnect_all() {
+		slot_list.clear();
+	}
 };
 
 template<class...Ts>
@@ -128,27 +130,4 @@ using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;
 
 template<class...Ts>
 using Signal = SignalWrapper<BasicSignal, Ts...>; 
-
-/*template<class Obj,class DataT,DataT Obj::*pmd>
-struct ObjFun
-{
-	Obj val;
-	template<class T>
-	constexpr ObjFun(T&& obj):val(forward_m(obj)){}
-
-	template<class...Ts>
-	decltype(auto) operator()(Ts&&...args) {
-		return ct_invoke(pmd, val, forward_m(args)...);
-	}
-	template<class...Ts>
-	decltype(auto) operator()(Ts&&...args)const{
-		return ct_invoke(pmd, val, forward_m(args)...);
-	}
-	template<class Other>
-	constexpr bool operator==(const ObjFun<Other,DataT,DataT Obj::*pmd>& rhs)const {
-		return val == rhs.val;
-	}
-};*/
-/*
-*/
 
