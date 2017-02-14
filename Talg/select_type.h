@@ -218,6 +218,18 @@ constexpr decltype(auto) apply(Seq<>, F&& func, Ts&&... args) {
 	//return func(forward_m(args)...);
 }
 
+template<size_t... Indices,class F,class Obj,class...Ts>
+constexpr decltype(auto) applyMemFun(IdSeq<Indices...>,Obj&& obj, F&& func, Ts&&... args) {
+	return ct_invoke(forward_m(func),forward_m(obj),get<Indices>(forward_m(args)...)...);
+}
+template<class F,class Obj,class...Ts>
+constexpr decltype(auto) applyMemFun(IdSeq<>,Obj&& obj, F&& func, Ts&&... args) {
+	return ct_invoke( forward_m(func),forward_m(obj));
+}
+template<class F,class Obj,class...Ts>
+constexpr decltype(auto) applyMemFun(Seq<>,Obj&& obj, F&& func, Ts&&... args) {
+	return ct_invoke(forward_m(func),forward_m(obj),forward_m(args)...);
+}
 
 
 

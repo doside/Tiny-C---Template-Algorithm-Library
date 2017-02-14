@@ -41,7 +41,7 @@ using FindParam = Find_if_svt<MatchParam, T, S>;
 	\return	参数的索引号,例如 IdSeq<0,2,1,3>
 */
 template<class T,class StandarType,bool is_direct_invoke>
-struct FunctorImpHelper{
+struct MapParamIdImp{
 	using UserFunParam = typename CallableTraits<T>::arg_type;
 	using StandarParam = typename CallableTraits<StandarType>::arg_type;
 	using type = std::conditional_t<std::is_same<UserFunParam,StandarParam>::value,
@@ -50,9 +50,15 @@ struct FunctorImpHelper{
 	>;
 };
 template<class T,class U>
-struct FunctorImpHelper<T,U,true>{
+struct MapParamIdImp<T,U,true>{
 	using type = Seq<>;
 };
+template<class T,class StandarType>
+using MapParamId = typename MapParamIdImp<T, StandarType,
+		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>::value
+		//在is_same成立时直接invoke节省编译时间,
+		//在没有可能推断出参数类型时(比如一个函数对象有多个operator())也只能直接invoke
+	>::type;
 
 /*
 	\brief	把T类型的函数对象适配成StandarType,并且提供相等比较.
@@ -67,11 +73,7 @@ template<class T, class StandarType>
 struct FunctorImp:private std::tuple<T>{	//派生有助于空基类优化,但由于T可能是基础类型,无法直接从其派生
 	using Base = std::tuple<T>;	
 	static_assert(!std::is_reference<T>::value, "we assume T is not a ref.");
-	using ParameterIndex = typename FunctorImpHelper<T, StandarType,
-		std::is_same<T, StandarType>::value || !isNonOverloadFunctor<T>::value
-		//在is_same成立时直接invoke节省编译时间,
-		//在没有可能推断出参数类型时(比如一个函数对象有多个operator())也只能直接invoke
-	>::type;
+	using ParameterIndex = MapParamId<T, StandarType>;
 	constexpr const T& getFunc()const noexcept{
 		return std::get<0>(*this);
 	}
@@ -171,72 +173,61 @@ struct FnSig<Derived,Ret,Ps...> {
 
 
 
-template<class Ptr,class Pmd>
-struct MemFnImp
+template<class Ptr,class Pmd,class StandarT>
+struct MemFun
 {
-	template<class Derived>
-	using Base= Transform<
-			FnSig,
-			Merge<
-				Seq<Derived, 
-					typename CallableTraits<Pmd>::ret_type>,		
-				typename CallableTraits<Pmd>::arg_type
-			>
-	>;
-	//以上,相当于FnSig<CrtpMaker,ret_type,arg_type...>
-	//目的在于让operator()的参数表可以被callbletraits解析出来
-	//此处的call函数模板的参数表是不可能解析出来的.
+	using ParameterIndex = MapParamId<Pmd, StandarT>;
 
 	static_assert(std::is_pointer<Ptr>::value, "");
 	Ptr ptr_;
 	Pmd pmd;
-	constexpr MemFnImp(Ptr obj,Pmd ptr):ptr_(forward_m(obj)),pmd(ptr){}
+	constexpr MemFun(Ptr obj,Pmd ptr):ptr_(forward_m(obj)),pmd(ptr){}
+
 
 	template<class...Ts>
-	decltype(auto) call(Ts&&...args) {
-		return ct_invoke(pmd, ptr_, forward_m(args)...);
+	constexpr decltype(auto) operator()(Ts&&...args)const{
+		return applyMemFun(ParameterIndex{},ptr_, pmd, forward_m(args)...);
 	}
+
 	template<class...Ts>
-	constexpr decltype(auto) call(Ts&&...args)const{
-		return ct_invoke(pmd, ptr_, forward_m(args)...);
+	decltype(auto) operator()(Ts&&...args) {
+		return applyMemFun(ParameterIndex{},ptr_, pmd, forward_m(args)...);
 	}
-	template<class Other,class DataU>
-	constexpr bool operator==(const MemFnImp<Other, DataU>& rhs)const {
+
+	template<class Other,class DataU,class S>
+	constexpr bool operator==(const MemFun<Other, DataU,S>& rhs)const {
 		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
 	}
 };
-template<class T,class DataT>
-struct MemFnImp<std::weak_ptr<T>,DataT>
+
+template<class T,class DataT,class StandarT>
+struct MemFun<std::weak_ptr<T>,DataT,StandarT>
 {
-	template<class Derived>
-	using Base = Transform<FnSig,
-		Merge_s< 
-			Seq<Derived, void>,
-			typename CallableTraits<DataT>::arg_type
-		>
-	>;
+	using ParameterIndex = MapParamId<DataT, StandarT>;
+
 	std::weak_ptr<T> ptr_;
 	DataT T::*pmd;
 	template<class U,class P>
-	constexpr MemFnImp(U&& obj,P ptr):ptr_(forward_m(obj)),pmd(ptr){}
+	constexpr MemFun(U&& obj,P ptr):ptr_(forward_m(obj)),pmd(ptr){}
 
 	template<class...Ts>
-	void call(Ts&&...args) {
+	void operator()(Ts&&...args) {
 		if(auto ptr = ptr_.lock()){
-			ptr->*pmd(forward_m(args)...);
+			applyMemFun(ParameterIndex{},ptr_, pmd, forward_m(args)...);
 		}
 	}
 	template<class...Ts>
-	void call(Ts&&...args)const{
+	void operator()(Ts&&...args)const{
 		if(auto ptr = ptr_.lock()){
-			ptr->*pmd(forward_m(args)...);
+			applyMemFun(ParameterIndex{},ptr_, pmd, forward_m(args)...);
 		}
 	}
-	template<class Other,class DataU>
-	constexpr bool operator==(const MemFnImp<Other, DataU>& rhs)const {
+	template<class Other,class DataU,class S>
+	constexpr bool operator==(const MemFun<Other, DataU,S>& rhs)const {
 		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
 	}
 };
+#if 0
 
 /*
 	\brief	workaround for MSVC bug
@@ -262,6 +253,12 @@ struct MemFn :private CrtpMaker<MemFnImp<Ts...>> {
 	using Base::imp_type::operator==;
 	using Base::interface_type::operator();
 };
+#endif
+
+
+
+
+
 
 
 /*
@@ -307,7 +304,7 @@ constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
 
 template<class StandarType, class T,class Pmd>
 constexpr decltype(auto) makeFunctor(T* obj,Pmd pmd) {
-	return makeFunctor<StandarType>( MemFn<T*,Pmd>{obj, pmd});
+	return makeFunctor<StandarType>( MemFun<T*,Pmd,StandarType>{obj, pmd});
 }
 
 

@@ -280,8 +280,8 @@ int main() {
 		using namespace test;
 		Signal<void(double, char, const std::string&)> sig;
 		sig += [](const std::string&, char) {return 1; };
-		struct A {
-			void f(double,char,std::string){}
+		struct A { 
+			void f(double,char){}
 		};
 		A a;
 		sig.connect(&a, &A::f);
