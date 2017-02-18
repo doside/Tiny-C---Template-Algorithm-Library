@@ -12,6 +12,8 @@
 #include "test_suits.h"
 #include "slotlist.h"
 
+//#include <yassi.h>
+//#include <boost\signals2.hpp>
 
 
 template<class F>
@@ -259,22 +261,110 @@ int main() {
 	assert(make_f(test::A{}) == make_f(test::A{})); //由于A没有const相等比较,所以采用默认的比较
 	assert(make_f(test::B{}) == make_f(test::A{})); 
 	assert(make_f(test::A{}) != make_f(test::B{}));
-	//assert(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
 
-	auto id=myslot.connect(callback1);
-	myslot("abcdefg");
-	auto id2=myslot.connect( 
-		[](std::string str) {
-			std::cout <<"2:"<< str << std::endl;
-		});
-	myslot += [](auto&&...) {};
+	auto ensure_clear = [&] {
+		myslot.disconnect_all();
+		assert(myslot.empty());
+	};
+	//assert(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
+	{
+		auto id=myslot.connect(callback1);
+		assert(!myslot.empty());
+		myslot -= callback1;
+		assert(myslot.empty());
+	}
+	{
+		myslot+=test_fptr;
+		assert(!myslot.empty());
+		myslot+=&test_fptr;
+		myslot.disconnect_all(test_fptr);
+		assert(myslot.empty());
+	}
+	{
+		myslot+=test_fptr;
+		assert(!myslot.empty());
+		myslot-=&test_fptr;
+		assert(myslot.empty());
+	}
+	/*{
+		myslot+=callback1;
+		assert(!myslot.empty());
+		void (*ptr)(std::string) = callback1;
+		myslot-=*ptr;
+		assert(myslot.empty());
+	}*/
+	{
+		auto con=myslot.connect( 
+			[](std::string str) {
+				std::cout <<"2:"<< str << std::endl;
+			}
+		);
+		assert(!myslot.empty());
+		con.disconnect();
+		assert(myslot.empty());
+	}
+	//myslot("abcdefg");
+	
+	myslot.disconnect(callback1);
+
+
+	{
+		myslot += [](auto&&...) {};
+		myslot -= [](auto&&...) {};
+		assert(!myslot.empty());
+		ensure_clear();
+	}
+	{
+		std::string str;
+		myslot += [&str](auto&& s) {str = s; };
+		myslot("blabla");
+		assert("blabla" == str);
+		
+	}
+	{
+		int count = 0;
+		auto cnt = [&] {count++; };
+		auto initer= [&myslot,cnt] {
+			for(int i=0;i<100;++i)
+				myslot += cnt;
+		};
+		myslot += initer;
+		myslot("");
+		assert(count == 0);
+		myslot("");
+		myslot -= initer;
+		myslot("");
+		assert(count == 300);
+		myslot("");
+		assert(count == 500);
+		ensure_clear();
+	}
+	/*{
+		using Signal = SignalWrapper<boost::signals2::signal, void()>;
+		Signal sig;
+		int count = 0;
+		auto cnt = [&] {count++; };
+		auto initer= [&sig,cnt] {
+			for(int i=0;i<100;++i)
+				sig += cnt;
+		};
+		sig += initer;
+		sig();
+		assert(count == 0);
+		sig();
+		assert(count == 100);
+
+		sig -= initer;
+		sig();
+		assert(count == 300);
+		sig();
+		assert(count == 500);
+	}*/
+	
+	myslot += test_fptr2;
 	//myslot += [](int, std::string) {};
 	//StaticAssert<hasOpCall<decltype(blabalabla)>> bbxb;
 	//static_assert(!isNonOverloadFunctor<decltype(blabalabla)>::value, "");
-	myslot+=test_fptr;
-	myslot+=&test_fptr;
-	myslot.disconnect(callback1);
-	myslot("blabla");
 
 	{
 		using namespace test;

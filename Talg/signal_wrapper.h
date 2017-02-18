@@ -9,7 +9,6 @@
 #include "has_member.h"
 #include <type_traits>	
 #include <tuple>
-#include <forward_list>
 
 struct MatchParam
 {
@@ -196,7 +195,13 @@ struct MemFun
 
 	template<class Other,class DataU,class S>
 	constexpr bool operator==(const MemFun<Other, DataU,S>& rhs)const {
-		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
+		if (rhs.ptr_ == nullptr) {
+			return pmd == rhs.pmd;
+		} else if (rhs.pmd == nullptr) {
+			return ptr_ = rhs.ptr_;
+		} else {
+			return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
+		}
 	}
 };
 
@@ -224,39 +229,16 @@ struct MemFun<std::weak_ptr<T>,DataT,StandarT>
 	}
 	template<class Other,class DataU,class S>
 	constexpr bool operator==(const MemFun<Other, DataU,S>& rhs)const {
-		return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
+		if (rhs.ptr_ == nullptr) {
+			return pmd == rhs.pmd;
+		} else if (rhs.pmd == nullptr) {
+			return ptr_ = rhs.ptr_;
+		} else {
+			return ptr_ == rhs.ptr_ && pmd == rhs.pmd;
+		}
 	}
 };
 
-
-
-
-
-
-
-/*
-template<class StandarType>
-class FuncSlot:private EqualableFunction<StandarType> {
-	using Base = EqualableFunction<StandarType>;
-public:
-	using Base::operator==;
-	using Base::operator!=;
-	using Base::operator();
-
-	template<class F>
-	FuncSlot(F&& func):Base(forward_m(func)){}
-
-	template<class T,class D>
-	FuncSlot(T obj, D T::*pmd)
-	:Base(makeFunctor<StandarType>(CrtpMaker<T,decltype(pmd)>(obj,pmd))){}
-
-	template<class T,class D>
-	FuncSlot(std::weak_ptr<T> ptr,D T::*pmd)
-	:Base(makeFunctor<StandarType>(
-			CrtpMaker<std::weak_ptr<T>,decltype(pmd)>(std::move(ptr),pmd)
-		)
-	){}
-};*/
 
 
 /*
@@ -288,33 +270,63 @@ decltype(auto) makeFunctor(std::weak_ptr<T> ptr,Pmd pmd) {
 
 
 
-
+/*
+	\brief	提供各种语法糖,如有必要可以切换至boost signals2
+	\param	模板参数 形如Signal<R(Ts...),Us...>
+	\note	直接采用了无节操的公有继承,嗯,所谓相信程序员...??!
+*/
 template<template<class...>class Sig,class...Ts> 
-class SignalWrapper:private Sig<Ts...>
+class SignalWrapper:public Sig<Ts...>
 {
 	using Base = Sig<Ts...>;
 public:
 	using ftype = Head_s<Seq<Ts...>>;
 	using Base::Base;
-	using Base::operator();
-	
+	using Base::empty;
+	//using Base::operator();
 public:
+	/*
+		\brief	添加函数到信号槽
+		\param	func任意的函数对象,支持可选参数
+				(无视顺序,但要求去除cv后必须类型一致,具体见functor),
+		\return	返回对象自身,从而支持链式调用如
+				sig += f1
+					+= f2;
+		\note	使用者必须当心链式调用时的参数求值顺序不确定
+	*/
 	template<class F>
-	decltype(auto) operator+=(F&& func) 
+	SignalWrapper& operator+=(F&& func) 
 		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
 	{
-		return Base::connect(makeFunctor<ftype>(forward_m(func)));
+		Base::connect(makeFunctor<ftype>(forward_m(func)));
+		return *this;
 	}
-
-
+	/*
+		\brief	去除与一个与指定的函数对象相等的槽.
+		\param	func任意的函数对象,支持可选参数
+				(无视顺序,但要求去除cv后必须类型一致,具体见functor)
+				必须要与添加时的类型一致才可能成功删除.
+		\return	返回对象自身,从而支持链式调用如
+				sig -= f1
+					-= f2;
+		\note	使用者必须当心链式调用时的参数求值顺序不确定
+		\todo fix	boost好像是全部去除,与此处行为不一致.
+					提供利用函数对象指针来删除成员函数回调的重载.
+	*/
 	template<class F>
-	decltype(auto) operator-=(F&& func)
+	SignalWrapper& operator-=(F&& func)
 		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func))))
 	{
-		return Base::disconnect(makeFunctor<ftype>(forward_m(func)));
+		Base::disconnect(makeFunctor<ftype>(forward_m(func)));
+		return *this;
 	}
 
-
+	/*
+		\brief	 删除某个回调
+		\note	直接用functor进行包装,从而与connect时的参数类型相称,
+				对于不提供等号比较的类型(比如lambda),直接比较类型.
+				对于成员函数可以直接 connect(obj,&Obj::mem_func);
+	*/
 	template<class... Fs>
 	decltype(auto) disconnect(Fs&&... func)
 		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func)...)))
@@ -327,6 +339,13 @@ public:
 	{
 		return Base::disconnect_all(makeFunctor<ftype>(forward_m(func)...));
 	}
+
+
+	/*
+		\brief	添加回调
+		\note	直接用functor进行包装,从而提供可选参数支持,
+				对于成员函数可以直接 connect(obj,&Obj::mem_func);
+	*/
 	template<class... Fs>
 	decltype(auto) connect(Fs&&... func) 
 		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func)...)))
@@ -334,10 +353,23 @@ public:
 		return Base::connect(makeFunctor<ftype>(forward_m(func)...));
 	}
 
-	void disconnect_all() {
-		return Base::disconnect_all();
+
+	/*
+		\brief	提供便利的语法来返回connection
+		\param	同operator+=
+		\return 同connect
+		\note	不满足交换, func+sig 的写法会导致编译错误
+	*/
+	template<class F>
+	decltype(auto) operator+(F&& func) { 
+		return connect(forward_m(func));
 	}
 
+	decltype(auto) disconnect_all()
+		except_when(std::declval<Base&>().disconnect_all())
+	{
+		return Base::disconnect_all();
+	}
 };
 
 
