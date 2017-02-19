@@ -277,7 +277,7 @@ int main() {
 		myslot+=test_fptr;
 		assert(!myslot.empty());
 		myslot+=&test_fptr;
-		myslot.disconnect_all(test_fptr);
+		myslot-=test_fptr;
 		assert(myslot.empty());
 	}
 	{

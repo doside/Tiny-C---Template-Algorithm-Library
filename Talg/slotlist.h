@@ -60,7 +60,25 @@ public:
 
 
 template<class Func>
-class BasicSignal{};
+struct DefaultSlotTraits {
+	using SlotType = EqualableFunction<Func>;
+	using container = SingleList<SlotType>;
+	using iterator = typename container::iterator;
+	using const_iterator = typename container::const_iterator;
+
+	struct Connection{
+		const_iterator node;
+		container* ref=nullptr;
+		Connection(const_iterator link,container& src):node(link),ref(&src){}
+		Connection(){}
+		void disconnect() {
+			ref->erase_after(node);
+		}
+	};
+};
+
+template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
+class BasicSignal;
 
 struct DefaultResCombiner {
 	template<class Iter,class...Ts>
@@ -72,24 +90,15 @@ struct DefaultResCombiner {
 	}
 };
 
-template<class R,class...Ps>
-class BasicSignal<R(Ps...)> {
-	using Func = R(Ps...);
-	using SlotType = EqualableFunction<Func>;
-	using container = SingleList<SlotType>;
+template<class R,class...Ps,class SlotTrait>
+class BasicSignal<R(Ps...),SlotTrait> {
+	using SlotType = typename SlotTrait::SlotType;
+	using container = typename SlotTrait::container;
 	using iterator = typename container::iterator;
 	using const_iterator = typename container::const_iterator;
 	container slot_list;
 public:
-	struct Connection{
-		const_iterator node;
-		container* ref=nullptr;
-		Connection(const_iterator link,container& src):node(link),ref(&src){}
-		Connection(){}
-		void disconnect() {
-			ref->erase_after(node);
-		}
-	};
+	using Connection = typename SlotTrait::Connection;
 public:
 	BasicSignal()
 	:slot_list(){}
@@ -110,7 +119,7 @@ public:
 				提供3个迭代器参数,其中end是当前的end,real_end是真正的end
 				但是对其的间接引用不引发函数调用,需要显式地调用args...
 		\return 返回res_collector的调用结果.
-		\note	
+		\note	last不是slot,组合器绝不可解引用它,否则行为未定义
 	*/
 	template<class ResCombiner,class...Ts>
 	decltype(auto) visit(ResCombiner&& res_collector,Ts&&...args) {
@@ -152,7 +161,7 @@ public:
 		visit(DefaultResCombiner{}, forward_m(args)...);
 	}
 	template<class F>
-	void disconnect(F&& func) {
+	void disconnect_one(F&& func) {
 		auto iter = slot_list.cbegin();
 		auto prev = slot_list.cbefore_begin();
 		for(;iter!=slot_list.cend();++iter){
@@ -164,9 +173,9 @@ public:
 		}
 	}
 	template<class F>
-	void disconnect_all(F&& func) {
+	void disconnect(F&& func) {
 		//假定func不可能是直接由*iter得到的,因为会在makeFunctor时复制一份.
-		//不直接用remove是因为无法直接EqualableFunction之间是无法直接比较的.
+		//不直接用remove是因为EqualableFunction之间是无法直接比较的.
 		slot_list.remove_if(
 			[&func](const auto& target){
 				return target==std::forward<F>(func);	//\note 此处使用了lambda forward_m会失效！

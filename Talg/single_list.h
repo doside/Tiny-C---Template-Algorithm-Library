@@ -26,15 +26,15 @@ private:
 		try {
 			last = before_begin();
 			auto end = rhs.cend();
-			for (auto iter =rhs.begin();iter!=end; ++iter) {
+			for (auto iter =rhs.cbegin();iter!=end; ++iter) {
 				last = Base::insert_after(last, *iter);
 			}
 			Base::erase_after(before_begin(), ++old);
 		}
 		catch (...) {
 			last = old;
+			throw;
 		}
-		
 	}
 public:
 	using Base::get_allocator;

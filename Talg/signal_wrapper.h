@@ -302,7 +302,7 @@ public:
 		return *this;
 	}
 	/*
-		\brief	去除与一个与指定的函数对象相等的槽.
+		\brief	去除与所有与指定的函数对象相等的槽.
 		\param	func任意的函数对象,支持可选参数
 				(无视顺序,但要求去除cv后必须类型一致,具体见functor)
 				必须要与添加时的类型一致才可能成功删除.
@@ -310,8 +310,8 @@ public:
 				sig -= f1
 					-= f2;
 		\note	使用者必须当心链式调用时的参数求值顺序不确定
-		\todo fix	boost好像是全部去除,与此处行为不一致.
-					提供利用函数对象指针来删除成员函数回调的重载.
+				由于主流信号槽设施都是一次删除所有相等的slot,
+				所以此处也如此,如果要仅删除一个则应使用disconnect_one
 	*/
 	template<class F>
 	SignalWrapper& operator-=(F&& func)
@@ -322,7 +322,7 @@ public:
 	}
 
 	/*
-		\brief	 删除某个回调
+		\brief	 去除与所有与指定的函数对象相等的槽.
 		\note	直接用functor进行包装,从而与connect时的参数类型相称,
 				对于不提供等号比较的类型(比如lambda),直接比较类型.
 				对于成员函数可以直接 connect(obj,&Obj::mem_func);
@@ -334,10 +334,10 @@ public:
 		return Base::disconnect(makeFunctor<ftype>(forward_m(func)...));
 	}
 	template<class... Fs>
-	decltype(auto) disconnect_all(Fs&&... func)
-		except_when(std::declval<Base&>().disconnect_all(makeFunctor<ftype>(forward_m(func)...)))
+	decltype(auto) disconnect_one(Fs&&... func)
+		except_when(std::declval<Base&>().disconnect_one(makeFunctor<ftype>(forward_m(func)...)))
 	{
-		return Base::disconnect_all(makeFunctor<ftype>(forward_m(func)...));
+		return Base::disconnect_one(makeFunctor<ftype>(forward_m(func)...));
 	}
 
 
