@@ -83,5 +83,8 @@
     <ClInclude Include="single_list.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="function_wrapper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

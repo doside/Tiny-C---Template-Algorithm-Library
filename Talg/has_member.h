@@ -25,7 +25,8 @@ struct hasOpCall{
 template<class T>
 using EnableIfT = std::enable_if_t<T::value>;
 
-
+template<class T,class Require>
+using ExcludeType = EnableIfT<NotSame<std::decay_t<T>, Require>>;
 
 
 /*template<class T>

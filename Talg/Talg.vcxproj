@@ -146,6 +146,7 @@
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="exString.h" />
     <ClInclude Include="find_val.h" />
+    <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="has_member.h" />
     <ClInclude Include="index_seq.h" />
     <ClInclude Include="invoke_impl.h" />
