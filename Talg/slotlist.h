@@ -89,7 +89,7 @@ struct DefaultSlotTraits {
 		void disconnect() {
 			if (state != discon) {
 				ref->erase_after(node);
-				iterator old = node++;
+				iterator old = node++;	//此处使用auto时曾经引发MSVC的bug
 				if (node == ref->end()) {
 					state = discon;
 					return ;
