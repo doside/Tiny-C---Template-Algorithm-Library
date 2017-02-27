@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <forward_list>
 #include <cassert>
 
@@ -17,7 +17,7 @@ public:
 	using iterator			=typename Base::iterator;
 	using const_iterator	=typename Base::const_iterator;
 private:
-	const_iterator last;
+	iterator last;
 	bool wasEmpty()const noexcept {
 		return last == Base::before_begin();
 	}
@@ -80,7 +80,7 @@ public:
 	const_iterator before_end()const noexcept {
 		return last;
 	}
-	auto before_end()noexcept {
+	iterator before_end()noexcept {
 		return last;
 	}
 	reference back()noexcept {
@@ -125,6 +125,7 @@ public:
 			last = begin();
 		}
 	}
+	
 
 	template<class...Ts>
 	reference emplace_front(Ts&&... args) {
@@ -155,15 +156,19 @@ public:
 			Base::pop_front();
 		}
 	}
-	iterator erase_after(const_iterator pos)
+	iterator erase_after(iterator pos)
 		noexcept(noexcept(std::declval<Base>().erase_after(pos)))
 	{
 		assert(pos != last && !empty());
+		
 		auto res = Base::erase_after(pos);
 		if (res == end()) {
-			last = pos;
+			last = pos;//Base::erase_after(pos,pos); //为了把const_iterator转换为iterator
 		}
 		return res;
+	}
+	iterator clear_before() {
+		return Base::erase_after(begin(), last);
 	}
 	void remove(const T& value) {
 		using std::addressof;

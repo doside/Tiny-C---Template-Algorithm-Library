@@ -7,6 +7,7 @@
 #include "has_member.h"
 #include <type_traits>	
 #include <tuple>
+#include <memory>
 
 struct MatchParam
 {

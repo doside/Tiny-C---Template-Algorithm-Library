@@ -61,38 +61,91 @@ public:
 
 template<class Func>
 struct DefaultSlotTraits {
-	using SlotType = EqualableFunction<Func>;
+	enum SlotState{
+		free=0,discon=2,blocked=4,locked=8
+	};
+	struct State;
+	struct SlotType : EqualableFunction<Func> {
+		using Base = EqualableFunction<Func>;
+		State* state;
+		template<class...Ts>
+		SlotType(State* s, Ts&&...args)
+			: Base(forward_m(args)...),state(s)
+		{
+
+		}
+		~SlotType();
+	};
 	using container = SingleList<SlotType>;
 	using iterator = typename container::iterator;
 	using const_iterator = typename container::const_iterator;
-
-	struct Connection{
-		const_iterator node;
+	
+	struct State {
+		SlotState state=free;
+		iterator node;
 		container* ref=nullptr;
-		Connection(const_iterator link,container& src):node(link),ref(&src){}
-		Connection(){}
+		
+		State(iterator link,container& src):node(link),ref(&src){}
 		void disconnect() {
-			ref->erase_after(node);
+			if (state != discon) {
+				ref->erase_after(node);
+				iterator old = node++;
+				if (node == ref->end()) {
+					state = discon;
+					return ;
+				}
+				if(node->state != nullptr) {
+					node->state->node =  old;
+				}
+			}
+			state = discon;
+		}
+		~State() {
+			if (state != discon) {
+				auto next=std::next(node);
+				next->state = nullptr;
+			}
 		}
 	};
+	
+	using Connection = std::unique_ptr<State>;
+	/*struct Connection{
+		std::unique_ptr<State> ptr;
+
+		Connection(const_iterator link, container& src)
+			:ptr(std::make_unique<State>(link, src));
+		Connection(){}
+		void disconnect() {
+			ptr->disconnect();
+		}
+	};*/
 };
+template<class Func>
+ DefaultSlotTraits<Func>::SlotType::~SlotType() {
+	if (state != nullptr) {
+		state->state = discon;
+	}
+}
 
 template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
 class BasicSignal;
 
 struct DefaultResCombiner {
 	template<class Iter,class...Ts>
-	int operator()(Iter beg,Iter end, Iter real_end, Ts&&...args) {
-		for (auto iter = beg; iter != end; ++iter) {
+	decltype(auto) operator()(Iter iter,Iter end, Iter real_end, Ts&&...args) {
+		if (iter == real_end)
+			return;
+		for (; iter != end ; ++iter) {
 			(*iter)(forward_m(args)...);
 		}
-		return 0;
+		(*end)(forward_m(args)...);
 	}
 };
 
 template<class R,class...Ps,class SlotTrait>
 class BasicSignal<R(Ps...),SlotTrait> {
 	using SlotType = typename SlotTrait::SlotType;
+	using State = typename SlotTrait::State;
 	using container = typename SlotTrait::container;
 	using iterator = typename container::iterator;
 	using const_iterator = typename container::const_iterator;
@@ -101,13 +154,16 @@ public:
 	using Connection = typename SlotTrait::Connection;
 public:
 	BasicSignal()
-	:slot_list(){}
+	:slot_list(){
+
+	}
 
 	template<class... Ts>
 	Connection connect(Ts&&... func) {
-		Connection res{ slot_list.before_end(),slot_list };
-		slot_list.emplace_back(forward_m(func)...);
-		return res;
+		//Connection res{ slot_list.before_end(),slot_list };
+		auto con = std::make_unique<State>(slot_list.before_end(), slot_list);
+		slot_list.emplace_back(con.get(),forward_m(func)...);
+		return con;
 	}
 
 	/*
@@ -122,21 +178,12 @@ public:
 		\note	last不是slot,组合器绝不可解引用它,否则行为未定义
 	*/
 	template<class ResCombiner,class...Ts>
-	decltype(auto) visit(ResCombiner&& res_collector,Ts&&...args) {
-		//必须插入一个伪结点,而不可以直接用slot_list.before_end(),
-		//因为在调用过程中它有可能被删除,并且也不符合半开半闭区间的习惯
-		//保存当前最后一个元素的迭代器,用于删除被插入的伪结点
-		auto prev_last = slot_list.cbefore_end(); 
-		slot_list.push_back(nullptr);
-		auto end = slot_list.cbefore_end();//伪装的哨兵结点
-		
-		//todo: 是否应该auto&& ?		
-		auto res=forward_m(res_collector)(
-					slot_list.cbegin(), end, 
+	auto visit(ResCombiner&& res_collector,Ts&&...args) {
+		//需要用optional,因为signal中并不是总是有slot,此时emit不可调用对象.
+		 forward_m(res_collector)(
+					slot_list.cbegin(), slot_list.cbefore_end(), 
 					slot_list.cend(), forward_m(args)...
 				 );
-		slot_list.erase_after(prev_last);
-		return forward_m(res);
 	}
 
 	/*
@@ -162,28 +209,46 @@ public:
 	}
 	template<class F>
 	void disconnect_one(F&& func) {
-		auto iter = slot_list.cbegin();
-		auto prev = slot_list.cbefore_begin();
-		for(;iter!=slot_list.cend();++iter){
+		auto iter = slot_list.begin();
+		auto prev = slot_list.before_begin();
+		auto end=slot_list.end();
+		while (iter != end) {
 			if (*iter==forward_m(func)) {
-				slot_list.erase_after(prev);
+				iter=slot_list.erase_after(prev);
+				if (iter != end && iter->state != nullptr) {
+					iter->state->node = prev;
+				}
 				break;
+			} else {
+				prev = iter;
+				++iter;
 			}
-			prev = iter;
 		}
 	}
 	template<class F>
 	void disconnect(F&& func) {
 		//假定func不可能是直接由*iter得到的,因为会在makeFunctor时复制一份.
 		//不直接用remove是因为EqualableFunction之间是无法直接比较的.
-		slot_list.remove_if(
-			[&func](const auto& target){
-				return target==std::forward<F>(func);	//\note 此处使用了lambda forward_m会失效！
+		auto iter = slot_list.begin();
+		auto prev = slot_list.before_begin();
+		auto end=slot_list.end();
+		while (iter != end) {
+			if (*iter==forward_m(func)) {
+				iter=slot_list.erase_after(prev);
+				if (iter == end)
+					break;
+				if (iter->state != nullptr) {
+					iter->state->node = prev;
+				}
+			} else {
+				prev = iter;
+				++iter;
 			}
-		);
+		}
 	}
 	void disconnect_all() {
-		slot_list.clear();
+		//在此过程中有些connection处于非正常状态,如果有线程在此时访问任何connection都会未定义行为
+		slot_list.clear();	
 	}
 	bool empty()const noexcept {
 		return slot_list.empty();
@@ -194,6 +259,6 @@ template<class...Ts>
 using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;
 
 
-template<class...Ts>
-using Signal = SignalWrapper<BasicSignal, Ts...>; 
+//template<class...Ts>
+//using Signal = SignalWrapper<BasicSignal, Ts...>; 
 

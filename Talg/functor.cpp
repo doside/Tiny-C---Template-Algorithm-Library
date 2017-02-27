@@ -227,7 +227,10 @@ void test_fptr2() {
 }
 
 int main() {
-	Signal<void(std::string)> myslot;
+	SimpleSignal<void(std::string)> myslot;
+	{
+		SimpleSignal<void(std::string)> slot;
+	}
 	auto make_f = [](auto&& func) {
 		return makeFunctor<void(int, std::string)>(forward_m(func));
 	};
@@ -300,7 +303,7 @@ int main() {
 			}
 		);
 		assert(!myslot.empty());
-		con.disconnect();
+		con->disconnect();
 		assert(myslot.empty());
 	}
 	//myslot("abcdefg");
@@ -368,7 +371,7 @@ int main() {
 
 	{
 		using namespace test;
-		Signal<void(double, char, const std::string&)> sig;
+		SimpleSignal<void(double, char, const std::string&)> sig;
 		sig += [](const std::string&, char) {return 1; };
 		struct A { 
 			void f(double,char){}
