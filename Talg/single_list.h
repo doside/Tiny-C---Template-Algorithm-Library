@@ -27,6 +27,7 @@ private:
 			last = before_begin();
 			auto end = rhs.cend();
 			for (auto iter =rhs.cbegin();iter!=end; ++iter) {
+				//todo fix: thie line require T be copy constructable,but it should be not. 
 				last = Base::insert_after(last, *iter);
 			}
 			Base::erase_after(before_begin(), ++old);

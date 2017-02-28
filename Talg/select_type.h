@@ -209,7 +209,7 @@ constexpr decltype(auto) apply(IdSeq<Indices...>, F&& func, Ts&&... args) {
 	return ct_invoke(forward_m(func), get<Indices>(forward_m(args)...)...);
 }
 template<class F, class...Ts>
-constexpr decltype(auto) apply(IdSeq<>, F&& func, Ts&&... args) {
+constexpr decltype(auto) apply(IdSeq<>, F&& func, Ts&&...) {
 	return forward_m(func)();
 }
 template<class F, class...Ts>

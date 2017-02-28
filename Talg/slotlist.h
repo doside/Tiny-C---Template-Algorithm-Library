@@ -2,6 +2,7 @@
 #include "single_list.h"
 #include "signal_wrapper.h"
 #include "has_member.h"
+#include "slot_iterator.h"
 
 template<class Func>
 struct EqualableFunction :std::function<Func> {
@@ -74,6 +75,10 @@ struct DefaultSlotTraits {
 		{
 
 		}
+		SlotType(SlotType&&) = default;
+		SlotType(const SlotType&) = default; //todo: forbid such function.
+		SlotType& operator=(const SlotType&) = default;
+		SlotType& operator=(SlotType&&) = default;
 		~SlotType();
 	};
 	using container = SingleList<SlotType>;
@@ -86,16 +91,20 @@ struct DefaultSlotTraits {
 		container* ref=nullptr;
 		
 		State(iterator link,container& src):node(link),ref(&src){}
+		State(const State&) = delete;
+		State(State&&) = default;
+		State& operator=(const State&) = delete;
+		State& operator=(State&&) = default;
 		void disconnect() {
 			if (state != discon) {
 				ref->erase_after(node);
-				iterator old = node++;	//此处使用auto时曾经引发MSVC的bug
+				iterator old = node++;	//此处使用auto时曾经引发未知的MSVC的bug
 				if (node == ref->end()) {
 					state = discon;
-					return ;
+					return;
 				}
 				if(node->state != nullptr) {
-					node->state->node =  old;
+					node->state->node = old;
 				}
 			}
 			state = discon;
@@ -109,6 +118,7 @@ struct DefaultSlotTraits {
 	};
 	
 	using Connection = std::unique_ptr<State>;
+	using SharedConnection = std::shared_ptr<State>;
 	/*struct Connection{
 		std::unique_ptr<State> ptr;
 
@@ -130,13 +140,34 @@ template<class Func>
 template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
 class BasicSignal;
 
+template<class R>
 struct DefaultResCombiner {
 	template<class Iter,class...Ts>
-	decltype(auto) operator()(Iter iter,Iter end, Iter real_end, Ts&&...args) {
-		if (iter == real_end)
+	decltype(auto) operator()(const Iter& iter,const Iter& end, const Iter& real_end, Ts&&...args) {
+		if (iter == real_end) {
 			return;
-		for (; iter != end ; ++iter) {
-			(*iter)(forward_m(args)...);
+		}
+
+		{
+			CacheRes<R> cache;
+			auto lambda=[&cache,&args...](const Iter& iter,bool getval=true){
+				if (getval) {
+					if(!cache){
+						cache.reset(iter, std::forward<Ts>(args)...);
+					}
+				} else {
+					cache.reset();
+					assert(!cache);
+				}
+				return cache;
+			};
+
+
+			auto first = makeSlotIter<R>(iter,lambda);
+			auto last = makeSlotIter<R>(end,lambda);
+			for (; first != last ; ++first) {
+				*first;
+			}
 		}
 		(*end)(forward_m(args)...);
 	}
@@ -152,6 +183,7 @@ class BasicSignal<R(Ps...),SlotTrait> {
 	container slot_list;
 public:
 	using Connection = typename SlotTrait::Connection;
+	using SharedConnection = typename SlotTrait::SharedConnection;
 public:
 	BasicSignal()
 	:slot_list(){
@@ -195,7 +227,7 @@ public:
 	*/
 	template<class...Ts>
 	void operator()(Ts&&...args) {
-		visit(DefaultResCombiner{}, forward_m(args)...);
+		visit(DefaultResCombiner<R>{}, forward_m(args)...);
 	}
 
 	/*
@@ -205,7 +237,7 @@ public:
 				有多余的复制产生,因为std::function也像这样复制了参数.
 	*/
 	void emit(Ps...args) {
-		visit(DefaultResCombiner{}, forward_m(args)...);
+		visit(DefaultResCombiner<R>{}, forward_m(args)...);
 	}
 	template<class F>
 	void disconnect_one(F&& func) {

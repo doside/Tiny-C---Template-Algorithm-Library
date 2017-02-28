@@ -150,11 +150,13 @@
     <ClInclude Include="has_member.h" />
     <ClInclude Include="index_seq.h" />
     <ClInclude Include="invoke_impl.h" />
+    <ClInclude Include="iter_call_cache.h" />
     <ClInclude Include="select_type.h" />
     <ClInclude Include="seqop.h" />
     <ClInclude Include="signal_wrapper.h" />
     <ClInclude Include="single_list.h" />
     <ClInclude Include="slotlist.h" />
+    <ClInclude Include="slot_iterator.h" />
     <ClInclude Include="strippe_qualifier.h" />
     <ClInclude Include="test_suits.h" />
   </ItemGroup>

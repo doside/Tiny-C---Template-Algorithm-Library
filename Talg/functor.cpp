@@ -271,6 +271,11 @@ int main() {
 	};
 	//assert(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
 	{
+		SimpleSignal<void(int)> sig;
+		sig+ [](){};
+		sig(1);
+	}
+	{
 		auto id=myslot.connect(callback1);
 		assert(!myslot.empty());
 		myslot -= callback1;
@@ -288,6 +293,13 @@ int main() {
 		assert(!myslot.empty());
 		myslot-=&test_fptr;
 		assert(myslot.empty());
+	}
+	{
+		auto con1 = myslot + test_fptr;
+		auto con2 = myslot + &test_fptr;
+		con1->disconnect();
+		con2->disconnect();
+		ensure_clear();
 	}
 	/*{
 		myslot+=callback1;

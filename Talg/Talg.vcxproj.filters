@@ -86,5 +86,11 @@
     <ClInclude Include="function_wrapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="iter_call_cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="slot_iterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
