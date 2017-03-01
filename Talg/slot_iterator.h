@@ -41,6 +41,9 @@ public:
 
 	SlotCallIterator& operator++() {
 		++iter_;
+		if (iter_->state != nullptr && iter_->state->is_blocked()) {
+			iter_ = iter_->state->get_next();
+		}
 		cache_(iter_,false);
 		/*while(iter->state_obser != nullptr){
 			auto* state = iter->state_obser;

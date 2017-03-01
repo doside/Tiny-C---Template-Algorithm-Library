@@ -78,7 +78,11 @@ struct CacheRes<void>{
 	bool is_called=false;
 	template<class Iter,class...Ts>
 	void reset(const Iter&iter,Ts&&...args) { 
-		(*iter)(forward_m(args)...);
+		iter->lock_then_call(
+			[&args...](auto&& slot) {
+				forward_m(slot)(forward_m(args)...); 
+			}
+		);
 		is_called = true;
 	}
 	void reset()noexcept{

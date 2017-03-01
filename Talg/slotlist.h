@@ -79,6 +79,8 @@ struct DefaultSlotTraits {
 		SlotType(const SlotType&) = default; //todo: forbid such function.
 		SlotType& operator=(const SlotType&) = default;
 		SlotType& operator=(SlotType&&) = default;
+		template<class F>
+		decltype(auto) lock_then_call(F func)const;
 		~SlotType();
 	};
 	using container = SingleList<SlotType>;
@@ -86,32 +88,76 @@ struct DefaultSlotTraits {
 	using const_iterator = typename container::const_iterator;
 	
 	struct State {
-		SlotState state=free;
-		iterator node;
 		container* ref=nullptr;
+		iterator prev_node_;
+		iterator next_node_;
+		SlotState state=free;
 		
-		State(iterator link,container& src):node(link),ref(&src){}
+		
+		State(iterator link,container& src)
+			:ref(&src),prev_node_(link),next_node_(prev_node_)
+		{		}
+
 		State(const State&) = delete;
 		State(State&&) = default;
 		State& operator=(const State&) = delete;
 		State& operator=(State&&) = default;
+		void seek_next() {
+			//precondition  std::next(prev_node_)!=std::end();
+			assert(next_node_ == prev_node_);
+			++next_node_;
+			while (next_node_ != ref->end() && next_node_->state != nullptr) {
+				if (next_node_->state->state==free) {
+					break;
+				}
+				++next_node_;
+			}
+		}
+		const iterator& get_next()const noexcept { return next_node_; }
+		void lock() {
+			//precondition: signal is emitting.
+			state = locked;
+			seek_next();
+		}
+		void block() {
+			if (state != discon) {
+				state = blocked;
+				seek_next();
+			}
+		}
+		void unblock() {
+			if (state != discon) {
+				state = free;
+				next_node_ = prev_node_;
+			}
+		}
+		bool is_blocked()const noexcept{
+			return state == blocked || state==locked;
+		}
+		bool is_disconnected()const noexcept {
+			return state == discon;
+		}
+		bool is_connected()const noexcept {
+			return state != discon;
+		}
+
 		void disconnect() {
 			if (state != discon) {
-				ref->erase_after(node);
-				iterator old = node++;	//此处使用auto时曾经引发未知的MSVC的bug
-				if (node == ref->end()) {
+				ref->erase_after(prev_node_);
+				iterator old = prev_node_++;	//此处使用auto时曾经引发未知的MSVC的bug
+				if (prev_node_ == ref->end()) {
 					state = discon;
 					return;
 				}
-				if(node->state != nullptr) {
-					node->state->node = old;
+				if(prev_node_->state != nullptr) {
+					prev_node_->state->prev_node_ = old;
 				}
 			}
 			state = discon;
 		}
 		~State() {
 			if (state != discon) {
-				auto next=std::next(node);
+				auto next=std::next(prev_node_);
 				next->state = nullptr;
 			}
 		}
@@ -119,16 +165,6 @@ struct DefaultSlotTraits {
 	
 	using Connection = std::unique_ptr<State>;
 	using SharedConnection = std::shared_ptr<State>;
-	/*struct Connection{
-		std::unique_ptr<State> ptr;
-
-		Connection(const_iterator link, container& src)
-			:ptr(std::make_unique<State>(link, src));
-		Connection(){}
-		void disconnect() {
-			ptr->disconnect();
-		}
-	};*/
 };
 template<class Func>
  DefaultSlotTraits<Func>::SlotType::~SlotType() {
@@ -136,6 +172,24 @@ template<class Func>
 		state->state = discon;
 	}
 }
+template<class Func>
+template<class F>
+decltype(auto) DefaultSlotTraits<Func>::SlotType::lock_then_call(F func)const{
+	assert(
+		state==nullptr || (!(state->is_blocked()) && state->is_connected())
+	);
+	if (state == nullptr) {
+		return func(*this);
+	}
+	
+	state->lock();
+	auto when_exit = [this](auto* ) {
+		state->unblock();
+	};
+	std::unique_ptr<State, decltype(when_exit)> ( state, when_exit );
+	return func(*this);
+}
+
 
 template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
 class BasicSignal;
@@ -248,7 +302,7 @@ public:
 			if (*iter==forward_m(func)) {
 				iter=slot_list.erase_after(prev);
 				if (iter != end && iter->state != nullptr) {
-					iter->state->node = prev;
+					iter->state->prev_node_ = prev;
 				}
 				break;
 			} else {
@@ -270,7 +324,7 @@ public:
 				if (iter == end)
 					break;
 				if (iter->state != nullptr) {
-					iter->state->node = prev;
+					iter->state->prev_node_ = prev;
 				}
 			} else {
 				prev = iter;
