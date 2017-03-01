@@ -150,7 +150,9 @@ struct MemFun
 
 	//我们在实现中假定了它们是指针,所以有这个断言
 	static_assert(std::is_pointer<Ptr>::value && 
-					(std::is_pointer<Pointer>::value||std::is_member_pointer<Pointer>::value),
+					(std::is_pointer<Pointer>::value||
+						std::is_member_pointer<Pointer>::value||
+							std::is_same<std::decay_t<Pointer>,nullptr_t>::value),
 					"MemFun static assert failed.");
 	Ptr ptr_;
 	Pointer pmd;	//todo: pmd可以是自由函数,未必需要限制为成员函数指针
@@ -176,7 +178,7 @@ struct MemFun
 				不满足传递性
 	*/
 	template<class Other,class DataU,class S>
-	constexpr bool operator==(const MemFun<Other, DataU,S>& rhs)const {
+	bool operator==(const MemFun<Other, DataU,S>& rhs)const {
 		assert(ptr_ != nullptr && pmd!=nullptr);
 
 		if (rhs.ptr_ == nullptr) {

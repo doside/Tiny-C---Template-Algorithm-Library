@@ -62,7 +62,7 @@ public:
 
 template<class Func>
 struct DefaultSlotTraits {
-	enum SlotState{
+	enum SlotState:char{
 		free=0,discon=2,blocked=4,locked=8
 	};
 	struct State;
