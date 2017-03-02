@@ -215,10 +215,6 @@ namespace test {
 
 
 
-
-
-
-
 void test_fptr() {
 	std::cout << "fptr called \n";
 }
@@ -227,6 +223,8 @@ void test_fptr2() {
 }
 
 int main() {
+
+
 	SimpleSignal<void(std::string)> myslot;
 	{
 		SimpleSignal<void(std::string)> slot;
@@ -355,8 +353,10 @@ int main() {
 		ensure_clear();
 	}
 	/*{
-		using Signal = SignalWrapper<boost::signals2::signal, void()>;
-		Signal sig;
+		
+		
+		//using Signal = SignalWrapper<boost::signals2::signal, void()>;
+		//Signal sig;
 		int count = 0;
 		auto cnt = [&] {count++; };
 		auto initer= [&sig,cnt] {

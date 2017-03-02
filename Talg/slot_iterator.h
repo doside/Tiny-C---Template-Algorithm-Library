@@ -3,7 +3,7 @@
 #include <functional>
 #include <cassert>
 
-template<class R,class Func,class Iterator>
+template<class R,class Func,class Func2,class Iterator>
 class SlotCallIterator{
 	using reference_type	= typename CacheRes<R>::reference_type;
 	using value_type		= typename CacheRes<R>::value_type;
@@ -11,21 +11,29 @@ class SlotCallIterator{
 	//采用inputiterator,因为允许op++使迭代器失效.并且不是default constructable
 	using iterator_category = std::input_iterator_tag;	
 	using difference_type	= typename Iterator::difference_type;
-	Iterator iter_;
+	Iterator prev_;
 	std::reference_wrapper<Func> cache_;
+	std::reference_wrapper<Func2> seeker_;
+	bool val_ = false;
 public:
-	SlotCallIterator(const Iterator& iter,Func& data)
-	:iter_(iter),cache_(data){
-		//cache_(iter_,false);
+	SlotCallIterator(const Iterator& iter,Func& f1,Func2& f2)
+	:prev_(iter),cache_(f1),seeker_(f2){
+	
 	}
 
-	decltype(auto) operator*()noexcept{
-		return  cache_(iter_).get();
+	reference_type operator*()noexcept{
+		if (val_) {
+			return  cache_(prev_);
+		}
+		reference_type res = cache_(std::next(prev_), false);
+		val_ = false;
+		return res;
 	}
+
 	friend bool operator==(const SlotCallIterator& lhs, const SlotCallIterator& rhs)
-	noexcept(noexcept(lhs.iter_==rhs.iter_))
+	noexcept(noexcept(lhs.prev_==rhs.prev_))
 	{
-		return lhs.iter_ == rhs.iter_;
+		return lhs.prev_ == rhs.prev_;
 	}
 	friend bool operator!=(const SlotCallIterator& lhs, const SlotCallIterator& rhs)
 	noexcept(noexcept(lhs==rhs))
@@ -40,18 +48,20 @@ public:
 	}
 
 	SlotCallIterator& operator++() {
-		++iter_;
-		cache_(iter_,false);
+		++prev_;
+		seeker_(prev_);
 		return *this;
 	}
 	SlotCallIterator operator++(int) {
-		SlotCallIterator prev = *this;
+		SlotCallIterator old = *this;
 		++(*this);
-		return prev;
+		return old;
 	}
 };
 
-template<class R,class Iter,class T>
-auto makeSlotIter(const Iter& iter, T& lambda) {
-	return SlotCallIterator<R, T, Iter>{iter, lambda};
+
+
+template<class R,class Iter,class T,class T2>
+auto makeSlotIter(const Iter& iter, T& get,T2& seek) {
+	return SlotCallIterator<R, T,T2,Iter>{iter, get,seek};
 }

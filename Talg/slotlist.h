@@ -217,48 +217,29 @@ class BasicSignal;
 
 template<class R>
 struct DefaultResCombiner {
-	template<class F1,class F2>
-	struct Func{
-		F1& f1;
-		F2& f2;
-		Func(F1& f1, F2&f2):f1(f1),f2(f2){}
-		template<class T>
-		decltype(auto) operator()(T&&args) { return f2(forward_m(args)); }
-		template<class T>
-		decltype(auto) operator()(T&&args,bool) { return f1(forward_m(args),false); }
-	};
 	template<class Cache,class Iter,class...Ts>
-	decltype(auto) operator()(Cache&& cache, const Iter& iter,const Iter& end, const Iter& real_end, Ts&&...args) {
-		if (iter == real_end) {
-			return;
-		}
-
-		auto branch1=[&end,&cache,&args...](Iter& iter,bool ){
+	decltype(auto) operator()(Cache& cache, const Iter& iter,const Iter& end, const Iter& , Ts&&...args) {
+		auto getter=[&cache,&args...](const Iter& iter,bool getval=true)
+			->typename Cache::reference_type
+			{
+				if (getval) {
+					return cache.get();
+				}
+				cache.reset(iter, std::forward<Ts>(args)...);
+				return cache.get();
+			};
+		auto seeker=[&end](Iter& iter){
 			while (iter != end && iter->state != nullptr
 				&& iter->state->is_blocked()) {
 				++iter;
 			}
-			cache.reset();
-			assert(!cache);
-			return cache;
-		};
+		};	
 
-		auto lambda=[&cache,&args...](Iter& iter){
-			if(!cache){
-				cache.reset(iter, std::forward<Ts>(args)...);
-			}
-			return cache;
-		};
-			
-			
-		Func<decltype(branch1),decltype(lambda)> a (branch1,lambda );
-		auto first = makeSlotIter<R>(iter,a);
-		auto last = makeSlotIter<R>(end,a);
+		auto first = makeSlotIter<R>(iter,getter,seeker);
+		auto last = makeSlotIter<R>(end,getter,seeker);
 		for (; first != last ; ++first) {
 			*first;
 		}
-
-		(*end)(forward_m(args)...);
 	}
 };
 
@@ -301,9 +282,10 @@ public:
 	template<class ResCombiner,class...Ts>
 	auto visit(ResCombiner&& res_collector,Ts&&...args) {
 		//需要用optional,因为signal中并不是总是有slot,此时emit不可调用对象.
+		CacheRes<R> cache{};
 		 forward_m(res_collector)(
-					CacheRes_safe<R>{},
-					slot_list.cbegin(), slot_list.cbefore_end(), 
+					cache,
+					slot_list.cbefore_begin(), slot_list.cbefore_end(), 
 					slot_list.cend(), forward_m(args)...
 				 );
 	}
