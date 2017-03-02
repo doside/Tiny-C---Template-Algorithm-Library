@@ -3,6 +3,7 @@
 #include "signal_wrapper.h"
 #include "has_member.h"
 #include "slot_iterator.h"
+#include <type_traits>
 
 template<class Func>
 struct EqualableFunction :std::function<Func> {
@@ -90,45 +91,59 @@ struct DefaultSlotTraits {
 	struct State {
 		container* ref=nullptr;
 		iterator prev_node_;
-		iterator next_node_;
+		//iterator next_node_;
 		SlotState state=free;
 		
 		
 		State(iterator link,container& src)
-			:ref(&src),prev_node_(link),next_node_(prev_node_)
+			:ref(&src),prev_node_(link)//,next_node_(prev_node_)
 		{		}
 
-		State(const State&) = delete;
-		State(State&&) = default;
-		State& operator=(const State&) = delete;
-		State& operator=(State&&) = default;
-		void seek_next() {
-			//precondition  std::next(prev_node_)!=std::end();
-			assert(next_node_ == prev_node_);
-			++next_node_;
-			while (next_node_ != ref->end() && next_node_->state != nullptr) {
-				if (next_node_->state->state==free) {
-					break;
-				}
-				++next_node_;
-			}
+		//State(const State&)noexcept = delete;
+		State(State&& rhs)noexcept
+		:ref(rhs.ref),prev_node_(rhs.prev_node_),state(rhs.state)
+		{		}
+
+		//State& operator=(const State&)noexcept = delete;
+		State& operator=(State&& rhs)noexcept {	
+			//MSVC_BUG: 使用=default的话不符合noexcept
+			//一般情况下还无法复现这个问题.
+			ref = rhs.ref;
+			prev_node_ = rhs.prev_node_;
+			state = rhs.state;
+			return *this;
 		}
-		const iterator& get_next()const noexcept { return next_node_; }
-		void lock() {
+
+
+		//void seek_next()noexcept {
+		//	//precondition  std::next(prev_node_)!=std::end();
+		//	assert(next_node_ == prev_node_);
+		//	++next_node_;
+		//	while (next_node_ != ref->end() && next_node_->state != nullptr) {
+		//		if (next_node_->state->state==free) {
+		//			break;
+		//		}
+		//		++next_node_;
+		//	}
+		//}
+		//const iterator& get_next()noexcept {
+		//	return next_node_; 
+		//}
+		void lock(){
 			//precondition: signal is emitting.
 			state = locked;
-			seek_next();
+			//seek_next();
 		}
-		void block() {
+		void block(){
 			if (state != discon) {
 				state = blocked;
-				seek_next();
+				//seek_next();
 			}
 		}
-		void unblock() {
+		void unblock()noexcept {
 			if (state != discon) {
 				state = free;
-				next_node_ = prev_node_;
+				//next_node_ = prev_node_;
 			}
 		}
 		bool is_blocked()const noexcept{
@@ -141,21 +156,27 @@ struct DefaultSlotTraits {
 			return state != discon;
 		}
 
-		void disconnect() {
+		SlotState disconnect() {
+			if (state == blocked || state == locked || state == discon) {
+				return state;
+			}
 			if (state != discon) {
 				ref->erase_after(prev_node_);
 				iterator old = prev_node_++;	//此处使用auto时曾经引发未知的MSVC的bug
 				if (prev_node_ == ref->end()) {
 					state = discon;
-					return;
+					return discon;
 				}
 				if(prev_node_->state != nullptr) {
 					prev_node_->state->prev_node_ = old;
 				}
 			}
 			state = discon;
+			return discon;
 		}
 		~State() {
+			static_assert(std::is_nothrow_move_constructible<State>::value &&
+							std::is_nothrow_move_assignable<State>::value, "oh no, compiler bug");
 			if (state != discon) {
 				auto next=std::next(prev_node_);
 				next->state = nullptr;
@@ -196,33 +217,47 @@ class BasicSignal;
 
 template<class R>
 struct DefaultResCombiner {
-	template<class Iter,class...Ts>
-	decltype(auto) operator()(const Iter& iter,const Iter& end, const Iter& real_end, Ts&&...args) {
+	template<class F1,class F2>
+	struct Func{
+		F1& f1;
+		F2& f2;
+		Func(F1& f1, F2&f2):f1(f1),f2(f2){}
+		template<class T>
+		decltype(auto) operator()(T&&args) { return f2(forward_m(args)); }
+		template<class T>
+		decltype(auto) operator()(T&&args,bool) { return f1(forward_m(args),false); }
+	};
+	template<class Cache,class Iter,class...Ts>
+	decltype(auto) operator()(Cache&& cache, const Iter& iter,const Iter& end, const Iter& real_end, Ts&&...args) {
 		if (iter == real_end) {
 			return;
 		}
 
-		{
-			CacheRes<R> cache;
-			auto lambda=[&cache,&args...](const Iter& iter,bool getval=true){
-				if (getval) {
-					if(!cache){
-						cache.reset(iter, std::forward<Ts>(args)...);
-					}
-				} else {
-					cache.reset();
-					assert(!cache);
-				}
-				return cache;
-			};
-
-
-			auto first = makeSlotIter<R>(iter,lambda);
-			auto last = makeSlotIter<R>(end,lambda);
-			for (; first != last ; ++first) {
-				*first;
+		auto branch1=[&end,&cache,&args...](Iter& iter,bool ){
+			while (iter != end && iter->state != nullptr
+				&& iter->state->is_blocked()) {
+				++iter;
 			}
+			cache.reset();
+			assert(!cache);
+			return cache;
+		};
+
+		auto lambda=[&cache,&args...](Iter& iter){
+			if(!cache){
+				cache.reset(iter, std::forward<Ts>(args)...);
+			}
+			return cache;
+		};
+			
+			
+		Func<decltype(branch1),decltype(lambda)> a (branch1,lambda );
+		auto first = makeSlotIter<R>(iter,a);
+		auto last = makeSlotIter<R>(end,a);
+		for (; first != last ; ++first) {
+			*first;
 		}
+
 		(*end)(forward_m(args)...);
 	}
 };
@@ -267,6 +302,7 @@ public:
 	auto visit(ResCombiner&& res_collector,Ts&&...args) {
 		//需要用optional,因为signal中并不是总是有slot,此时emit不可调用对象.
 		 forward_m(res_collector)(
+					CacheRes_safe<R>{},
 					slot_list.cbegin(), slot_list.cbefore_end(), 
 					slot_list.cend(), forward_m(args)...
 				 );

@@ -41,17 +41,7 @@ public:
 
 	SlotCallIterator& operator++() {
 		++iter_;
-		if (iter_->state != nullptr && iter_->state->is_blocked()) {
-			iter_ = iter_->state->get_next();
-		}
 		cache_(iter_,false);
-		/*while(iter->state_obser != nullptr){
-			auto* state = iter->state_obser;
-			if (state->is_free()) {
-				break;
-			}
-			++iter;
-		}*/
 		return *this;
 	}
 	SlotCallIterator operator++(int) {
@@ -62,6 +52,6 @@ public:
 };
 
 template<class R,class Iter,class T>
-auto makeSlotIter(const Iter& iter,T& lambda) {
+auto makeSlotIter(const Iter& iter, T& lambda) {
 	return SlotCallIterator<R, T, Iter>{iter, lambda};
 }
