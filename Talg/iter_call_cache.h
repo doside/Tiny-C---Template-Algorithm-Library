@@ -28,24 +28,30 @@ template<class T>
 struct OptionalVal {
 	union {
 		T val;
-		//bool dummy;
+		bool dummy;
 	}val;
-	//bool is_active=false;
-	OptionalVal()noexcept{}
+	bool is_active=false;
+	OptionalVal()noexcept = default;
 	void operator=(OptionalVal) = delete;
 	OptionalVal(OptionalVal&&) = delete;
 
 	template<class Iter,class...Ts>
 	void reset(const Iter& iter,Ts&&...args) {
-		//if(!is_active)
-		val.val.~T();
+		if(is_active)
+			val.val.~T();
 		new(&(val.val)) T( (*iter)(forward_m(args)...) );
+		is_active = true;
 	}
 	
-	//explicit operator bool()const noexcept {
-	//	return is_active;
-	//}
-
+	explicit operator bool()const noexcept {
+		return is_active;
+	}
+	void reset()noexcept {
+		if (is_active) {
+			val.val.~T();
+			is_active = false;
+		}
+	}
 	const T& get()const noexcept{
 		return val.val;
 	}
@@ -53,7 +59,7 @@ struct OptionalVal {
 		return val.val;
 	}
 	~OptionalVal() {
-		val.val.~T();
+		reset();
 	}
 };
 
@@ -72,15 +78,21 @@ struct CacheRes<void>{
 	using reference_type	= const CacheRes<void>&;
 	using value_type		= const CacheRes<void>;
 	using pointer			= const CacheRes<void>*;
+	bool is_called=false;
 	template<class Iter,class...Ts>
-	void reset(const Iter&iter,Ts&&...args)const { 
+	void reset(const Iter&iter,Ts&&...args) { 
 		(*iter)(forward_m(args)...); 
+		is_called = true;
 	}
-	reference_type get()const noexcept{
+	void reset()noexcept{
+		is_called = false;
+	}
+	explicit operator bool()const noexcept {
+		return is_called;
+	}
+	const CacheRes<void>& get()const noexcept{
 		return *this;
 	}
-	CacheRes& operator=(CacheRes<void>&&) = delete;
-	CacheRes(CacheRes<void>&&) = delete;
 };
 template<class R>
 class CacheRes<R&&>: public RefWrapper<R&&>{ };
@@ -174,3 +186,6 @@ struct CacheRes_safe<void>{
 };
 template<class R>
 class CacheRes_safe<R&&>: public RefWrapper<R&&>{ };
+
+
+

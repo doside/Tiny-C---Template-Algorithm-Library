@@ -222,6 +222,12 @@ void test_fptr2() {
 	std::cout << "fptr2 called \n";
 }
 
+void assure(bool val){
+	if(!val){
+		throw std::runtime_error("assert failed");
+	}
+}
+
 int main() {
 
 
@@ -240,7 +246,7 @@ int main() {
 		hasEqualCompare<test::B,test::A&>::value==true,
 		hasEqualCompare<test::A,test::B&>::value==false
 	>{};
-	//assert(make_f(test::A{})
+	//assure(make_f(test::A{})
 	auto Timer=[](auto f) {
 		using namespace std;
 		auto beg = std::chrono::steady_clock::now();
@@ -256,18 +262,18 @@ int main() {
 	
 	static_assert(sizeof(make_f(callback1)) == 1, "");
 	static_assert(sizeof(make_f(test_fptr)) == 4, "");
-	assert(make_f(callback1) == make_f(callback1));
-	assert(make_f(callback1) != make_f(test_fptr));
-	assert(make_f(test_fptr2) != make_f(&test_fptr));
-	assert(make_f(test::A{}) == make_f(test::A{})); //由于A没有const相等比较,所以采用默认的比较
-	assert(make_f(test::B{}) == make_f(test::A{})); 
-	assert(make_f(test::A{}) != make_f(test::B{}));
+	assure(make_f(callback1) == make_f(callback1));
+	assure(make_f(callback1) != make_f(test_fptr));
+	assure(make_f(test_fptr2) != make_f(&test_fptr));
+	assure(make_f(test::A{}) == make_f(test::A{})); //由于A没有const相等比较,所以采用默认的比较
+	assure(make_f(test::B{}) == make_f(test::A{})); 
+	assure(make_f(test::A{}) != make_f(test::B{}));
 
 	auto ensure_clear = [&] {
 		myslot.disconnect_all();
-		assert(myslot.empty());
+		assure(myslot.empty());
 	};
-	//assert(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
+	//assure(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
 	{
 		SimpleSignal<void(int)> sig;
 		sig+ [](){};
@@ -275,22 +281,22 @@ int main() {
 	}
 	{
 		auto id=myslot.connect(callback1);
-		assert(!myslot.empty());
+		assure(!myslot.empty());
 		myslot -= callback1;
-		assert(myslot.empty());
+		assure(myslot.empty());
 	}
 	{
 		myslot+=test_fptr;
-		assert(!myslot.empty());
+		assure(!myslot.empty());
 		myslot+=&test_fptr;
 		myslot-=test_fptr;
-		assert(myslot.empty());
+		assure(myslot.empty());
 	}
 	{
 		myslot+=test_fptr;
-		assert(!myslot.empty());
+		assure(!myslot.empty());
 		myslot-=&test_fptr;
-		assert(myslot.empty());
+		assure(myslot.empty());
 	}
 	{
 		auto con1 = myslot + test_fptr;
@@ -301,10 +307,10 @@ int main() {
 	}
 	/*{
 		myslot+=callback1;
-		assert(!myslot.empty());
+		assure(!myslot.empty());
 		void (*ptr)(std::string) = callback1;
 		myslot-=*ptr;
-		assert(myslot.empty());
+		assure(myslot.empty());
 	}*/
 	{
 		auto con=myslot.connect( 
@@ -312,9 +318,9 @@ int main() {
 				std::cout <<"2:"<< str << std::endl;
 			}
 		);
-		assert(!myslot.empty());
+		assure(!myslot.empty());
 		con->disconnect();
-		assert(myslot.empty());
+		assure(myslot.empty());
 	}
 	//myslot("abcdefg");
 	
@@ -324,14 +330,14 @@ int main() {
 	{
 		myslot += [](auto&&...) {};
 		myslot -= [](auto&&...) {};
-		assert(!myslot.empty());
+		assure(!myslot.empty());
 		ensure_clear();
 	}
 	{
 		std::string str;
 		myslot += [&str](auto&& s) {str = s; };
 		myslot("blabla");
-		assert("blabla" == str);
+		assure("blabla" == str);
 		
 	}
 	{
@@ -343,14 +349,33 @@ int main() {
 		};
 		myslot += initer;
 		myslot("");
-		assert(count == 0);
+		assure(count == 0);
 		myslot("");
 		myslot -= initer;
 		myslot("");
-		assert(count == 300);
+		assure(count == 300);
 		myslot("");
-		assert(count == 500);
+		assure(count == 500);
 		ensure_clear();
+	}
+
+	{
+		ensure_clear();
+		int count = 0;
+		int up = 100;
+		auto con=myslot + [&] {
+			for(;count<up;++count) { }
+		};
+		myslot("");
+		assure(count == 100);
+		
+		up = 200;
+		con->block();
+		myslot("");
+		assure(count == 100);
+		con->unblock();
+		myslot("");
+		assure(count == 200);
 	}
 	/*{
 		
@@ -365,15 +390,15 @@ int main() {
 		};
 		sig += initer;
 		sig();
-		assert(count == 0);
+		assure(count == 0);
 		sig();
-		assert(count == 100);
+		assure(count == 100);
 
 		sig -= initer;
 		sig();
-		assert(count == 300);
+		assure(count == 300);
 		sig();
-		assert(count == 500);
+		assure(count == 500);
 	}*/
 	
 	myslot += test_fptr2;

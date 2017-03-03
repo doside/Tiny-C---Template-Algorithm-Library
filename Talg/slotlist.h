@@ -186,6 +186,15 @@ struct DefaultSlotTraits {
 	
 	using Connection = std::unique_ptr<State>;
 	using SharedConnection = std::shared_ptr<State>;
+
+	struct DefaultResCombiner {
+		template<class Iter>
+		decltype(auto) operator()(Iter first,Iter last) {
+			for (; first != last ; ++first) {
+				*first;
+			}
+		}
+	};
 };
 template<class Func>
  DefaultSlotTraits<Func>::SlotType::~SlotType() {
@@ -215,45 +224,21 @@ decltype(auto) DefaultSlotTraits<Func>::SlotType::lock_then_call(F func)const{
 template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
 class BasicSignal;
 
-template<class R>
-struct DefaultResCombiner {
-	template<class Cache,class Iter,class...Ts>
-	decltype(auto) operator()(Cache& cache, const Iter& iter,const Iter& end, const Iter& , Ts&&...args) {
-		auto getter=[&cache,&args...](const Iter& iter,bool getval=true)
-			->typename Cache::reference_type
-			{
-				if (getval) {
-					return cache.get();
-				}
-				cache.reset(iter, std::forward<Ts>(args)...);
-				return cache.get();
-			};
-		auto seeker=[&end](Iter& iter){
-			while (iter != end && iter->state != nullptr
-				&& iter->state->is_blocked()) {
-				++iter;
-			}
-		};	
 
-		auto first = makeSlotIter<R>(iter,getter,seeker);
-		auto last = makeSlotIter<R>(end,getter,seeker);
-		for (; first != last ; ++first) {
-			*first;
-		}
-	}
-};
 
 template<class R,class...Ps,class SlotTrait>
-class BasicSignal<R(Ps...),SlotTrait> {
+class BasicSignal<R(Ps...),SlotTrait>:private SlotTrait {
 	using SlotType = typename SlotTrait::SlotType;
 	using State = typename SlotTrait::State;
 	using container = typename SlotTrait::container;
 	using iterator = typename container::iterator;
 	using const_iterator = typename container::const_iterator;
+private:
 	container slot_list;
 public:
 	using Connection = typename SlotTrait::Connection;
 	using SharedConnection = typename SlotTrait::SharedConnection;
+	using DefaultResCombiner = typename SlotTrait::DefaultResCombiner;
 public:
 	BasicSignal()
 	:slot_list(){
@@ -268,6 +253,8 @@ public:
 		return con;
 	}
 
+
+
 	/*
 		\brief	用于让任意类型的结果组合调用所有的当前事件槽,
 				并且在该调用过程中,如果有新的事件被添加,不会
@@ -281,14 +268,54 @@ public:
 	*/
 	template<class ResCombiner,class...Ts>
 	auto visit(ResCombiner&& res_collector,Ts&&...args) {
-		//需要用optional,因为signal中并不是总是有slot,此时emit不可调用对象.
-		CacheRes<R> cache{};
-		 forward_m(res_collector)(
-					cache,
-					slot_list.cbefore_begin(), slot_list.cbefore_end(), 
-					slot_list.cend(), forward_m(args)...
+		forward_m(res_collector)(
+					slot_list.cbegin(),
+					slot_list.cend(), 
+					slot_list,
+					slot_list.cbefore_end(), 
+					forward_m(args)...
 				 );
 	}
+
+	template<class ResCombiner,class Cache,class Iter,class...Ts>
+	decltype(auto) call(ResCombiner&& res_collector,Cache& cache,const Iter& before_beg,const Iter& before_end, Ts&&...args) 
+	{
+		auto getter=[&cache,&args...](const Iter& iter)->typename Cache::reference_type
+			{
+				if (!cache) {
+					cache.reset(iter, std::forward<Ts>(args)...);
+				}
+				return cache.get();
+			};
+
+		auto seeker=[&before_end,&cache](Iter& iter){
+			cache.reset();
+			while (iter != before_end && iter->state != nullptr
+				&& iter->state->is_blocked()) {
+				++iter;
+			}
+		};		
+		auto first=makeSlotIter<R>(before_beg, getter, seeker);
+		if (!empty() && !is_callable_iterator(std::next(before_beg))) {
+			++first;
+		}
+		return forward_m(res_collector)(
+			first,
+			makeSlotIter<R>(before_end,getter,seeker)
+		);
+	}
+
+
+	template<class ResCombiner,class...Ts>
+	decltype(auto) collect(ResCombiner&& res_collector,Ts&&...args) {
+		CacheRes<R> cache{};
+		return call(forward_m(res_collector), cache,
+			slot_list.cbefore_begin(), 
+			slot_list.cbefore_end(),
+			forward_m(args)...);
+	}
+
+
 
 	/*
 		\brief	直接调用所有事件
@@ -298,8 +325,12 @@ public:
 				对于static member data 会导致odr-use
 	*/
 	template<class...Ts>
-	void operator()(Ts&&...args) {
-		visit(DefaultResCombiner<R>{}, forward_m(args)...);
+	decltype(auto) operator()(Ts&&...args) {
+		CacheRes<R> cache{};
+		return call(DefaultResCombiner{}, cache,
+			slot_list.cbefore_begin(), 
+			slot_list.cbefore_end(),
+			forward_m(args)...);
 	}
 
 	/*
@@ -309,7 +340,7 @@ public:
 				有多余的复制产生,因为std::function也像这样复制了参数.
 	*/
 	void emit(Ps...args) {
-		visit(DefaultResCombiner<R>{}, forward_m(args)...);
+		visit(DefaultResCombiner{}, forward_m(args)...);
 	}
 	template<class F>
 	void disconnect_one(F&& func) {

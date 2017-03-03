@@ -3,6 +3,12 @@
 #include <functional>
 #include <cassert>
 
+template<class Iter>
+bool is_callable_iterator(const Iter& iter) {
+	//precondition iter in range [begin,end).
+	return iter->state == nullptr || !(iter->state->is_blocked());
+}
+
 template<class R,class Func,class Func2,class Iterator>
 class SlotCallIterator{
 	using reference_type	= typename CacheRes<R>::reference_type;
@@ -14,20 +20,14 @@ class SlotCallIterator{
 	Iterator prev_;
 	std::reference_wrapper<Func> cache_;
 	std::reference_wrapper<Func2> seeker_;
-	bool val_ = false;
 public:
 	SlotCallIterator(const Iterator& iter,Func& f1,Func2& f2)
 	:prev_(iter),cache_(f1),seeker_(f2){
-	
+
 	}
 
 	reference_type operator*()noexcept{
-		if (val_) {
-			return  cache_(prev_);
-		}
-		reference_type res = cache_(std::next(prev_), false);
-		val_ = false;
-		return res;
+		return cache_(std::next(prev_));
 	}
 
 	friend bool operator==(const SlotCallIterator& lhs, const SlotCallIterator& rhs)
