@@ -82,6 +82,7 @@ struct DefaultSlotTraits {
 		SlotType& operator=(SlotType&&) = default;
 		template<class F>
 		decltype(auto) lock_then_call(F func)const;
+		bool is_callable()const noexcept;
 		~SlotType();
 	};
 	using container = SingleList<SlotType>;
@@ -137,13 +138,11 @@ struct DefaultSlotTraits {
 		void block(){
 			if (state != discon) {
 				state = blocked;
-				//seek_next();
 			}
 		}
 		void unblock()noexcept {
 			if (state != discon) {
 				state = free;
-				//next_node_ = prev_node_;
 			}
 		}
 		bool is_blocked()const noexcept{
@@ -191,6 +190,9 @@ struct DefaultSlotTraits {
 		template<class Iter>
 		decltype(auto) operator()(Iter first,Iter last) {
 			for (; first != last ; ++first) {
+				if (!first){
+					continue;
+				}
 				*first;
 			}
 		}
@@ -219,6 +221,13 @@ decltype(auto) DefaultSlotTraits<Func>::SlotType::lock_then_call(F func)const{
 	std::unique_ptr<State, decltype(when_exit)> ( state, when_exit );
 	return func(*this);
 }
+
+template<class Func>
+bool DefaultSlotTraits<Func>::SlotType::is_callable()const noexcept {
+	return state == nullptr || state->state == free;
+}
+ 
+
 
 
 template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
@@ -288,19 +297,17 @@ public:
 				return cache.get();
 			};
 
-		auto seeker=[&before_end,&cache](Iter& iter){
+		auto seeker=[&cache]{
 			cache.reset();
-			while (iter != before_end && iter->state != nullptr
-				&& iter->state->is_blocked()) {
-				++iter;
-			}
+			//if (go_next) {  Iter& iter,bool go_next=false
+			//	while (iter != before_end && !(iter->is_callable())) {
+			//		++iter;
+			//	}
+			//}
 		};		
-		auto first=makeSlotIter<R>(before_beg, getter, seeker);
-		if (!empty() && !is_callable_iterator(std::next(before_beg))) {
-			++first;
-		}
+
 		return forward_m(res_collector)(
-			first,
+			makeSlotIter<R>(before_beg, getter, seeker),
 			makeSlotIter<R>(before_end,getter,seeker)
 		);
 	}

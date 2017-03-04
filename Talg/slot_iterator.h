@@ -29,6 +29,9 @@ public:
 	reference_type operator*()noexcept{
 		return cache_(std::next(prev_));
 	}
+	explicit operator bool()const noexcept {
+		return std::next(prev_)->is_callable();
+	}
 
 	friend bool operator==(const SlotCallIterator& lhs, const SlotCallIterator& rhs)
 	noexcept(noexcept(lhs.prev_==rhs.prev_))
@@ -49,7 +52,7 @@ public:
 
 	SlotCallIterator& operator++() {
 		++prev_;
-		seeker_(prev_);
+		seeker_();
 		return *this;
 	}
 	SlotCallIterator operator++(int) {
