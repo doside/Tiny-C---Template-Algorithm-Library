@@ -289,26 +289,17 @@ public:
 	template<class ResCombiner,class Cache,class Iter,class...Ts>
 	decltype(auto) call(ResCombiner&& res_collector,Cache& cache,const Iter& before_beg,const Iter& before_end, Ts&&...args) 
 	{
-		auto getter=[&cache,&args...](const Iter& iter)->typename Cache::reference_type
+		auto getter=[&args...](Cache& cache,const Iter& iter)->typename Cache::reference_type
 			{
 				if (!cache) {
 					cache.reset(iter, std::forward<Ts>(args)...);
 				}
 				return cache.get();
-			};
-
-		auto seeker=[&cache]{
-			cache.reset();
-			//if (go_next) {  Iter& iter,bool go_next=false
-			//	while (iter != before_end && !(iter->is_callable())) {
-			//		++iter;
-			//	}
-			//}
-		};		
-
+			};	
+		 
 		return forward_m(res_collector)(
-			makeSlotIter<R>(before_beg, getter, seeker),
-			makeSlotIter<R>(before_end,getter,seeker)
+			makeSlotIter<R>(before_beg, getter, cache),
+			makeSlotIter<R>(before_end,getter,cache)
 		);
 	}
 
