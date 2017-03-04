@@ -55,10 +55,8 @@ void assure(bool val){
 int main() {
 
 
-	SimpleSignal<void(std::string)> myslot;
-	{
-		SimpleSignal<void(std::string)> slot;
-	}
+	SimpleSignal<void(std::string)> void_res_slot;
+
 	auto make_f = [](auto&& func) {
 		return makeFunctor<void(int, std::string)>(forward_m(func));
 	};
@@ -94,8 +92,8 @@ int main() {
 	assure(make_f(test::A{}) != make_f(test::B{}));
 
 	auto ensure_clear = [&] {
-		myslot.disconnect_all();
-		assure(myslot.empty());
+		void_res_slot.disconnect_all();
+		assure(void_res_slot.empty());
 	};
 	//assure(make_f(test_fptr) == makeFunctor<void(int)>(test_fptr));
 	{
@@ -104,81 +102,81 @@ int main() {
 		sig(1);
 	}
 	{
-		auto id=myslot.connect(callback1);
-		assure(!myslot.empty());
-		myslot -= callback1;
-		assure(myslot.empty());
+		auto id=void_res_slot.connect(callback1);
+		assure(!void_res_slot.empty());
+		void_res_slot -= callback1;
+		assure(void_res_slot.empty());
 	}
 	{
-		myslot+=test_fptr;
-		assure(!myslot.empty());
-		myslot+=&test_fptr;
-		myslot-=test_fptr;
-		assure(myslot.empty());
+		void_res_slot+=test_fptr;
+		assure(!void_res_slot.empty());
+		void_res_slot+=&test_fptr;
+		void_res_slot-=test_fptr;
+		assure(void_res_slot.empty());
 	}
 	{
-		myslot+=test_fptr;
-		assure(!myslot.empty());
-		myslot-=&test_fptr;
-		assure(myslot.empty());
+		void_res_slot+=test_fptr;
+		assure(!void_res_slot.empty());
+		void_res_slot-=&test_fptr;
+		assure(void_res_slot.empty());
 	}
 	{
-		auto con1 = myslot + test_fptr;
-		auto con2 = myslot + &test_fptr;
+		auto con1 = void_res_slot + test_fptr;
+		auto con2 = void_res_slot + &test_fptr;
 		con1->disconnect();
 		con2->disconnect();
 		ensure_clear();
 	}
 	/*{
-		myslot+=callback1;
-		assure(!myslot.empty());
+		void_res_slot+=callback1;
+		assure(!void_res_slot.empty());
 		void (*ptr)(std::string) = callback1;
-		myslot-=*ptr;
-		assure(myslot.empty());
+		void_res_slot-=*ptr;
+		assure(void_res_slot.empty());
 	}*/
 	{
-		auto con=myslot.connect( 
+		auto con=void_res_slot.connect( 
 			[](std::string str) {
 				std::cout <<"2:"<< str << std::endl;
 			}
 		);
-		assure(!myslot.empty());
+		assure(!void_res_slot.empty());
 		con->disconnect();
-		assure(myslot.empty());
+		assure(void_res_slot.empty());
 	}
-	//myslot("abcdefg");
+	//void_res_slot("abcdefg");
 	
-	myslot.disconnect(callback1);
+	void_res_slot.disconnect(callback1);
 
 
 	{
-		myslot += [](auto&&...) {};
-		myslot -= [](auto&&...) {};
-		assure(!myslot.empty());
+		void_res_slot += [](auto&&...) {};
+		void_res_slot -= [](auto&&...) {};
+		assure(!void_res_slot.empty());
 		ensure_clear();
 	}
 	{
 		std::string str;
-		myslot += [&str](auto&& s) {str = s; };
-		myslot("blabla");
+		void_res_slot += [&str](auto&& s) {str = s; };
+		void_res_slot("blabla");
 		assure("blabla" == str);
 		
 	}
 	{
 		int count = 0;
 		auto cnt = [&] {count++; };
-		auto initer= [&myslot,cnt] {
+		auto initer= [&void_res_slot,cnt] {
 			for(int i=0;i<100;++i)
-				myslot += cnt;
+				void_res_slot += cnt;
 		};
-		myslot += initer;
-		myslot("");
+		void_res_slot += initer;
+		void_res_slot("");
 		assure(count == 0);
-		myslot("");
-		myslot -= initer;
-		myslot("");
+		void_res_slot("");
+		void_res_slot -= initer;
+		void_res_slot("");
 		assure(count == 300);
-		myslot("");
+		void_res_slot("");
 		assure(count == 500);
 		ensure_clear();
 	}
@@ -187,18 +185,18 @@ int main() {
 		ensure_clear();
 		int count = 0;
 		int up = 100;
-		auto con=myslot + [&] {
+		auto con=void_res_slot + [&] {
 			for(;count<up;++count) { }
 		};
-		myslot("");
+		void_res_slot("");
 		assure(count == 100);
 		
 		up = 200;
 		con->block();
-		myslot("");
+		void_res_slot("");
 		assure(count == 100);
 		con->unblock();
-		myslot("");
+		void_res_slot("");
 		assure(count == 200);
 	}
 	/*{
@@ -225,8 +223,8 @@ int main() {
 		assure(count == 500);
 	}*/
 	
-	myslot += test_fptr2;
-	//myslot += [](int, std::string) {};
+	void_res_slot += test_fptr2;
+	//void_res_slot += [](int, std::string) {};
 	//StaticAssert<hasOpCall<decltype(blabalabla)>> bbxb;
 	//static_assert(!isNonOverloadFunctor<decltype(blabalabla)>::value, "");
 
@@ -252,140 +250,3 @@ int main() {
 	return 0;
 }
 
-
-
-#if 0
-void test_fun() {
-	boost::signals2::signal<void(double, int)> sig;
-	sig.connect([](double, int) {
-		return 0;
-	});
-
-	sig(1.0, 0);
-}
-
-#include <chrono>
-
-
-namespace bs2 = boost::signals2;
-template<class...Ts>
-using bs_signal = typename bs2::signal_type<Ts..., bs2::keywords::mutex_type<bs2::dummy_mutex>>::type;
-
-#include <iostream>
-	int main22() {
-		{
-			int i = 0;
-			auto ci = [&i](int j){ std::cout << i<<" " << j<<"\n"; return i++; };
-			[](auto...) {}(ci(1), ci(2), ci(3));
-		}
-
-
-		auto Timer=[](auto f) {
-			using namespace std;
-			auto beg = std::chrono::steady_clock::now();
-			f();
-			decltype(1ms) end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-beg);
-			std::cout << end.count() << "ns" << "\n";
-		};
-
-		Signals<void(std::string)> myslot;
-		auto callback1= [](std::string str) {
-			std::cout << str << std::endl;
-		};
-		auto id=myslot.connect(callback1);
-		myslot("abcdefg");
-		auto id2=myslot.connect( 
-			[](std::string str) {
-				std::cout <<"2:"<< str << std::endl;
-			});
-		myslot.disconnect(callback1);
-		myslot("blabla");
-
-
-
-		using namespace boost::signals2;
-		
-		Signal<GrouppedSiganl, void(double,int)> sig0;
-		auto play=[&sig0]() {
-			std::cout << "!!!+=[]{}";
-			sig0 += [] {
-				std::cout << "\nanother!\n";
-			};
-		};
-		sig0 += play;
-		sig0 -= []() {
-			std::cout << "!!!+=[]{}";
-			return 0;
-		}; 
-		sig0(1.3333, 2);
-		sig0 -= play;
-		sig0(1.3333, 2);
-
-
-		
-
-		
-		//Functor<void()> f{ };
-		//boost::signals2::signal<std::function<void()>> sig2;
-
-		
-		bs_signal<void(double, int)> sig;
-		testSame(Tagi<FindParam<int&&, Seq<double, int>>::value>, Tagi<1>);
-
-		
-		auto play2= [&sig](double, int) {
-			std::cout << "!!!+=[]{}";
-			return sig.connect([](double, int) {
-				std::cout << "\nanother!\n";
-			});
-		};
-
-		Timer([&] {
-			for (int i = 0; i < 100; ++i) {
-				sig.connect(play2);
-			}
-			sig.disconnect_all_slots();
-		});
-		system("pause");
-		Timer([&] {
-			for (int i = 0; i < 1000000; ++i) {
-				sig0 += play;
-			}
-			sig0.disconnect_all_slots();
-		});
-		
-		sig.connect(makeFunctor<void(double, int)>([](double d) {
-			std::cout << "hello!"<<d<<" \n";
-		}));
-		sig.connect(makeFunctor<void(double, int)>([](int i,double d) {
-			std::cout << "hello!"<<i<<" "<<d<<" \n";
-		}));
-		sig.connect(makeFunctor<void(double, int)>([](const int& i) {
-			std::cout << "hello!" << i << " \n";
-			return 0;
-		}));
-		sig.connect(makeFunctor<void(double, int)>( []{
-			std::cout << "hello!";
-		}));
-		apply( 
-			Multiop_n<FindParam,
-				typename CallableTraits<int(int)>::arg_type,
-				typename CallableTraits<int(double, int)>::arg_type
-			>{}, [](int) {return 0; },
-			1.0,2
-			);
-		sig(1.0, 0);
-		system("pause");
-		return 0;
-	}
-
-#endif
-
-	/*
-	signal<void(double, int)> sig;
-
-	sig.connect(makeFunctor<void(double, int)>([](double,int) {
-	std::cout<< "hello!";
-	}));
-	*/
-	//sig();
