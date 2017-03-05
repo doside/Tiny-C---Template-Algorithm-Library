@@ -8,6 +8,7 @@
 #include "invoke_impl.h"
 #include "index_seq.h"
 
+namespace Talg{
 /*
 	\brief	具有接受任意参数的构造子,并且不做任何事
 	\param	anything
@@ -366,6 +367,7 @@ using Partion_s = typename PartionImp<N, T>::type;
 template<size_t N,class T>
 using Partion = Partion_s<N, Seqfy<T>>;
 
+}//namespace Talg
 
 #endif // ! SELECT_TYPE_H_INCLUDED
 

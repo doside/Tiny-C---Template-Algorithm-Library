@@ -5,7 +5,7 @@
 #include "find_val.h"  //for no_index
 #include <array>
 
-
+namespace Talg{
 template<class T>
 constexpr T min(const T& a, const T& b) {
 	return b < a ? b : a;
@@ -126,6 +126,8 @@ template<size_t N>
 struct Formater {
 
 };
+}//namespace Talg
+
 
 
 

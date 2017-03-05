@@ -2,7 +2,7 @@
 #define HAS_MEMBER_H_INCLUDED
 #include <type_traits>
 #include "core.h"
-
+namespace Talg{
 template<class L,class R=L>
 struct hasEqualCompare{
 	template<class Lhs,class Rhs,class =decltype(std::declval<Lhs>()==std::declval<Rhs>())>
@@ -35,6 +35,6 @@ struct hasEqualCompare:decltype(isEqualAbleImp::detect<T>(0))
 
 //template<class F,class StandarT>
 //auto getFunctionTraits(F&& func, StandarT* = &func::operator());
-
+}//namespace Talg
 
 #endif // !HAS_MEMBER_H_INCLUDED

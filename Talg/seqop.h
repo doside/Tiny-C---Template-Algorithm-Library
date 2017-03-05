@@ -2,7 +2,7 @@
 #define SEQOP_H_INCLUDED
 #include "core.h"
 
-
+namespace Talg{
 
 template<class T, class U>struct Erase_frontImp;
 
@@ -220,7 +220,7 @@ struct GenerateSeqImp<1,T> {
 template<size_t N,class T>
 using GeneratorSeq_t = OMIT_T(GenerateSeqImp<N, T>);
 
-
+}//namespace Talg
 
 
 #endif //SEQOP_H_INCLUDED

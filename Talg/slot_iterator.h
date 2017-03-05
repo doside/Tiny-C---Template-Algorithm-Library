@@ -3,20 +3,17 @@
 #include <functional>
 #include <cassert>
 
-template<class Iter>
-bool is_callable_iterator(const Iter& iter) {
-	//precondition iter in range [begin,end).
-	return iter->state == nullptr || !(iter->state->is_blocked());
-}
-
+namespace Talg{
 template<class GetParram,class Cache,class Iterator>
 class SlotCallIterator{
+public:
 	using reference_type	= typename Cache::reference_type;
 	using value_type		= typename Cache::value_type;
 	using pointer			= typename Cache::pointer;
 	//采用inputiterator,因为允许op++使迭代器失效.并且不是default constructable
 	using iterator_category = std::input_iterator_tag;	
 	using difference_type	= typename Iterator::difference_type;
+protected:
 	Iterator prev_;
 	std::reference_wrapper<GetParram> call;
 	std::reference_wrapper<Cache> cache;
@@ -70,6 +67,8 @@ public:
 		++(*this);
 		return old;
 	}
+
+	
 };
 
 
@@ -78,3 +77,45 @@ template<class R,class Iter,class T,class T2>
 auto makeSlotIter(const Iter& iter, T& get_param,T2& cache) {
 	return SlotCallIterator<T,T2,Iter>{iter, get_param,cache};
 }
+
+
+
+template<class GetParram,class Cache,class Iterator>
+class CheckCallIterator:public SlotCallIterator<GetParram,Cache,Iterator>{
+	using Base = SlotCallIterator<GetParram, Cache, Iterator>;
+	using reference_type=typename Base::reference_type;
+	using container = std::remove_pointer_t<decltype(std::declval<Iterator>()->state->ref)>;
+	container& con;
+	bool has_locked=false;
+public:
+	using Base::Base;
+	CheckCallIterator(const Base& rhs,container& c)noexcept(std::is_nothrow_copy_constructible<Base>::value)
+		:Base(rhs),con(c){}
+	reference_type operator*(){
+		if (has_locked==false) {
+			auto iter = std::next(Base::prev_);
+			using State=std::remove_pointer_t<decltype(iter->state)>;
+			State state(Base::prev_, con);
+			auto guard=iter->lock(state);
+			has_locked = true;
+			return call(Base::cache,iter);
+		}
+		return Base::operator*();
+	}
+	CheckCallIterator& operator++()
+	{
+		Base::operator++();
+		has_locked = false;
+		return *this;
+	}
+	
+	CheckCallIterator operator++(int)
+	{
+		CheckCallIterator old = *this;
+		++(*this);
+		return old;
+	}
+};
+
+}//namespace Talg
+

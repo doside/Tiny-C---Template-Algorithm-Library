@@ -5,6 +5,10 @@
 #include "slot_iterator.h"
 #include <type_traits>
 
+namespace Talg {
+
+
+
 template<class Func>
 struct EqualableFunction :std::function<Func> {
 	using Base = std::function<Func>;
@@ -80,8 +84,7 @@ struct DefaultSlotTraits {
 		SlotType(const SlotType&) = default; //todo: forbid such function.
 		SlotType& operator=(const SlotType&) = default;
 		SlotType& operator=(SlotType&&) = default;
-		template<class F>
-		decltype(auto) lock_then_call(F func)const;
+		auto lock(State& other);
 		bool is_callable()const noexcept;
 		~SlotType();
 	};
@@ -187,8 +190,8 @@ struct DefaultSlotTraits {
 	using SharedConnection = std::shared_ptr<State>;
 
 	struct DefaultResCombiner {
-		template<class Iter>
-		decltype(auto) operator()(Iter first,Iter last) {
+		template<class Iter,class Container>
+		decltype(auto) operator()(Iter first,Iter last,const Container&) {
 			for (; first != last ; ++first) {
 				if (!first){
 					continue;
@@ -205,21 +208,22 @@ template<class Func>
 	}
 }
 template<class Func>
-template<class F>
-decltype(auto) DefaultSlotTraits<Func>::SlotType::lock_then_call(F func)const{
+auto DefaultSlotTraits<Func>::SlotType::lock(State& other){
 	assert(
 		state==nullptr || (!(state->is_blocked()) && state->is_connected())
 	);
+	State* old = nullptr;
 	if (state == nullptr) {
-		return func(*this);
+		state = &other;
+	}else {
+		old = state;
 	}
-	
 	state->lock();
-	auto when_exit = [this](auto* ) {
+	auto when_exit = [old,this](auto* ) {
 		state->unblock();
+		state = old;
 	};
-	std::unique_ptr<State, decltype(when_exit)> ( state, when_exit );
-	return func(*this);
+	return std::unique_ptr<State, decltype(when_exit)> ( state, when_exit );
 }
 
 template<class Func>
@@ -299,7 +303,8 @@ public:
 		 
 		return forward_m(res_collector)(
 			makeSlotIter<R>(before_beg, getter, cache),
-			makeSlotIter<R>(before_end,getter,cache)
+			makeSlotIter<R>(before_end,getter,cache),
+			*this
 		);
 	}
 
@@ -308,8 +313,8 @@ public:
 	decltype(auto) collect(ResCombiner&& res_collector,Ts&&...args) {
 		CacheRes<R> cache{};
 		return call(forward_m(res_collector), cache,
-			slot_list.cbefore_begin(), 
-			slot_list.cbefore_end(),
+			slot_list.before_begin(), 
+			slot_list.before_end(),
 			forward_m(args)...);
 	}
 
@@ -386,12 +391,23 @@ public:
 	bool empty()const noexcept {
 		return slot_list.empty();
 	}
+
+	template<class Sig,class GetParram,class Cache,class Iterator>
+	friend CheckCallIterator<GetParram, Cache, Iterator> 
+	makeLockedIter(const SlotCallIterator<GetParram, Cache, Iterator>& iter, Sig& c);
 };
 
 template<class...Ts>
 using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;
 
+template<class Sig,class GetParram,class Cache,class Iterator>
+CheckCallIterator<GetParram, Cache, Iterator>  
+makeLockedIter(const SlotCallIterator<GetParram,Cache,Iterator>& iter,Sig& c) {
+	return CheckCallIterator<GetParram, Cache, Iterator>(iter,c.slot_list);
+}
 
 //template<class...Ts>
 //using Signal = SignalWrapper<BasicSignal, Ts...>; 
+
+}//namespace Talg
 

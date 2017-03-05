@@ -23,7 +23,7 @@ struct后面没写public的那部分表示不推荐公有使用
 
 */
 
-
+namespace Talg{
 
 
 #define forward_m(...) std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
@@ -95,4 +95,6 @@ template<class T>
 using Reverse = OMIT_T(ReverseImp<Seqfy<T>>);
 template<class obj>
 using Reverse_s = OMIT_T(ReverseImp<obj>);
+
+}//namespace Talg
 

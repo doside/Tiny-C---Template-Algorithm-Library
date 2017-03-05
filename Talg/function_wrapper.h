@@ -8,7 +8,7 @@
 #include <type_traits>	
 #include <tuple>
 #include <memory>
-
+namespace Talg{
 struct MatchParam
 {
 	template<class T, class U>
@@ -287,7 +287,7 @@ decltype(auto) makeFunctor(std::shared_ptr<T> ptr,Pointer pmd) {
 }
 
 
-
+}////namespace Talg
 
 #endif //FUNCTION_WRAPPER_H_INCLUDED
 

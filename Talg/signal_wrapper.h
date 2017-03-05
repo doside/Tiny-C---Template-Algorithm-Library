@@ -3,7 +3,7 @@
 
 #include "function_wrapper.h"
 
-
+namespace Talg{
 /*
 	\brief	提供各种语法糖,如有必要可以切换至boost signals2
 	\param	模板参数 形如Signal<R(Ts...),Us...>
@@ -106,6 +106,7 @@ public:
 	}
 };
 
+}//namespace Talg
 
 #endif // !SIGNAL_WRAPPER_H_INCLUDED
 

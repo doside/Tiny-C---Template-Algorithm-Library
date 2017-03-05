@@ -15,7 +15,9 @@
 using std::invoke;
 #else
 **/
-namespace TalgDetail {
+namespace Talg{
+
+namespace impl {
 
 	//以下代码主要复制自 http://en.cppreference.com/w/cpp/utility/functional/invoke possible implement
 	//有少许改动.
@@ -115,15 +117,15 @@ namespace TalgDetail {
 */
 template< class F, class... ArgTypes >
 constexpr decltype(auto) ct_invoke(F&& f, ArgTypes&&... args)
-noexcept(noexcept(TalgDetail::INVOKE(std::forward<F>(f), std::forward<ArgTypes>(args)...)))
+noexcept(noexcept(impl::INVOKE(std::forward<F>(f), std::forward<ArgTypes>(args)...)))
 {
-	return TalgDetail::INVOKE(std::forward<F>(f), std::forward<ArgTypes>(args)...);
+	return impl::INVOKE(std::forward<F>(f), std::forward<ArgTypes>(args)...);
 }
 
 //#endif // !__cpp_lib_invoke
 
 
-
+}//namespace Talg
 
 #endif // !PRIVATE_INVOKE_IMPL_H_INCLUDED
 

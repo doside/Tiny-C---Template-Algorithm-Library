@@ -24,6 +24,9 @@
     <ClCompile Include="SingleSignal\test_basic_connection.cpp">
       <Filter>源文件\SingleSignal</Filter>
     </ClCompile>
+    <ClCompile Include="loop_emit_test.cpp">
+      <Filter>源文件\SingleSignal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h">

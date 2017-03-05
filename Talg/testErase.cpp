@@ -3,7 +3,7 @@
 #include <tuple>
 #include "seqop.h"
 
-
+using namespace Talg;
 
 namespace {
 

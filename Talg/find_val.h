@@ -9,7 +9,7 @@
 
 
 
-
+namespace Talg{
 /*
 todo fix 这个类过于特殊,没多少实际意义,似乎将index_type并入type中更为合理.
 用于实现多次查找,第一个序列是所有要查找的东西,第二个序列是查找范围
@@ -147,6 +147,9 @@ template<class Pred,class Dst, class Src>
 using Find_if_t = OMIT_T(Find_if_svt<Pred,Dst, Seqfy<Src>>);
 template<class Pred,class Dst, class Src>
 using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, Src>);
+
+}//namespace Talg
+
 
 
 

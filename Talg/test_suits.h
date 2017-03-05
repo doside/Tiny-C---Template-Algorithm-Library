@@ -1,9 +1,10 @@
 ﻿#pragma once
 #include <type_traits>
 
+namespace Talg{
+
 //编译报错时可以根据itag<?>来计算出是第?+1对违反了is_same,并且可以根据itag<0>来定位宏的调用点
 #define testSame(...) static_assert(AssertIsSame<itag<0>,__VA_ARGS__>::value,"Look here");
-
 ///内部使用
 template<size_t n>struct itag{};
 
@@ -85,3 +86,6 @@ struct TestConstexprImp<index,res>
 };
 template<bool...res>
 using TestConstexpr = TestConstexprImp<0, res...>;
+
+}//namespace Talg
+

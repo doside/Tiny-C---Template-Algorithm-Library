@@ -5,7 +5,7 @@
 using namespace std;
 
 
-
+using namespace Talg;
 
 
 typedef void(*emptyfptr)();

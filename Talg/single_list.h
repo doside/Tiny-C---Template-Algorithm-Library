@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <forward_list>
 #include <cassert>
-
+namespace Talg{
 template<class T,class Allocator = std::allocator<T>>
 class SingleList:private std::forward_list<T,Allocator> {
 public:
@@ -217,3 +217,5 @@ public:
 	//using Base::insert_after;
 	//using Base::emplace_after;
 };
+
+}//namespace Talg

@@ -3,7 +3,7 @@
 #include <utility>
 #include <limits>
 //using std::size_t;
-
+namespace Talg{
 enum :size_t {
 	no_index = std::numeric_limits<size_t>::max() - 1 //抑制VC的警告C4307
 };
@@ -77,3 +77,6 @@ Seq<Tagi<Ns>...> makeTagiSeq(IdSeq<Ns...>&&);
 
 template<size_t N>
 using TagiSeqN = decltype(makeTagiSeq(std::make_index_sequence<N>()));
+
+
+}//namespace Talg

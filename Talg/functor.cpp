@@ -13,7 +13,7 @@
 #include "slotlist.h"
 
 //#include <boost\signals2.hpp>
-
+using namespace Talg;
 
 
 

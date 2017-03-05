@@ -6,7 +6,7 @@
 #include "test_suits.h"
 
 
-
+using namespace Talg;
 
 namespace {
 	void test() {

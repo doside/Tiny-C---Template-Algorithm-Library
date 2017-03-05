@@ -1,7 +1,7 @@
 ﻿#include "callable_traits.h"
 #include "test_suits.h"
 #include <iostream>
-
+using namespace Talg;
 struct Printor
 {
 	char* operator()(const char* s) {

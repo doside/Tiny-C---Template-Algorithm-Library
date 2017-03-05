@@ -7,7 +7,7 @@
 
 
 
-
+namespace Talg {
 
 //原本rm_cvrImp就是rm_cvr,我们决定多加一层,是为了防止找不到特化版本时type无限递归
 //尽管我们认为特化版本已经覆盖到了所有可能的边缘情况.
@@ -165,7 +165,7 @@ using RemoveCvrp = typename rm_cvr< rm_top<F> >::type;
 
 
 
-
+}//namespace Talg
 
 
 
@@ -301,6 +301,8 @@ struct rm_cvr<R(*)(Ts...) const volatile&&> {
 	using type = R(Ts...);
 
 };
+
+
 
 #endif
 

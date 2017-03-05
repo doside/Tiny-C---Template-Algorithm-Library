@@ -11,7 +11,7 @@
 #include "strippe_qualifier.h"
 #include "has_member.h"
 
-
+namespace Talg{
 struct NoCallableTraits{};
 
 template<class F,bool = hasOpCall<F>::value>
@@ -166,7 +166,7 @@ struct RepeatImp {
 	template<class F, class...Us>
 	static decltype(auto) repeat(F&& func, Ts&&...args, Us&&...last){
 		forward_m(func)(forward_m(args)...);
-		return Transform< ::RepeatImp, Before_s<sizeof...(Ts), Seq<Us...>> >
+		return Transform< Talg::RepeatImp, Before_s<sizeof...(Ts), Seq<Us...>> >
 			::repeat(forward_m(func), forward_m(last)...);
 	}
 
@@ -221,6 +221,6 @@ constexpr decltype(auto) mapCollect(Receiver&& dst, F&& func, Ts&&...args) {
 	return Transform<RepeatImp, begin>::mapCollect(forward_m(dst),forward_m(func), forward_m(args)...);
 }
 #endif
-
+}//namespace Talg
 #endif // !CALLBLE_TRAITS_H_INCLUDED
 

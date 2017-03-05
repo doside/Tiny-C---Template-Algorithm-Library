@@ -3,7 +3,7 @@
 #include "index_seq.h"
 #include <tuple>
 
-
+namespace Talg{
 template<size_t Len>
 struct ctString {
 	using size_type = std::size_t;
@@ -73,3 +73,5 @@ template<size_t L,size_t L2>
 constexpr ctString<L + L2-1> operator+(const ctString<L>& lhs, const ctString<L2>& rhs)noexcept {
 	return lhs.append(rhs);
 }
+
+}//namespace Talg
