@@ -13,6 +13,10 @@ namespace Talg{
 
 struct ParamMatch
 {
+	/*
+		\brief	在一个序列中找到U,判断其是否与T相等
+		\param	T 
+	*/
 	template<class T, class U>
 	struct pred{
 		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
@@ -157,20 +161,20 @@ public:
 
 
 
-template<class Ptr,class Pointer,class StandarT>
+template<class ObjPtr,class MemPtr,class StandarT>
 struct MemFun
 {
-	using ParameterIndex = MapParamId<Pointer, StandarT>;
+	using ParameterIndex = MapParamId<MemPtr, StandarT>;
 
 	//我们在实现中假定了它们是指针,所以有这个断言
-	static_assert(std::is_pointer<Ptr>::value && 
-					(std::is_pointer<Pointer>::value||
-						std::is_member_pointer<Pointer>::value||
-							std::is_same<std::decay_t<Pointer>,decltype(nullptr)>::value),
+	static_assert(std::is_pointer<ObjPtr>::value && 
+					(std::is_pointer<MemPtr>::value||
+						std::is_member_pointer<MemPtr>::value||
+							std::is_same<std::decay_t<MemPtr>,decltype(nullptr)>::value),
 					"MemFun static assert failed.");
-	Ptr ptr_;
-	Pointer pmd;	//todo: pmd可以是自由函数,未必需要限制为成员函数指针
-	constexpr MemFun(Ptr obj,Pointer ptr):ptr_(forward_m(obj)),pmd(ptr){}
+	ObjPtr ptr_;
+	MemPtr pmd;	//todo: pmd可以是自由函数,未必需要限制为成员函数指针
+	constexpr MemFun(ObjPtr obj,MemPtr ptr):ptr_(forward_m(obj)),pmd(ptr){}
 
 
 	template<class...Ts>
@@ -206,17 +210,17 @@ struct MemFun
 };
 
 
-template<class T,class Pointer,class StandarT>
-class MemFun<std::weak_ptr<T>,Pointer,StandarT>
+template<class T,class MemPtr,class StandarT>
+class MemFun<std::weak_ptr<T>,MemPtr,StandarT>
 {
-	MemFun<T*, Pointer, StandarT> func;
+	MemFun<T*, MemPtr, StandarT> func;
 	std::weak_ptr<T> ptr_;
 public:
-	using ParameterIndex = MapParamId<Pointer, StandarT>;
+	using ParameterIndex = MapParamId<MemPtr, StandarT>;
 	//我们在实现中假定了它们是指针,所以有这个断言
-	static_assert(std::is_pointer<Pointer>::value || std::is_member_pointer<Pointer>::value,
+	static_assert(std::is_pointer<MemPtr>::value || std::is_member_pointer<MemPtr>::value,
 					"MemFun static assert failed.");
-	constexpr MemFun(const MemFun<T*, Pointer, StandarT>& f):func(f),ptr_(){}
+	constexpr MemFun(const MemFun<T*, MemPtr, StandarT>& f):func(f),ptr_(){}
 
 	template<class P>
 	MemFun(std::shared_ptr<T> ptr, P&& func_ptr)
@@ -255,7 +259,7 @@ public:
 				无视other的weak_ptr成员,以其func成员来和当前对象作比较.
 	*/
 	bool operator==(const MemFun& other)const {
-		const MemFun<T*, Pointer, StandarT>& rhs = other.func;
+		const MemFun<T*, MemPtr, StandarT>& rhs = other.func;
 
 		assert(func.ptr_ != nullptr);
 		//因为|| func.ptr_==nullptr相当于 ||false,所以此处的条件判定是具有对称性的.
@@ -294,15 +298,15 @@ constexpr SelectFunctorWrapper<R (*)(Ps...),StandarType> makeFunctor(R (*src_fun
 	return src_func;
 }
 
-template<class StandarType, class T,class Pointer>
-constexpr decltype(auto) makeFunctor(T* obj,Pointer pmd) {
-	return MemFun<T*,Pointer,StandarType>{obj, pmd};
+template<class StandarType, class T,class MemPtr>
+constexpr decltype(auto) makeFunctor(T* obj,MemPtr pmd) {
+	return MemFun<T*,MemPtr,StandarType>{obj, pmd};
 }
 
 
-template<class StandarType,class T,class Pointer>
-decltype(auto) makeFunctor(std::shared_ptr<T> ptr,Pointer pmd) {
-	return	MemFun<std::weak_ptr<T>,Pointer,StandarType>{ptr, pmd};
+template<class StandarType,class T,class MemPtr>
+decltype(auto) makeFunctor(std::shared_ptr<T> ptr,MemPtr pmd) {
+	return	MemFun<std::weak_ptr<T>,MemPtr,StandarType>{ptr, pmd};
 }
 
 

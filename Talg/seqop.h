@@ -220,6 +220,21 @@ struct GenerateSeqImp<1,T> {
 template<size_t N,class T>
 using GeneratorSeq_t = OMIT_T(GenerateSeqImp<N, T>);
 
+
+template<size_t Index,class T>
+using EraseAt_s = Merge_s<Before_s<Index, T>, After_s<Index, T>>;
+
+
+template<size_t Index,class T,class NewT>
+using ReplaceAt = Merge_s<
+	Merge<Before_s<Index, T>, NewT>,
+	After_s<Index, T>
+>;
+
+
+
+
+
 }//namespace Talg
 
 

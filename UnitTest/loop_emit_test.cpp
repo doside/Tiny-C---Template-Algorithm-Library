@@ -39,3 +39,12 @@ TEST_CASE("Loop Emit Test") {
 	CHECK(os.str()=="a 3 2 b 2 1 B 1 A 1 b 1 0 a 0 A -1 B -1 ");
 
 }
+
+TEST_CASE("test multiple same parameter") {
+	SimpleSignal<void(int,int,int,int)> sig;
+	sig += [](int a, int b) {
+		CHECK(a == 1);
+		CHECK(b == 2);
+	};
+	sig(1, 2, 3, 4);
+}

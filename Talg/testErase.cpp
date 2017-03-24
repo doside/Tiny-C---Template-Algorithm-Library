@@ -2,6 +2,7 @@
 #include "test_suits.h"
 #include <tuple>
 #include "seqop.h"
+#include "find_val.h"
 
 using namespace Talg;
 
@@ -53,7 +54,10 @@ namespace {
 			Erase_back<Seq<char>,Seq<char,char>>,
 
 			Seq<char>,
-			Erase_back<Seq<>,Seq<char>>
+			Erase_back<Seq<>,Seq<char>>,
+
+			Seq<int,float,int,double>,
+			EraseAt_s<2,Seq<int,float,float,int,double>>
 		
 		);
 

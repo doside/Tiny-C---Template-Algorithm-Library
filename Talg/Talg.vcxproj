@@ -137,6 +137,7 @@
     <ClCompile Include="testCtStringcpp.cpp" />
     <ClCompile Include="testErase.cpp" />
     <ClCompile Include="testExString.cpp" />
+    <ClCompile Include="test_FW.cpp" />
     <ClCompile Include="test_repeat.cpp" />
     <ClCompile Include="test_rm_fptr.cpp" />
   </ItemGroup>

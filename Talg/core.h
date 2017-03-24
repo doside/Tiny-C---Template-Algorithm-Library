@@ -60,7 +60,9 @@ struct WrapperT {  //In some context ,we need a wrapper to use T which does't ha
 	using type = T;
 };
 template<class...Args>
-struct Seq { };
+struct Seq {
+	constexpr Seq()noexcept{}
+};
 template<class T>
 using Seqfy = Transform<Seq, T>;  //将 blabla<abcde>转换成Seq<abcde>
 
@@ -76,6 +78,8 @@ template<class...Ts>
 constexpr size_t countSeqSize(const Seq<Ts...>&)noexcept {
 	return sizeof...(Ts);
 }
+template<class T>struct CountSeqSize:CountSeqSize<Seqfy<T>>{};
+template<class...Ps>struct CountSeqSize<Seq<Ps...>>:std::integral_constant<std::size_t,sizeof...(Ps)>{};
 
 
 

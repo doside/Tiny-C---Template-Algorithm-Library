@@ -37,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="..\Talg\functor.cpp" />
     <ClCompile Include="..\Talg\testExString.cpp" />
+    <ClCompile Include="..\Talg\test_FW.cpp" />
     <ClCompile Include="..\Talg\test_repeat.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "core.h"
 #include "index_seq.h"
-
+#include "seqop.h"
 #include <limits>
 #include <utility>
 
@@ -18,33 +18,32 @@ todo fix 这个类过于特殊,没多少实际意义,似乎将index_type并入ty
 */
 template<template<class...>class OpImp, class, class>
 struct MultiopImp;
-
+struct DelParam{};
 template<template<class...>class OpImp, class T, class...Ts, class...Us>
 struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
-	static_assert(OpImp<T, Seq<Us...>>::value != no_index, "fail to search the type of parameter.");
+	static constexpr size_t cur_index_ = OpImp<T, Seq<Us...>>::value;
+	static_assert(cur_index_ != no_index, "fail to search the type of parameter.");
 	static_assert(sizeof...(Ts) < sizeof...(Us),"src sequence can't be longer than dst sequence's length.");
-	
+
 	//此处的conditional是很有必要的,因为在no_index的情况下,
 	//会导致编译器继续计算类型(尽管上面的断言会失败),最坏情况下导致gcc泄露了几GB内存然后崩溃
+	
 	using index_type = std::conditional_t<
-		OpImp<T, Seq<Us...>>::value == no_index,
+		cur_index_ == no_index,
 		void,
-		MergeIndex< Tagi< OpImp<T, Seq<Us...>>::value >,
-			typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>
+		MergeIndex< Tagi< cur_index_ >,
+			typename MultiopImp<OpImp, Seq<Ts...>, ReplaceAt<cur_index_,Seq<Us...>,DelParam>>::index_type>
 	>;
 	//typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type,
-	//using index_type = MergeIndex< Tagi< OpImp<T, Seq<Us...>>::value >,
+	//using index_type = MergeIndex< Tagi< cur_index_ >,
 		//					typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>;
 public:
 	using type = Merge_s<
-		OMIT_T(OpImp<
-			T,
-			Seq<Us...>
-		>),
+		OMIT_T(OpImp<T,Seq<Us...>>),
 		typename MultiopImp<
 			OpImp,
 			Seq<Ts...>,
-			Seq<Us...>
+			ReplaceAt<cur_index_,Seq<Us...>,DelParam>
 		>::type
 	>;
 };
