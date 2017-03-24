@@ -92,5 +92,8 @@
     <ClInclude Include="slot_iterator.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="transform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

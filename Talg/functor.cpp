@@ -53,7 +53,10 @@ void assure(bool val){
 }
 
 int main() {
-
+	{
+		SimpleSignal<void(const char* str,double,int)> sig;
+		sig += [](std::string,int) {};
+	}
 
 	SimpleSignal<void(std::string)> void_res_slot;
 

@@ -44,6 +44,17 @@ template< template<class...> class Dst, class T>
 using Transform = decltype(TransformImp<Dst>::from(std::declval<T>()));
 
 
+template<class... Ps>
+struct ReplaceParamImp
+{
+	template< template<class...>class Src, class...Args >
+	static Src<Args...> from(Src<Args...>&&);
+};
+template<class T, class... Ps>
+using ReplaceParam = decltype(ReplaceParamImp<Ps...>::from(std::declval<T>()));
+
+
+
 template<class T>
 struct WrapperT {  //In some context ,we need a wrapper to use T which does't have ctor.
 	using type = T;

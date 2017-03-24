@@ -2,6 +2,7 @@
 #define FUNCTION_WRAPPER_H_INCLUDED
 
 #include "callable_traits.h"
+#include "strippe_qualifier.h"
 #include "find_val.h"
 #include "select_type.h"
 #include "has_member.h"
@@ -9,23 +10,32 @@
 #include <tuple>
 #include <memory>
 namespace Talg{
-struct MatchParam
+
+struct ParamMatch
 {
 	template<class T, class U>
-	struct pred
-	{
-	private:
-	//static U declParam();
-	//static int f(T);
-	//static void f(...);
-	public:
+	struct pred{
 		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
 			&& std::is_convertible<U,T>::value;
 	};
 };
+struct ParamConvertMatch
+{
+	template<class T, class U>
+	struct pred{
+		static constexpr bool value = std::is_convertible<U,T>::value;
+	};
+};
 
 template<class T,class S>
-using FindParam = Find_if_svt<MatchParam, T, S>;
+struct FindParam {
+private:
+	using Id1 = Find_if_svt<ParamMatch, T, S>;
+	using Id2 = Find_if_svt<ParamConvertMatch, T, S>;
+public:
+	static constexpr size_t value =Id1::value!=no_index?Id1::value:Id2::value;
+	using type = std::conditional_t<Id1::value != no_index,typename Id1::type,typename Id2::type>;
+};
 
 
 
@@ -53,6 +63,10 @@ using MapParamId = typename MapParamIdImp<T, StandarType,
 		//在is_same成立时直接invoke节省编译时间,
 		//在没有可能推断出参数类型时(比如一个函数对象有多个operator())也只能直接invoke
 	>::type;
+
+
+
+
 
 /*
 	\brief	把T类型的函数对象适配成StandarType,并且提供相等比较.
@@ -257,7 +271,12 @@ public:
 	}
 };
 
-
+template<class T,class StandarType>
+using SelectFunctorWrapper = std::conditional_t<
+	std::is_same<RemoveCvrp<T>, RemoveCvrp<StandarType>>::value,// || !isNonOverloadFunctor<T>::value,
+	T,
+	FunctorImp<std::remove_reference_t<T>,StandarType>
+>;
 
 /*
 	\brief	如果可以分析函子的参数表,那么就提供StandarType到其的转化,否则直接保存.
@@ -267,12 +286,12 @@ public:
 	\todo	提供对成员函数指针的特别支持.
 */
 template<class StandarType, class T>
-constexpr decltype(auto) makeFunctor(T&& src_func) {
-	return FunctorImp<std::remove_reference_t<T>, StandarType>(forward_m(src_func));
+constexpr SelectFunctorWrapper<T&&,StandarType> makeFunctor(T&& src_func) {
+	return forward_m(src_func);
 }
 template<class StandarType,class R,class...Ps>
-constexpr decltype(auto) makeFunctor(R (*src_func)(Ps...)) {
-	return FunctorImp<decltype(src_func), StandarType>(src_func);
+constexpr SelectFunctorWrapper<R (*)(Ps...),StandarType> makeFunctor(R (*src_func)(Ps...)) {
+	return src_func;
 }
 
 template<class StandarType, class T,class Pointer>

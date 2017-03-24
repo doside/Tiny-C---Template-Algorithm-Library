@@ -181,3 +181,16 @@ TEST_CASE("Connection Test") {
 	}
 
 }
+TEST_CASE("Functor Wrapper") {
+	SimpleSignal<void(double, int)> sig;
+	sig += [](int lhs, double rhs) {
+		CHECK(lhs == 1);
+		CHECK(rhs == 2.5);
+	};
+	sig(2.5, 1);
+	sig += [](int lhs, auto rhs) {
+		CHECK(lhs == 2);
+		CHECK(rhs == 1);
+	};
+	sig(2.5, 1);
+}
