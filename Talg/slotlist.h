@@ -223,8 +223,9 @@ class BasicSignal;
 
 
 
-template<class R,class...Ps,class SlotTrait>
-class BasicSignal<R(Ps...),SlotTrait>:private SlotTrait {
+template<class R,class...Ps,class SlotTrait_>
+class BasicSignal<R(Ps...),SlotTrait_>:private ReplaceParam<SlotTrait_, R(Ps...)> {
+	using SlotTrait = ReplaceParam<SlotTrait_, R(Ps...)>;
 	using SlotType = typename SlotTrait::SlotType;
 	using State = typename SlotTrait::State;
 	using container = typename SlotTrait::container;

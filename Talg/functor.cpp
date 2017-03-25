@@ -241,10 +241,13 @@ int main() {
 		A a;
 		sig.connect(&a, &A::f);
 		{
-			test::ConstOp a;
+			//下述用法会失败,因为无法推断参数
+			//todo:是否利用LongFirstParser来支持此种用法?
+			//test::ConstOp a;
+			//(void)a;
+			//sig += a;
 			sig+=[sig]()mutable { sig.disconnect_all(); };
 			sig += [sig] {};
-			//sig += a;
 		}
 		//MemFn<A,void(A::*)()>
 		//const auto str = std::string("af");

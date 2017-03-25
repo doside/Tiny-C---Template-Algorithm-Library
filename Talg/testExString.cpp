@@ -239,7 +239,10 @@ struct PrintFormater {
 namespace {
 
 	void f() {
-		auto dt = 123._test;
+		{
+			auto dt = 123._test;
+			(void)dt;
+		}
 		testSame(
 			Tagi < "aksjla"_estr .find("jla") > ,
 			Tagi<3>

@@ -48,10 +48,12 @@ template<class... Ps>
 struct ReplaceParamImp
 {
 	template< template<class...>class Src, class...Args >
-	static Src<Ps...> from(Src<Args...>&&);
+	static Src<Ps...>* from(Src<Args...>&&);//MSVC Workaround: 如果不使用指针的话,编译无法通过
 };
+
+
 template<class T, class... Ps>
-using ReplaceParam = decltype(ReplaceParamImp<Ps...>::from(std::declval<T>()));
+using ReplaceParam = std::remove_pointer_t<decltype(ReplaceParamImp<Ps...>::from(std::declval<T>()))>;
 
 
 
