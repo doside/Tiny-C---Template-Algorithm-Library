@@ -220,11 +220,18 @@ struct GenerateSeqImp<1,T> {
 template<size_t N,class T>
 using GeneratorSeq_t = OMIT_T(GenerateSeqImp<N, T>);
 
-
+/*
+	\brief	将序列T中的第Index个类型删除
+	\todo	添加基本的测试用例
+*/
 template<size_t Index,class T>
 using EraseAt_s = Merge_s<Before_s<Index, T>, After_s<Index, T>>;
 
 
+/*
+	\brief	将序列T中的第Index个类型替换为类型 序列 NewT
+	\todo	添加基本的测试用例
+*/
 template<size_t Index,class T,class NewT>
 using ReplaceAt = Merge_s<
 	Merge<Before_s<Index, T>, NewT>,

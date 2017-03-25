@@ -9,9 +9,9 @@ namespace Talg {
 
 
 
-template<class Func>
-struct EqualableFunction :std::function<Func> {
-	using Base = std::function<Func>;
+template<class Signature>
+struct EqualableFunction :std::function<Signature> {
+	using Base = std::function<Signature>;
 	using Base::Base;
 private:
 	template<class F>
@@ -27,7 +27,7 @@ private:
 	template<class F>
 	bool isEqual(const F& rhs,...)const noexcept
 	{
-		return std::is_same<Func, F>::value;
+		return std::is_same<Signature, F>::value;
 	}
 public:
 	template<class Src,class Other>
@@ -57,7 +57,7 @@ public:
 
 	template<class F>
 	constexpr bool operator!=(const F& rhs)const
-		except_when(std::declval<EqualableFunction<Func>>()==rhs)
+		except_when(std::declval<EqualableFunction<Signature>>()==rhs)
 	{
 		return !operator==(rhs);
 	}
@@ -65,14 +65,14 @@ public:
 
 
 
-template<class Func>
+template<class Signature,class Functor=EqualableFunction<Signature>>
 struct DefaultSlotTraits {
 	enum SlotState:char{
 		free=0,discon=2,blocked=4,locked=8
 	};
 	struct State;
-	struct SlotType : EqualableFunction<Func> {
-		using Base = EqualableFunction<Func>;
+	struct SlotType : Functor {
+		using Base = Functor;
 		State* state;
 		template<class...Ts>
 		SlotType(State* s, Ts&&...args)
@@ -117,22 +117,6 @@ struct DefaultSlotTraits {
 			state = rhs.state;
 			return *this;
 		}
-
-
-		//void seek_next()noexcept {
-		//	//precondition  std::next(prev_node_)!=std::end();
-		//	assert(next_node_ == prev_node_);
-		//	++next_node_;
-		//	while (next_node_ != ref->end() && next_node_->state != nullptr) {
-		//		if (next_node_->state->state==free) {
-		//			break;
-		//		}
-		//		++next_node_;
-		//	}
-		//}
-		//const iterator& get_next()noexcept {
-		//	return next_node_; 
-		//}
 		void lock(){
 			//precondition: signal is emitting.
 			state = locked;
@@ -201,14 +185,14 @@ struct DefaultSlotTraits {
 		}
 	};
 };
-template<class Func>
- DefaultSlotTraits<Func>::SlotType::~SlotType() {
+template<class Signature,class F>
+ DefaultSlotTraits<Signature,F>::SlotType::~SlotType() {
 	if (state != nullptr) {
 		state->state = discon;
 	}
 }
-template<class Func>
-auto DefaultSlotTraits<Func>::SlotType::lock(State& other){
+template<class Signature,class F>
+auto DefaultSlotTraits<Signature,F>::SlotType::lock(State& other){
 	assert(
 		state==nullptr || (!(state->is_blocked()) && state->is_connected())
 	);
@@ -226,8 +210,8 @@ auto DefaultSlotTraits<Func>::SlotType::lock(State& other){
 	return std::unique_ptr<State, decltype(when_exit)> ( state, when_exit );
 }
 
-template<class Func>
-bool DefaultSlotTraits<Func>::SlotType::is_callable()const noexcept {
+template<class Signature,class F>
+bool DefaultSlotTraits<Signature,F>::SlotType::is_callable()const noexcept {
 	return state == nullptr || state->state == free;
 }
  

@@ -48,7 +48,7 @@ template<class... Ps>
 struct ReplaceParamImp
 {
 	template< template<class...>class Src, class...Args >
-	static Src<Args...> from(Src<Args...>&&);
+	static Src<Ps...> from(Src<Args...>&&);
 };
 template<class T, class... Ps>
 using ReplaceParam = decltype(ReplaceParamImp<Ps...>::from(std::declval<T>()));

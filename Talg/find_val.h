@@ -18,7 +18,13 @@ todo fix 这个类过于特殊,没多少实际意义,似乎将index_type并入ty
 */
 template<template<class...>class OpImp, class, class>
 struct MultiopImp;
+
+/*
+	\brief	仅供MultiopImp用的内部类型,用于表示某个被删除的类型的占位符.
+*/
 struct DelParam{};
+
+//todo: 当前的实现过于低效,采用查找(线性时间)然后替换(线性时间)然后再查找(线性时间)的方法来实现.
 template<template<class...>class OpImp, class T, class...Ts, class...Us>
 struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
 	static constexpr size_t cur_index_ = OpImp<T, Seq<Us...>>::value;
