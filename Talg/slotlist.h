@@ -9,10 +9,11 @@ namespace Talg {
 
 
 
-template<class Signature>
-struct EqualableFunction :std::function<Signature> {
-	using Base = std::function<Signature>;
+template<class Signature_>
+struct EqualableFunction :std::function<Signature_> {
+	using Base = std::function<Signature_>;
 	using Base::Base;
+	using Signature = Signature_;
 private:
 	template<class F>
 	bool isEqual(const F& rhs,EnableIfT<hasEqualCompare<const F&>>*)const 
@@ -57,7 +58,7 @@ public:
 
 	template<class F>
 	constexpr bool operator!=(const F& rhs)const
-		except_when(std::declval<EqualableFunction<Signature>>()==rhs)
+		except_when(std::declval<EqualableFunction<Signature_>>()==rhs)
 	{
 		return !operator==(rhs);
 	}
@@ -65,12 +66,25 @@ public:
 
 
 
-template<class Signature,class Functor=EqualableFunction<Signature>>
+template<class Functor>
 struct DefaultSlotTraits {
+
+	/*
+		\brief	为了支持BasicSignal<Ret(Ps),Traits<>>,
+				其中Traits<T>为某个DefaultSlotTraits<function<T>>的别名,
+				从而避免类似这样的冗余写法:BasicSignal<Ret(Ps),Traits<Ret(Ps)> >
+		\param	T真正的类型,一般情况下Functor就是std::function<T>,rebind之后也一样,
+				对于某些特殊情况原本Functor是std::function<void>,rebind之后变成function<T>
+		\require	要么是DefaultSlotTraits本身要么是DefaultSlotTraits<ReplaceParam<Functor, T>>;
+	*/
+	template<class T>
+	using rebind = DefaultSlotTraits<ReplaceParam<Functor, T>>;
+
 	enum SlotState:char{
 		free=0,discon=2,blocked=4,locked=8
 	};
 	struct State;
+	//using Functor = ReplaceParam<Functor_, Signature>;
 	struct SlotType : Functor {
 		using Base = Functor;
 		State* state;
@@ -185,14 +199,14 @@ struct DefaultSlotTraits {
 		}
 	};
 };
-template<class Signature,class F>
- DefaultSlotTraits<Signature,F>::SlotType::~SlotType() {
+template<class Functor>
+ DefaultSlotTraits<Functor>::SlotType::~SlotType() {
 	if (state != nullptr) {
 		state->state = discon;
 	}
 }
-template<class Signature,class F>
-auto DefaultSlotTraits<Signature,F>::SlotType::lock(State& other){
+template<class Functor>
+auto DefaultSlotTraits<Functor>::SlotType::lock(State& other){
 	assert(
 		state==nullptr || (!(state->is_blocked()) && state->is_connected())
 	);
@@ -210,22 +224,25 @@ auto DefaultSlotTraits<Signature,F>::SlotType::lock(State& other){
 	return std::unique_ptr<State, decltype(when_exit)> ( state, when_exit );
 }
 
-template<class Signature,class F>
-bool DefaultSlotTraits<Signature,F>::SlotType::is_callable()const noexcept {
+template<class Functor>
+bool DefaultSlotTraits<Functor>::SlotType::is_callable()const noexcept {
 	return state == nullptr || state->state == free;
 }
- 
 
 
-
-template<class Signature,class SlotTraits=DefaultSlotTraits<Signature>>
+template<class Signature,
+		 class SlotTrait=DefaultSlotTraits<EqualableFunction<Signature>>
+>
 class BasicSignal;
 
 
 
+
 template<class R,class...Ps,class SlotTrait_>
-class BasicSignal<R(Ps...),SlotTrait_>:private ReplaceParam<SlotTrait_, R(Ps...)> {
-	using SlotTrait = ReplaceParam<SlotTrait_, R(Ps...)>;
+class BasicSignal<R(Ps...),SlotTrait_>:private SlotTrait_::template rebind<R(Ps...)>{
+public:
+	using SlotTrait = typename SlotTrait_::template rebind<R(Ps...)>;
+	using Base = SlotTrait;
 	using SlotType = typename SlotTrait::SlotType;
 	using State = typename SlotTrait::State;
 	using container = typename SlotTrait::container;
@@ -381,6 +398,45 @@ public:
 	friend CheckCallIterator<GetParram, Cache, Iterator> 
 	makeLockedIter(const SlotCallIterator<GetParram, Cache, Iterator>& iter, Sig& c);
 };
+
+#if 0
+//无法提取出signature
+template<class SlotTrait>
+class BasicSignal<void,SlotTrait>
+	:protected BasicSignal<
+		Signature,
+		typename SlotTrait::template rebind<Signature>
+	>
+{
+
+public://type
+	using Base = BasicSignal<
+		Signature,
+		typename SlotTrait::template rebind<Signature>
+	>;
+	using Base::Base;
+	using Base::SlotType;
+	using Base::State;
+	using Base::container;
+	using Base::iterator;
+	using Base::const_iterator;
+	using Base::Connection;
+	using Base::SharedConnection;
+	using Base::DefaultResCombiner;
+public://method
+	using Base::connect;
+	using Base::disconnect;
+	using Base::disconnect_all;
+	using Base::disconnect_one;
+	using Base::emit;
+	using Base::operator();
+	using Base::visit;
+	using Base::collect;
+	using Base::empty;
+	using Base::call;
+};
+#endif
+
 
 template<class...Ts>
 using SimpleSignal = SignalWrapper<BasicSignal, Ts...>;

@@ -49,6 +49,8 @@ struct ReplaceParamImp
 {
 	template< template<class...>class Src, class...Args >
 	static Src<Ps...>* from(Src<Args...>&&);//MSVC Workaround: 如果不使用指针的话,编译无法通过
+	//template<class T>
+	//static std::remove_pointer<T>* from(T&&);//MSVC Workaround: 如果不使用指针的话,编译无法通过
 };
 
 
