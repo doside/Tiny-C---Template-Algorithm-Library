@@ -11,25 +11,8 @@
 #include <memory>
 namespace Talg{
 
-struct ParamMatch
-{
-	/*
-		\brief	在一个序列中找到U,判断其是否与T相等
-		\param	T 
-	*/
-	template<class T, class U>
-	struct pred{
-		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
-			&& std::is_convertible<U,T>::value;
-	};
-};
-struct ParamConvertMatch
-{
-	template<class T, class U>
-	struct pred{
-		static constexpr bool value = std::is_convertible<U,T>::value;
-	};
-};
+
+
 
 template<class T,class S>
 struct FindParam {
@@ -145,7 +128,7 @@ public:
 	}
 
 	template<class F,class S>
-	constexpr bool operator==(const FunctorImp<F,S>& rhs)const noexcept
+	constexpr bool operator==(const FunctorImp<F,S>& )const noexcept
 	{
 		return std::is_same<T, F>::value && std::is_same<StandarType, S>::value;
 	}

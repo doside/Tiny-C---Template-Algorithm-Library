@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <type_traits>
-
+#include "core.h"
 namespace Talg{
 
 //编译报错时可以根据itag<?>来计算出是第?+1对违反了is_same,并且可以根据itag<0>来定位宏的调用点
@@ -19,12 +19,7 @@ struct StaticAssert {
 	}
 };
 
-template<class T>
-struct NotValue :std::integral_constant<bool, !T::value> { };
-template<class T,class...Ts>
-struct AndValue: AndValue<AndValue<T>,Ts...>{};
-template<class T>
-struct AndValue<T>:std::integral_constant<bool, T::value>{};
+
 
 template<class...Ts>
 struct AssertIsSame;

@@ -11,8 +11,17 @@ namespace {
 	//(在下面的例子中正确的类型为void(int))
 	template<class T=void(double, double)>	
 	using UserSlotTraits2=DefaultSlotTraits<std::function<T>>;
-
+	struct Fobj {
+		void operator()(int)const{}
+		template<class T>
+		Fobj(T){}
+	};
 	void f() {
+		
+		SimpleSignal<void(int), DefaultSlotTraits<Fobj>> sig0;
+		sig0 += [] {};
+		sig0(1);
+
 		SimpleSignal<void(int), UserSlotTraits> sig;
 		sig += [] {};
 		sig(1);

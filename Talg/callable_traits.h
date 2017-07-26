@@ -160,13 +160,13 @@ void mapAny(F&& func, Ts&&...args);
 template<class...Ts>
 struct RepeatImp {
 	template<class F>
-	static decltype(auto) repeat(F&& func, Ts&&...args){
+	constexpr static decltype(auto) repeat(F&& func, Ts&&...args){
 		return forward_m(func)(forward_m(args)...);
 	}
 	template<class F, class...Us>
-	static decltype(auto) repeat(F&& func, Ts&&...args, Us&&...last){
-		forward_m(func)(forward_m(args)...);
-		return Transform< Talg::RepeatImp, Before_s<sizeof...(Ts), Seq<Us...>> >
+	constexpr static decltype(auto) repeat(F&& func, Ts&&...args, Us&&...last){
+		return (void)forward_m(func)(forward_m(args)...),
+		Transform< Talg::RepeatImp, Before_s<sizeof...(Ts), Seq<Us...>> >
 			::repeat(forward_m(func), forward_m(last)...);
 	}
 
@@ -194,7 +194,7 @@ struct RepeatImp {
 
 
 template<size_t n, class F, class...Ts>
-decltype(auto) repeat(F&& func, Ts&&... args) {
+constexpr decltype(auto) repeat(F&& func, Ts&&... args) {
 	using begin = Before_s<n, Seq<Ts...>>;
 	static_assert(sizeof...(args) % n == 0, "m args should be divide into m/n group");
 	return Transform<RepeatImp, begin>::repeat(forward_m(func), forward_m(args)...);

@@ -53,10 +53,16 @@ struct testGatherConstexpr {
 	constexpr int operator()(int, int, int a)const {
 		return a;
 	}
+
 };
 
 
 
+struct less_than {
+	template<class L,class R>
+	constexpr bool operator()(const L& lhs, const R& rhs)const { return lhs < rhs; }
+	constexpr bool operator()()const { return true; }
+};
 
 int test_repeat_main()
 {
@@ -89,6 +95,11 @@ int test_repeat_main()
 		[](int a, int b, int c) {cout << a << b << c; }, 
 		0, 1, 2, 3, 4, 5, 6
 	);
+
+	static_assert(repeat<2>(less_than{}),"");
+	static_assert(repeat<2>(less_than{}, 1, 2),"");
+	static_assert(repeat<2>(less_than{}, 1, 2, 3, 4),"");
+	static_assert(repeat<2>(less_than{}, 1, 2, 3, 4, 5, 6),"");
 	return 0;
 }
 

@@ -49,8 +49,8 @@ struct ReplaceParamImp
 {
 	template< template<class...>class Src, class...Args >
 	static Src<Ps...>* from(Src<Args...>&&);//MSVC Workaround: 如果不使用指针的话,编译无法通过
-	//template<class T>
-	//static std::remove_pointer<T>* from(T&&);//MSVC Workaround: 如果不使用指针的话,编译无法通过
+	template<class T>
+	static std::remove_pointer_t<T>* from(T&&);//MSVC Workaround: 如果不使用指针的话,编译无法通过
 };
 
 
@@ -63,6 +63,21 @@ template<class T>
 struct WrapperT {  //In some context ,we need a wrapper to use T which does't have ctor.
 	using type = T;
 };
+
+
+/*
+	\brief	具有接受任意参数的构造子,并且不做任何事
+	\param	anything
+	\note	典型地,用于忽略函数调用的参数从而实现各种编译期元操作,参见@get
+*/
+struct EatParam {
+	// \note 原本使用的不是模板,而是... 但Wnon-pod-varargs会使其无法通过编译
+	template<class U>
+	constexpr EatParam(U&&)noexcept {}
+};
+template<class>
+using EatParam_t = EatParam;
+
 template<class...Args>
 struct Seq {
 	constexpr Seq()noexcept{}
@@ -114,6 +129,63 @@ template<class T>
 using Reverse = OMIT_T(ReverseImp<Seqfy<T>>);
 template<class obj>
 using Reverse_s = OMIT_T(ReverseImp<obj>);
+
+
+
+template<bool expr,class...Ts>
+constexpr bool staticCheck()noexcept{
+	static_assert(expr, "see details of instantation information");
+	return expr;
+}
+template<class T,class...Ts>
+constexpr bool staticCheck()noexcept {
+	//We provide this static_assert so that give client a chance to see more type information
+	//and focus attention to this function,rather than other compile error noisy.
+	//When you see this static_assert failed, you could check information of instantation
+	//about this function in compiler log to see the more details,especially what T and Ts... are.
+	//通过这个模板来携带一些必要的用于了解编译错误的类型信息,从而快速找到编译错误位点.
+	//例如 简单的static_assert(is_same<T,U>::value,"")有时候是无法看见T U的具体类型信息的(比如TU是类模板参数)
+	//而通过写static_assert(static_check<is_same<T,U>>(),"")则可以清楚地看到T U分别是什么.
+	static_assert(T::value, "see details of instantation information");
+	return T::value;
+}
+
+template<class T>
+struct NotValue :std::integral_constant<bool, !T::value> { 
+	constexpr NotValue()noexcept = default;
+	constexpr operator bool()const noexcept { return this->value; }
+};
+
+template<class T,class...Ts>
+struct AndValue: std::integral_constant< bool, T::value && AndValue<Ts...>::value > {
+	constexpr AndValue()noexcept = default;
+	constexpr operator bool()const noexcept {
+		return this->value;
+	}
+};
+template<class T>
+struct AndValue<T>:std::integral_constant<bool, T::value>{
+	constexpr AndValue()noexcept = default;
+	constexpr operator bool()const noexcept {
+		return this->value;
+	}
+};
+
+template<class T,class...Ts>
+struct OrValue: std::integral_constant< bool, T::value || OrValue<Ts...>::value > {
+	constexpr OrValue()noexcept = default;
+	constexpr operator bool()const noexcept {
+		return this->value;
+	}
+};
+template<class T>
+struct OrValue<T>:std::integral_constant<bool, T::value>{
+	constexpr OrValue()noexcept = default;
+	constexpr operator bool()const noexcept {
+		return this->value;
+	}
+};
+
 
 }//namespace Talg
 

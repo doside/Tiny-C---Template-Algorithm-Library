@@ -27,9 +27,15 @@
     <ClCompile Include="loop_emit_test.cpp">
       <Filter>源文件\SingleSignal</Filter>
     </ClCompile>
+    <ClCompile Include="..\Talg\optional_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_add.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

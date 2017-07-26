@@ -5,22 +5,12 @@
 
 
 #include "core.h"
+#include "seqop.h"
 #include "invoke_impl.h"
 #include "index_seq.h"
 
 namespace Talg{
-/*
-	\brief	具有接受任意参数的构造子,并且不做任何事
-	\param	anything
-	\note	典型地,用于忽略函数调用的参数从而实现各种编译期元操作,参见@get
-*/
-struct EatParam {
-	// \note 原本使用的不是模板,而是... 但Wnon-pod-varargs会使其无法通过编译
-	template<class U>
-	constexpr EatParam(U&&)noexcept {}
-};
-template<class>
-using EatParam_t = EatParam;
+
 
 
 

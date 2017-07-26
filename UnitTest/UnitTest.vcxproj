@@ -150,12 +150,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Talg\optional_test.cpp" />
     <ClCompile Include="loop_emit_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SingleSignal\test_basic_connection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h" />
+    <ClInclude Include="lazy_add.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

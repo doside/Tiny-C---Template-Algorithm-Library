@@ -98,5 +98,20 @@
     <ClInclude Include="transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="algorithm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_op_detect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="optional.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="type_traits.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

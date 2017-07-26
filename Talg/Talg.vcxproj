@@ -82,7 +82,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
@@ -92,7 +92,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
@@ -102,7 +102,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -118,7 +118,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -142,6 +142,7 @@
     <ClCompile Include="test_rm_fptr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="algorithm.h" />
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
@@ -152,6 +153,8 @@
     <ClInclude Include="index_seq.h" />
     <ClInclude Include="invoke_impl.h" />
     <ClInclude Include="iter_call_cache.h" />
+    <ClInclude Include="iter_op_detect.h" />
+    <ClInclude Include="optional.h" />
     <ClInclude Include="select_type.h" />
     <ClInclude Include="seqop.h" />
     <ClInclude Include="signal_wrapper.h" />
@@ -161,6 +164,8 @@
     <ClInclude Include="strippe_qualifier.h" />
     <ClInclude Include="test_suits.h" />
     <ClInclude Include="transform.h" />
+    <ClInclude Include="type_traits.h" />
+    <ClInclude Include="utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

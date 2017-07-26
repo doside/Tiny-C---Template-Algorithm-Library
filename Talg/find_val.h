@@ -15,8 +15,9 @@ todo fix 这个类过于特殊,没多少实际意义,似乎将index_type并入ty
 用于实现多次查找,第一个序列是所有要查找的东西,第二个序列是查找范围
 在type中把当前查找的结果类型并入最终的结果类型,
 在index_type中把当前的下标并入最终的下标序列.
+在ForSeq中逐个挑出类型,分别查找它们在SrcSeq中的下标,谓词为OpImp
 */
-template<template<class...>class OpImp, class, class>
+template<template<class...>class OpImp, class ForSeq, class SrcSeq>
 struct MultiopImp;
 
 /*
@@ -148,10 +149,43 @@ struct Find_if_svt<Pred,T, Seq<U>> :
 	>
 { };
 
-template<class Pred,class Dst, class Src>
-using Find_if_t = OMIT_T(Find_if_svt<Pred,Dst, Seqfy<Src>>);
-template<class Pred,class Dst, class Src>
-using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, Src>);
+template<class Pred,class Dst, class SrcSeq>
+using Find_if_t = OMIT_T(Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>);
+template<class Pred,class Dst, class SrcSeq>
+using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, SrcSeq>);
+
+template<class Pred,class Dst, class SrcSeq>
+using Find_if_v = Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>;
+
+
+struct ParamConvertMatch
+{
+	template<class T, class U>
+	struct pred{
+		static constexpr bool value = std::is_convertible<U,T>::value;
+	};
+};
+
+struct ConvertThenMatch
+{
+	template<class T, class U>
+	struct pred{
+		static constexpr bool value = std::is_convertible<T,U>::value;
+	};
+};
+
+struct ParamMatch
+{
+	/*
+		\brief	在一个序列中找到U,判断其是否与T相等
+		\param	T 
+	*/
+	template<class T, class U>
+	struct pred{
+		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
+			&& std::is_convertible<U,T>::value;
+	};
+};
 
 }//namespace Talg
 

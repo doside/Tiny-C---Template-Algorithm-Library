@@ -218,7 +218,7 @@ struct GenerateSeqImp<1,T> {
 	using type = Seq<T>;
 };
 template<size_t N,class T>
-using GeneratorSeq_t = OMIT_T(GenerateSeqImp<N, T>);
+using GenSeq_t = OMIT_T(GenerateSeqImp<N, T>);
 
 /*
 	\brief	将序列T中的第Index个类型删除
