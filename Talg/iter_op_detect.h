@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "core.h"
 #include <cstddef>		//ptrdiff_t
+#include <iterator>
 
 namespace Talg {
 	template<class T>

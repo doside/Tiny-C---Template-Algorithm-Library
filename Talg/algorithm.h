@@ -1,11 +1,51 @@
-#pragma once
+﻿#pragma once
 #include "iter_op_detect.h"
 #include <type_traits>	//declval
 #include <iterator>
 #include <algorithm>
 
 namespace Talg {
+	
+	/*
+		如果键不存在则无副作用发生,并返回false.
+	*/
+	template<class Map,class Key,class T>
+	bool setKey(Map& map,const Key& key,const T& val) {
+		auto iter = map.find(key);
+		if (iter != map.end()) {
+			iter->second = val;
+			return true;
+		}
+		return false;
+	}
 
+	template<class Map,class Key,class T>
+	decltype(auto) toKey(const Map& map,const Key& key,const T& val) {
+		auto iter = map.find(key);
+		return iter != map.end()?iter->second:val;
+	}
+
+	//template<class Map,class Key>
+	//auto toKey(const Map& map,const Key& key) 
+	//-> Expected<typename Map::mapped_type> 
+	//{
+	//	auto iter = map.find(key);
+	//	return iter != map.end()?iter->second:Expected<typename Map::mapped_type>{};
+	//}
+
+
+	/*
+		如果键已经存在则无副作用发生.
+	*/
+	template<class Map,class Key,class T>
+	bool addKey(Map& map,const Key& key,const T& val) {
+		auto iter = map.find(key);
+		if (iter == map.end()) {
+			map[key] = val;
+			return true;
+		}
+		return false;
+	}
 
 	template<class Iter>
 	class Range {

@@ -1,5 +1,6 @@
 #pragma once
 #include <utility> //for std::swap
+#include "core.h"
 
 namespace Talg {
 	namespace detail {
@@ -19,4 +20,16 @@ namespace Talg {
 			return value;
 		}
 	};
+	
+	template<class T,class Require,class U=std::enable_if_t<Require::value>>
+	using Tself = T;
+
+	template<class Base,class T>
+	using ExcludeBase = Tself<T, NotValue<std::is_base_of<Base, T>>>;
+
+	template<class T,class U>
+	using is_decay_same = std::is_same<std::decay_t<T>, std::decay_t<U>>;
+
+	template<class...Ts>
+	using void_t = Tself<void, Seq<Ts...>, void>;
 }

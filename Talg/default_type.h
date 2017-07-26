@@ -4,8 +4,6 @@
 
 namespace Talg {
 
-
-
 	struct default_t{};
 
 	template<class T,class...Ts>
@@ -62,6 +60,7 @@ namespace Talg {
 		};
 	};
 
+	//例:As<std::map<int,int,default_t,Alloc>>相当于std::map<int,int,std::less<int>,Alloc>
 	template<class T>
 	using As = AsAlias<  Transform<DefaultAlias<T>::template type,T>  >;
 

@@ -36,6 +36,8 @@ namespace {
 		staticCheck<std::is_same<decltype(a), std::map<int, double, std::less<int>, Alloc>>>();
 		staticCheck<std::is_same<decltype(b), std::map<int, double, std::less<int>, Alloc>>>();
 		staticCheck<std::is_same<As<map_alias<double,int>>, std::map<double,int>>>();
+		staticCheck<std::is_same<As<std::map<double,int,default_t>>, std::map<double,int>>>();
+		staticCheck<std::is_same<As<map_alias<double,int,default_t>>, std::map<double,int>>>();
 		//As<map_alias<default_t, int>> vv;
 		//int c = a;
 		//int b = a;

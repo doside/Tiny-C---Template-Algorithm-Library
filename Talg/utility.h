@@ -1,23 +1,11 @@
 ﻿#pragma once
+
+#include <stdexcept>	//runtime_error
 #include "core.h"
-#include <type_traits>	
-#include <exception>	//runtime_error
-#include <utility>		//move
+#include "type_traits.h"
+
 
 namespace Talg {
-
-
-	template<class T,class Require,class U=std::enable_if_t<Require::value>>
-	using Tself = T;
-
-	template<class Base,class T>
-	using ExcludeBase = Tself<T, NotValue<std::is_base_of<Base, T>>>;
-
-	template<class T,class U>
-	using is_decay_same = std::is_same<std::decay_t<T>, std::decay_t<U>>;
-
-	template<class...Ts>
-	using void_t = Tself<void, Seq<Ts...>, void>;
 
 	struct OptionalInit{};
 	struct OptionalEmptyVisit:std::runtime_error{
@@ -196,46 +184,6 @@ namespace Talg {
 	};
 
 
-	/*
-		如果键不存在则无副作用发生,并返回false.
-	*/
-	template<class Map,class Key,class T>
-	bool setKey(Map& map,const Key& key,const T& val) {
-		auto iter = map.find(key);
-		if (iter != map.end()) {
-			iter->second = val;
-			return true;
-		}
-		return false;
-	}
-
-	template<class Map,class Key,class T>
-	decltype(auto) toKey(const Map& map,const Key& key,const T& val) {
-		auto iter = map.find(key);
-		return iter != map.end()?iter->second:val;
-	}
-
-	template<class Map,class Key>
-	auto toKey(const Map& map,const Key& key) 
-	-> Expected<typename Map::mapped_type> 
-	{
-		auto iter = map.find(key);
-		return iter != map.end()?iter->second:Expected<typename Map::mapped_type>{};
-	}
-
-
-	/*
-		如果键已经存在则无副作用发生.
-	*/
-	template<class Map,class Key,class T>
-	bool addKey(Map& map,const Key& key,const T& val) {
-		auto iter = map.find(key);
-		if (iter == map.end()) {
-			map[key] = val;
-			return true;
-		}
-		return false;
-	}
 
 
 }
