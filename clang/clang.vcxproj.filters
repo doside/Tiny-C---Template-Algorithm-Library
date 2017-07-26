@@ -7,5 +7,6 @@
     <ClCompile Include="..\Talg\functor.cpp" />
     <ClCompile Include="..\Talg\test_FW.cpp" />
     <ClCompile Include="..\Talg\optional_test.cpp" />
+    <ClCompile Include="..\Talg\test_transform.cpp" />
   </ItemGroup>
 </Project>

@@ -146,6 +146,7 @@
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
+    <ClInclude Include="default_type.h" />
     <ClInclude Include="exString.h" />
     <ClInclude Include="find_val.h" />
     <ClInclude Include="function_wrapper.h" />

@@ -44,6 +44,7 @@ template< template<class...> class Dst, class T>
 using Transform = decltype(TransformImp<Dst>::from(std::declval<T>()));
 
 
+
 template<class... Ps>
 struct ReplaceParamImp
 {
@@ -54,6 +55,7 @@ struct ReplaceParamImp
 };
 
 
+//todo:deprecated this type.
 template<class T, class... Ps>
 using ReplaceParam = std::remove_pointer_t<decltype(ReplaceParamImp<Ps...>::from(std::declval<T>()))>;
 
@@ -63,6 +65,17 @@ template<class T>
 struct WrapperT {  //In some context ,we need a wrapper to use T which does't have ctor.
 	using type = T;
 };
+
+
+/*
+	\brief 用于在断言失败时视察某个类型具体是什么类型.
+*/
+template<class...T>
+struct WithVal{
+	static constexpr bool value = true;
+	constexpr operator bool()const noexcept { return true; }
+};
+
 
 
 /*
@@ -84,6 +97,29 @@ struct Seq {
 };
 template<class T>
 using Seqfy = Transform<Seq, T>;  //将 blabla<abcde>转换成Seq<abcde>
+
+struct FailTrans{};
+
+//Transform_t的实现细节.
+template<
+	template<class...>class Src,
+	template<class...>class Dst,
+	class...Ts,
+	class...Us
+>
+Dst<Ts...> SeqTrans(Src<Ts...>&, Dst<Us...>&);
+
+FailTrans SeqTrans(EatParam&&, EatParam&&);
+
+/*
+	\brief 把一个类型的参数列表变换成另一个类型的参数表
+	\example Transform_t<AnySeq<int,float>,std::tuple<char,char,double>> == AnySeq<char,char,double>
+	\param Dst被变化的目标类型,Src来源类型.
+	\return Dst<???> 其中???与Src<???>的???一致
+*/
+template<class Dst,class Src>
+using Transform_t = decltype(SeqTrans(std::declval<Src&>(), std::declval<Dst&>()));
+
 
 
 template<class>struct SeqSize_sv;

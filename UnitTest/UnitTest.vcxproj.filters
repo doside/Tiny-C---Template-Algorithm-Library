@@ -30,6 +30,9 @@
     <ClCompile Include="..\Talg\optional_test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\Talg\test_transform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h">
