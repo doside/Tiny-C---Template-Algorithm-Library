@@ -21,6 +21,7 @@ namespace Talg {
 		}
 	};
 	
+
 	template<class T,class Require,class U=std::enable_if_t<Require::value>>
 	using Tself = T;
 
@@ -30,6 +31,10 @@ namespace Talg {
 	template<class T,class U>
 	using is_decay_same = std::is_same<std::decay_t<T>, std::decay_t<U>>;
 
-	template<class...Ts>
-	using void_t = Tself<void, Seq<Ts...>, void>;
+	template<class... Ts> 
+	struct make_void { 
+		using type = void;
+	};
+	template<class... Ts> 
+	using void_t = typename make_void<Ts...>::type;
 }

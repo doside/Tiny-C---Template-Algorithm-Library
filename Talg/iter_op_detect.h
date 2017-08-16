@@ -1,9 +1,12 @@
 ﻿#pragma once
-#include "core.h"
 #include <cstddef>		//ptrdiff_t
 #include <iterator>
+#include "core.h"
+#include "type_traits.h"	//Tself
 
 namespace Talg {
+
+
 	template<class T>
 	using SeqPtr = Talg::Seq<T>*;
 
@@ -12,15 +15,15 @@ namespace Talg {
 	template<class T>
 	constexpr bool hasIndexOp(EatParam) { return false; }
 
-	template<class T>
-	constexpr bool hasPreIncOp(SeqPtr<decltype(++std::declval<T&>())>) { return true; }
-	template<class T>
-	constexpr bool hasPreIncOp(EatParam) { return false; }
+	template< class, class = void_t<> >
+	struct hasPreIncOp : std::false_type { };
+	template< class T >
+	struct hasPreIncOp<T,void_t<decltype( ++std::declval<T&>())>>: std::true_type { };
 
-	template<class T>
-	constexpr bool hasPreDecOp(SeqPtr<decltype(--std::declval<T&>())>) { return true; }
-	template<class T>
-	constexpr bool hasPreDecOp(EatParam) { return false; }
+	template< class, class = void_t<> >
+	struct hasPreDecOp : std::false_type { };
+	template< class T >
+	struct hasPreDecOp<T,void_t<decltype( --std::declval<T&>())>>: std::true_type { };
 
 	template<class T>
 	constexpr bool hasSuffixIncOp(SeqPtr<decltype(std::declval<T&>()++)>) { return true; }
@@ -106,7 +109,44 @@ namespace Talg {
 	template<class Iter>
 	using IterCategory_t = decltype(getIterCategory<Iter>(nullptr));
 
+	
+	
+	
+	
 
+
+	template<class T>
+	struct InputRagRequire{
+		static constexpr bool value = true;	//todo fix!!
+	};
+	template<class T>
+	struct OutputRagRequire{
+		static constexpr bool value = true;	//todo fix!!
+	};
+	template<class T>
+	struct ForwardRagRequire{
+		static constexpr bool value = AndValue<InputRagRequire<T>,std::is_default_constructible<T>>{};	
+		//todo fix!!
+	};
+	template<class T>
+	struct BidrectedRagRequire{
+		static constexpr bool value = true;	//todo fix!!
+	};
+	template<class T>
+	struct RandomRagRequire{
+		static constexpr bool value = true;	//todo fix!!
+	};
+
+	template<class R>
+	using RandomRag = Tself<R, RandomRagRequire<R>>;
+	template<class R>
+	using ForwardRag = Tself<R, ForwardRagRequire<R>>;
+	template<class R>
+	using OutputRag = Tself<R, OutputRagRequire<R>>;
+	template<class R>
+	using InputRag = Tself<R, InputRagRequire<R>>;
+	template<class R>
+	using BidrectedRag = Tself<R, BidrectedRagRequire<R>>;
 
 
 }

@@ -41,6 +41,7 @@
     <ClCompile Include="..\Talg\test_FW.cpp" />
     <ClCompile Include="..\Talg\test_repeat.cpp" />
     <ClCompile Include="..\Talg\test_transform.cpp" />
+    <ClCompile Include="..\Talg\test_void_t.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

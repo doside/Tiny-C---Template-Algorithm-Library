@@ -140,6 +140,7 @@
     <ClCompile Include="test_FW.cpp" />
     <ClCompile Include="test_repeat.cpp" />
     <ClCompile Include="test_rm_fptr.cpp" />
+    <ClCompile Include="test_void_t.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algorithm.h" />
@@ -153,8 +154,10 @@
     <ClInclude Include="has_member.h" />
     <ClInclude Include="index_seq.h" />
     <ClInclude Include="invoke_impl.h" />
+    <ClInclude Include="iter_range.h" />
     <ClInclude Include="iter_call_cache.h" />
     <ClInclude Include="iter_op_detect.h" />
+    <ClInclude Include="numeric.h" />
     <ClInclude Include="optional.h" />
     <ClInclude Include="select_type.h" />
     <ClInclude Include="seqop.h" />
