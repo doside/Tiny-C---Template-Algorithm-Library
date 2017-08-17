@@ -98,6 +98,7 @@ struct GetImp {
 	{
 		return ct_invoke(forward_m(func), forward_m(args)...);
 	}
+
 };
 
 

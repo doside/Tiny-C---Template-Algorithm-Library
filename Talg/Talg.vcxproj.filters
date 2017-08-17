@@ -39,7 +39,10 @@
     <ClCompile Include="test_FW.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="test_void_t.cpp">
+    <ClCompile Include="test_iter_op_detect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test_fold.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,6 +126,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="iter_range.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_adapter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fcall.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

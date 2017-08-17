@@ -69,8 +69,10 @@ template<class T>
 using Pop_back_s = OMIT_T(Pop_backImp<T>);
 
 
-
-
+template<class T,class U>
+using PushFront_s = Merge_s<Seq<T>, U>;
+template<class T,class U>
+using PushFront = Merge<T, U>;
 
 
 template<class T>

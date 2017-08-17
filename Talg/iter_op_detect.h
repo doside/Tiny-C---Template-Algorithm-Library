@@ -6,39 +6,46 @@
 
 namespace Talg {
 
-
 	template<class T>
 	using SeqPtr = Talg::Seq<T>*;
 
+
+	//调用方式has???<T>(0)
 	template<class T>
 	constexpr bool hasIndexOp(SeqPtr<decltype(std::declval<T&>()[0])>) { return true; } //[]有可能返回void所以用seq包住.
 	template<class T>
 	constexpr bool hasIndexOp(EatParam) { return false; }
 
-	template< class, class = void_t<> >
-	struct hasPreIncOp : std::false_type { };
-	template< class T >
-	struct hasPreIncOp<T,void_t<decltype( ++std::declval<T&>())>>: std::true_type { };
+	//调用方式has???<T>(0)
+	template<class T>
+	constexpr bool hasPreIncOp(SeqPtr<decltype(++std::declval<T&>())>) { return true; }
+	template<class T>
+	constexpr bool hasPreIncOp(EatParam) { return false; }
 
-	template< class, class = void_t<> >
-	struct hasPreDecOp : std::false_type { };
-	template< class T >
-	struct hasPreDecOp<T,void_t<decltype( --std::declval<T&>())>>: std::true_type { };
+	//调用方式has???<T>(0)
+	template<class T>
+	constexpr bool hasPreDecOp(SeqPtr<decltype(--std::declval<T&>())>) { return true; }
+	template<class T>
+	constexpr bool hasPreDecOp(EatParam) { return false; }
 
+	//调用方式has???<T>(0)
 	template<class T>
 	constexpr bool hasSuffixIncOp(SeqPtr<decltype(std::declval<T&>()++)>) { return true; }
 	template<class T>
 	constexpr bool hasSuffixIncOp(EatParam) { return false; }
 
+	//调用方式has???<T>(0)
 	template<class T>
 	constexpr bool hasSuffixDecOp(SeqPtr<decltype(std::declval<T&>()--)>) { return true; }
 	template<class T>
 	constexpr bool hasSuffixDecOp(EatParam) { return false; }
 
+	//调用方式has???<T>(0)
 	template<class T>
 	constexpr bool hasPointerOp(SeqPtr<decltype(std::declval<T&>().operator->())>) { return true; }
 	template<class T>
 	constexpr bool hasPointerOp(EatParam) { return false; }
+
 
 	template<class Iter>
 	typename Iter::difference_type getIterDiffType(void* i);
@@ -65,11 +72,11 @@ namespace Talg {
 	typename Iter::iterator_category getIterCategory(void* i);
 	template<class Iter>
 	auto getIterCategory(Talg::EatParam)->
-		std::conditional_t<Talg::hasIndexOp<Iter>(nullptr),
+		std::conditional_t< Talg::hasIndexOp<Iter>(0),
 			std::random_access_iterator_tag,
-			std::conditional_t<Talg::hasPreIncOp<Iter>(nullptr),
+			std::conditional_t<Talg::hasPreIncOp<Iter>(0),
 				std::bidirectional_iterator_tag,
-				std::conditional_t<Talg::hasPointerOp<Iter>(nullptr),
+				std::conditional_t<Talg::hasPointerOp<Iter>(0),
 					std::input_iterator_tag,
 					std::output_iterator_tag
 				>
@@ -92,19 +99,19 @@ namespace Talg {
 	};
 
 	template<class T>
-	using IterCrefType_t = typename IterCrefType<T>::type;
+	using IterCref_t = typename IterCrefType<T>::type;
 
 	template<class Iter>
 	using IterDiff_t = decltype(getIterDiffType<Iter>(nullptr));
 
 	template<class Iter>
-	using IterValueType_t = decltype(getIterValType<Iter>(nullptr));
+	using IterValue_t = decltype(getIterValType<Iter>(nullptr));
 
 	template<class Iter>
-	using IterRefType_t = decltype(getIterRefType<Iter>(nullptr));
+	using IterRef_t = decltype(getIterRefType<Iter>(nullptr));
 
 	template<class Iter>
-	using IterPtrType_t = decltype(getIterPtrType<Iter>(nullptr));
+	using IterPtr_t = decltype(getIterPtrType<Iter>(nullptr));
 
 	template<class Iter>
 	using IterCategory_t = decltype(getIterCategory<Iter>(nullptr));

@@ -17,22 +17,6 @@ constexpr T max(const T& a, const T& b)
 }
 
 
-template<char...Cs>
-struct CharSeq {
-	using size_type = std::size_t;
-	static constexpr size_type npos = no_index;
-	/*template<class Receiver,class Output,class...Ts>
-	call(Receiver&& res,Output&& print,Seq<Ts...>&&) {
-		return	forward_m(res)(
-					forward_m(print)(	
-						Ts::call(Cs...).width,
-						Ts::call(Cs...).precision 
-					)...
-				);
-	}*/
-};
-
-
 struct exStringView{
 public:
 	using size_type = std::size_t;

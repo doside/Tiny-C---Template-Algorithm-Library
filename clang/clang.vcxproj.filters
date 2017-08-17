@@ -9,5 +9,6 @@
     <ClCompile Include="..\Talg\optional_test.cpp" />
     <ClCompile Include="..\Talg\test_transform.cpp" />
     <ClCompile Include="..\Talg\test_void_t.cpp" />
+    <ClCompile Include="..\Talg\test_fold.cpp" />
   </ItemGroup>
 </Project>
