@@ -29,7 +29,10 @@ namespace Talg {
 	using ExcludeBase = Tself<T, NotValue<std::is_base_of<Base, T>>>;
 
 	template<class T,class U>
-	using is_decay_same = std::is_same<std::decay_t<T>, std::decay_t<U>>;
+	using IsDecaySame = std::is_same<std::decay_t<T>, std::decay_t<U>>;
+
+	template<class U,class T,class = std::enable_if_t<IsDecaySame<T,U>::value>>
+	using LimitTo = T;
 
 	template<class... Ts> 
 	struct make_void { 

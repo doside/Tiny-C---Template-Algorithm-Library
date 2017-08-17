@@ -31,18 +31,6 @@ struct IdSeq {
 };
 */
 
-#if 0
-todo plan idea
-struct IndexTag
-{
-	size_t value;
-	constexpr IndexTag(size_t val)noexcept: value{val}{ }
-	constexpr operator size_t()noexcept {
-		return value;
-	}
-};
-#endif
-
 /*
 	\brief	一个将数字绑定到类型的模板类
 */

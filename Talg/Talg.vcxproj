@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="functor.cpp" />
+    <ClCompile Include="super_enum.cpp" />
     <ClCompile Include="testCtStringcpp.cpp" />
     <ClCompile Include="testErase.cpp" />
     <ClCompile Include="testExString.cpp" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algorithm.h" />
+    <ClInclude Include="array.h" />
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />

@@ -10,5 +10,6 @@
     <ClCompile Include="..\Talg\test_transform.cpp" />
     <ClCompile Include="..\Talg\test_void_t.cpp" />
     <ClCompile Include="..\Talg\test_fold.cpp" />
+    <ClCompile Include="..\Talg\testCtStringcpp.cpp" />
   </ItemGroup>
 </Project>

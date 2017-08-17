@@ -18,32 +18,35 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_rm_fptr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="functor.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="testErase.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
-    <ClCompile Include="test_repeat.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="testExString.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="testCtStringcpp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test_FW.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test_iter_op_detect.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="functor.cpp">
+      <Filter>源文件\test</Filter>
     </ClCompile>
     <ClCompile Include="test_fold.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_FW.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_iter_op_detect.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_repeat.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_rm_fptr.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="testCtStringcpp.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="testExString.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="super_enum.cpp">
+      <Filter>源文件\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,9 +85,6 @@
     </ClInclude>
     <ClInclude Include="signal_wrapper.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="has_member.h">
-      <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="slotlist.h">
       <Filter>头文件</Filter>
@@ -132,6 +132,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="fcall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="has_member.h">
+      <Filter>源文件\test</Filter>
+    </ClInclude>
+    <ClInclude Include="array.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
