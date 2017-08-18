@@ -57,7 +57,9 @@ struct IdSeq {
 	\brief	一个将数字绑定到类型的模板类
 */
 template<size_t n>
-using Tagi = IdSeq<n>;
+using Tagi = std::integral_constant<size_t,n>;
+
+
 
 template<class>struct IndexfyImp;
 

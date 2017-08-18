@@ -140,6 +140,7 @@
     <ClCompile Include="testExString.cpp" />
     <ClCompile Include="test_fold.cpp" />
     <ClCompile Include="test_FW.cpp" />
+    <ClCompile Include="test_initlist.cpp" />
     <ClCompile Include="test_repeat.cpp" />
     <ClCompile Include="test_rm_fptr.cpp" />
     <ClCompile Include="test_iter_op_detect.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="has_member.h" />
     <ClInclude Include="index_seq.h" />
+    <ClInclude Include="initlist.h" />
     <ClInclude Include="invoke_impl.h" />
     <ClInclude Include="iter_adapter.h" />
     <ClInclude Include="iter_range.h" />

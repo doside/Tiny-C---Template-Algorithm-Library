@@ -48,6 +48,9 @@
     <ClCompile Include="super_enum.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
+    <ClCompile Include="test_initlist.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="index_seq.h">
@@ -141,6 +144,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="functional.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="initlist.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

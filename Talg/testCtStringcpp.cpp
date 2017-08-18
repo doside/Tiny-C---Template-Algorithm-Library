@@ -24,10 +24,11 @@ namespace {
 			,str2==str
 			,str2[6]==0
 		>{};
-		constexpr ctArray<char, 5> val{ 'a','b','c','d','e' };
-		constexpr ctArray<char, 5> val2{ 'a','b','c' };
-		constexpr ctArray<char, 5> val3{ 'a','b','c','\0','\0' };
-		constexpr ctArray<char, 6> val4{};
+		constexpr ctArray<char, 5> val{{ 'a','b','c','d','e' }};
+		constexpr ctArray<char, 5> val2{{ 'a','b','c' }};
+		constexpr ctArray<char, 5> val3{{ 'a','b','c','\0','\0' }};
+		constexpr ctArray<char, 6> val4{{}};
+		constexpr ctArray<char, 6> val5{};
 		static_assert(val != val2, "");
 		static_assert(val2 == val3, "");
 		static_assert(val[0] == val2[0], "");
@@ -49,10 +50,10 @@ namespace {
 		static_assert(val[4] != val3[4], "");
 
 		constexpr auto val6 = val + val2;
-		static_assert(val6==ctArray<char,10>{
+		static_assert(val6==ctArray<char,10>{{
 			'a','b','c','d','e',
 			'a','b','c','\0','\0'
-		}, "");
+			}}, "");
 		static_assert(val6[5] == 'a', "");
 		static_assert(val6 == val6, "");
 		

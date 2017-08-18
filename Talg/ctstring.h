@@ -5,20 +5,24 @@
 #include "type_traits.h"
 #include "fold.h"
 #include "functional.h"
+#include "initlist.h"
 
 namespace Talg{
 
 	template<class T,size_t N>
 	struct ctArray{
-		T data[N];
+		using IdType = std::make_index_sequence<N>;
+		InitList_t<T, N> data;
 		constexpr ctArray(const ctArray&)noexcept = default;
 		constexpr ctArray()noexcept:data{}{}
-		template<class...Ts,class=
-			std::enable_if_t<
-				AndValue<IsDecaySame<T,Ts>...>::value
-			>
-		>
-		constexpr ctArray(Ts&&...args):data{forward_m(args)...}{}
+		//template<class...Ts,class=
+		//	std::enable_if_t<
+		//		AndValue<IsDecaySame<T,Ts>...>::value
+		//	>
+		//>
+		//constexpr ctArray(Ts&&...args):data{forward_m(args)...}{}
+		constexpr ctArray(const InitList_t<T,N>& list)
+			:data(list){}
 		template<size_t L,size_t L2,size_t...I,size_t...I2>
 		constexpr ctArray(const ctArray<T,L>& lhs,const ctArray<T,L2>& rhs,IdSeq<I...>,IdSeq<I2...>)
 			:data{lhs[I]...,rhs[I2]...}{}
@@ -49,7 +53,7 @@ namespace Talg{
 	}
 	template<class T,size_t N,size_t Len,size_t... I>
 	constexpr auto slice(const ctArray<T,N>& lhs,Tagi<Len>,IdSeq<I...>){
-		return ctArray<T, Len>(lhs[I]...);
+		return ctArray<T, Len>{{lhs[I]...}};
 	}
 	template<size_t M,class T,size_t N>
 	constexpr auto slice(const ctArray<T,N>& lhs){
@@ -67,7 +71,7 @@ namespace Talg{
 	private:
 		template<size_t L,size_t...Index>
 		constexpr ctString(const char (&str)[L], IdSeq<Index...>&&)noexcept
-		:data(str[Index]...){}
+		:data{{str[Index]...}} {}
 		constexpr ctString(const ctArray<char,Len>& rhs)noexcept:data(rhs){}
 	public:	
 		constexpr ctString(const ctString<Len>&args) = default;

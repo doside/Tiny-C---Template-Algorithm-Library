@@ -1,12 +1,11 @@
 ﻿#pragma once
 #include <type_traits>
 #include "core.h"
+#include "index_seq.h"
 namespace Talg{
 
-//编译报错时可以根据itag<?>来计算出是第?+1对违反了is_same,并且可以根据itag<0>来定位宏的调用点
-#define testSame(...) static_assert(AssertIsSame<itag<0>,__VA_ARGS__>::value,"Look here");
-///内部使用
-template<size_t n>struct itag{};
+//编译报错时可以根据Tagi<?>来计算出是第?+1对违反了is_same,并且可以根据Tagi<0>来定位宏的调用点
+#define testSame(...) static_assert(AssertIsSame<Tagi<0>,__VA_ARGS__>::value,"Look here");
 
 
 //We use those struct to generate more information about static_assert failure. (Especially on msvc)
@@ -25,18 +24,18 @@ template<class...Ts>
 struct AssertIsSame;
 
 
-//尽管clang及cl都可以显示出itag的正确值,但gcc却没有完整显示出过深的实例化
-//所以此处将itag的信息直接插入到断言中,这会增加一定的编译负担.
+//尽管clang及cl都可以显示出Tagi的正确值,但gcc却没有完整显示出过深的实例化
+//所以此处将Tagi的信息直接插入到断言中,这会增加一定的编译负担.
 template<size_t n,class L, class R, class... Ts>
-struct AssertIsSame<itag<n>,L, R, Ts...>: StaticAssert<std::is_same<L, R>,itag<n>>
+struct AssertIsSame<Tagi<n>,L, R, Ts...>: StaticAssert<std::is_same<L, R>,Tagi<n>>
 {
-	static constexpr bool value = AssertIsSame<itag<n+1>,Ts...>::value;
+	static constexpr bool value = AssertIsSame<Tagi<n+1>,Ts...>::value;
 };
 
 template<size_t n, class L, class R>
-struct AssertIsSame<itag<n>, L, R> :
+struct AssertIsSame<Tagi<n>, L, R> :
 	std::is_same<L, R>,
-	StaticAssert<std::is_same<L, R>,itag<n>>
+	StaticAssert<std::is_same<L, R>,Tagi<n>>
 {
 
 };

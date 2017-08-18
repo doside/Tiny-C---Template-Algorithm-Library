@@ -1,4 +1,7 @@
 #include "ctstring.h"
+#include "initlist.h"
+#include <array>
+
 
 enum Color {
 	Red=0,
@@ -14,3 +17,15 @@ enum Color {
 
 
 
+
+
+
+namespace {
+	using namespace Talg;
+
+
+
+
+
+
+}

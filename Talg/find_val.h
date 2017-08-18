@@ -38,11 +38,11 @@ struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
 	using index_type = std::conditional_t<
 		cur_index_ == no_index,
 		void,
-		MergeIndex< Tagi< cur_index_ >,
+		MergeIndex< IdSeq< cur_index_ >,
 			typename MultiopImp<OpImp, Seq<Ts...>, ReplaceAt<cur_index_,Seq<Us...>,DelParam>>::index_type>
 	>;
 	//typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type,
-	//using index_type = MergeIndex< Tagi< cur_index_ >,
+	//using index_type = MergeIndex< IdSeq< cur_index_ >,
 		//					typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>;
 public:
 	using type = Merge_s<
@@ -61,7 +61,7 @@ struct MultiopImp<OpImp, Seq<T>, Seq<Us...>> {
 	using index_type = std::conditional_t<
 		OpImp<T, Seq<Us...>>::value == no_index,
 		typename OpImp<T, Seq<Us...>>::type,//IdSeq<>,
-		Tagi<OpImp<T, Seq<Us...>>::value>
+		IdSeq<OpImp<T, Seq<Us...>>::value>
 	>;
 };
 
