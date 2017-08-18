@@ -1,7 +1,5 @@
 #pragma once
-#include "callable_traits.h"
 #include "seqop.h"
-#include "select_type.h"
 
 namespace Talg {
 	template<class F,class T,class U>

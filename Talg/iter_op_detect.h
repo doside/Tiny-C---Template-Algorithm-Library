@@ -132,7 +132,7 @@ namespace Talg {
 	};
 	template<class T>
 	struct ForwardRagRequire{
-		static constexpr bool value = AndValue<InputRagRequire<T>,std::is_default_constructible<T>>{};	
+		static constexpr bool value = AndValue<InputRagRequire<T>,std::is_default_constructible<T>>::value;	
 		//todo fix!!
 	};
 	template<class T>

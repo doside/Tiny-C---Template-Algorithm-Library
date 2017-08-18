@@ -1,19 +1,10 @@
-#include "fcall.h"
+#include "fold.h"
+#include "select_type.h"
+#include "functional.h" //for plus minus
 
 namespace {
 	
-	struct plus {
-		template<class T,class U>
-		constexpr auto operator()(T&& lhs, U&& rhs)const {
-			return forward_m(lhs) + forward_m(rhs);
-		}
-	};
-	struct minus {
-		template<class T,class U>
-		constexpr auto operator()(T&& lhs, U&& rhs)const {
-			return forward_m(lhs) - forward_m(rhs);
-		}
-	};
+	
 	using namespace Talg;
 	static_assert(plus{}(1, 2) == 3, "");
 	static_assert(foldl(plus{}, 1, 2, 3) == 1+2+3, "");

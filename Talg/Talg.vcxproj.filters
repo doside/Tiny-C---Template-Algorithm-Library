@@ -131,13 +131,16 @@
     <ClInclude Include="iter_adapter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="fcall.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="has_member.h">
       <Filter>源文件\test</Filter>
     </ClInclude>
     <ClInclude Include="array.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fold.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="functional.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -152,8 +152,9 @@
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />
     <ClInclude Include="exString.h" />
-    <ClInclude Include="fcall.h" />
+    <ClInclude Include="fold.h" />
     <ClInclude Include="find_val.h" />
+    <ClInclude Include="functional.h" />
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="has_member.h" />
     <ClInclude Include="index_seq.h" />

@@ -11,6 +11,28 @@ struct NoType :public Seq<NoType> {};
 
 template<size_t... nums>
 using IdSeq = std::index_sequence<nums...>;
+
+template<size_t beg,size_t count>
+constexpr auto makeIdSeq() { return makeIdSeq<beg>(std::make_index_sequence<count>()); }
+
+template<size_t beg,size_t...nums>
+constexpr auto makeIdSeq(IdSeq<nums...>) {
+	return IdSeq<beg + nums...>();
+}
+
+template<
+	template<size_t...>class Dst,
+	template<size_t...>class Src,
+	size_t...I,
+	size_t...I2
+>
+Dst<I...> IdSeqTrans(Dst<I...>&, Src<I2...>&);
+
+template<class Dst,class Src>
+using IdSeqTransform = decltype(IdSeqTrans(std::declval<Dst&>(), std::declval<Src&>()));
+
+
+
 /*
 如果自己实现一个IdSeq的话,还要写个makeIdSeq<N>(),
 这种设施的高效实现比较复杂,并且有可能是直接由编译器内建从而加快编译速度的,

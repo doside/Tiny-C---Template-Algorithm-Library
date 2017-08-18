@@ -6,7 +6,11 @@ enum Color {
 	Blue=1<<(2*3+4-(12-5))
 };
 
-[](auto...arg) {
-	constexpr auto value = ...;
-
+#define super_enum_m(name,...) 				\
+[](auto...arg) {					\
+	constexpr auto value = ...;		\
+									\
 }
+
+
+

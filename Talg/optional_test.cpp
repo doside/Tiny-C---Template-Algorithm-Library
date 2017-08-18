@@ -1318,7 +1318,7 @@ namespace InitList
   struct ConstInitLister
   {
     template <class...Ts>
-	constexpr ConstInitLister(Tself<Ts,is_decay_same<Ts,int>>&&...args) : len (sizeof...(args)) {}
+	constexpr ConstInitLister(Tself<Ts,IsDecaySame<Ts,int>>&&...args) : len (sizeof...(args)) {}
 	constexpr auto length()const { return len; }
     size_t len;
   };

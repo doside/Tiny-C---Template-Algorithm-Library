@@ -31,8 +31,9 @@ namespace Talg {
 	template<class T,class U>
 	using IsDecaySame = std::is_same<std::decay_t<T>, std::decay_t<U>>;
 
-	template<class U,class T,class = std::enable_if_t<IsDecaySame<T,U>::value>>
-	using LimitTo = T;
+	//deprecated: It doesnot work with clang.
+	//template<class U,class T,class = std::enable_if_t<IsDecaySame<T,U>::value>>
+	//using LimitTo = T;
 
 	template<class... Ts> 
 	struct make_void { 
