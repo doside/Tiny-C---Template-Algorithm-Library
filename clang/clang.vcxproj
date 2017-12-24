@@ -40,6 +40,7 @@
     <ClCompile Include="..\Talg\super_enum.cpp" />
     <ClCompile Include="..\Talg\testCtStringcpp.cpp" />
     <ClCompile Include="..\Talg\testExString.cpp" />
+    <ClCompile Include="..\Talg\test_array.cpp" />
     <ClCompile Include="..\Talg\test_fold.cpp" />
     <ClCompile Include="..\Talg\test_FW.cpp" />
     <ClCompile Include="..\Talg\test_initlist.cpp" />

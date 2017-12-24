@@ -54,6 +54,8 @@ struct ConverTypeFlag{
 	int value;
 };
 
+
+#if 0
 struct SpecFlagSeq{
 	//AlignFlag align;
 	//FillFlag fill;
@@ -175,6 +177,7 @@ constexpr SpecFlagSeq parseSpecFlagSeq(size_t index,const exStringView& str,size
 }
 
 
+#endif
 
 
 

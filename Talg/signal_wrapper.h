@@ -7,7 +7,6 @@ namespace Talg{
 /*
 	\brief	提供各种语法糖,如有必要可以切换至boost signals2
 	\param	模板参数 形如Signal<R(Ts...),Us...>
-	\note	直接采用了无节操的公有继承,嗯,所谓相信程序员...??!
 */
 template<template<class...>class Sig,class...Ts> 
 class SignalWrapper:public Sig<Ts...>
@@ -26,7 +25,7 @@ public:
 		\return	返回对象自身,从而支持链式调用如
 				sig += f1
 					+= f2;
-		\note	使用者必须当心链式调用时的参数求值顺序不确定
+		\note	使用者必须当心链式调用时,参数求值顺序是不确定的.
 	*/
 	template<class F>
 	SignalWrapper& operator+=(F&& func) 

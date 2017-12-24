@@ -16,6 +16,18 @@
     <Filter Include="源文件\test">
       <UniqueIdentifier>{b5215769-fa2d-41e9-9e0e-70aa31b27454}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Algo">
+      <UniqueIdentifier>{c8f40ad7-6fc6-4c08-a5c6-a975f6abcc38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\CompileTime">
+      <UniqueIdentifier>{946a5f72-c9d5-46d8-ad2d-98da4e09e5c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Container">
+      <UniqueIdentifier>{39ab0507-a6c0-44b3-9967-db13a875ac23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Experiment">
+      <UniqueIdentifier>{7648e080-95e8-44a4-ab6e-5c657d0c6b43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="testErase.cpp">
@@ -51,103 +63,118 @@
     <ClCompile Include="test_initlist.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
+    <ClCompile Include="testFindVal.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="index_seq.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="find_val.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="callable_traits.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="test_suits.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="strippe_qualifier.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="seqop.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="select_type.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="invoke_impl.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="exString.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ctstring.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="signal_wrapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="slotlist.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="function_wrapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iter_call_cache.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="slot_iterator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="transform.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="utility.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="algorithm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iter_op_detect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="optional.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="type_traits.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="single_list.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="default_type.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="numeric.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iter_range.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iter_adapter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="has_member.h">
       <Filter>源文件\test</Filter>
     </ClInclude>
-    <ClInclude Include="array.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="algo.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="algorithm.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="callable_traits.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="ctstring.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="default_type.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="exString.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="find_val.h">
+      <Filter>头文件\CompileTime</Filter>
     </ClInclude>
     <ClInclude Include="fold.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="function_wrapper.h">
+      <Filter>头文件\CompileTime</Filter>
     </ClInclude>
     <ClInclude Include="functional.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\CompileTime</Filter>
     </ClInclude>
     <ClInclude Include="initlist.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="index_seq.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="invoke_impl.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_adapter.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_call_cache.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="numeric.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_op_detect.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="array.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_range.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="optional.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="select_type.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="signal_wrapper.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="seqop.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="single_list.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="slot_iterator.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="slotlist.h">
+      <Filter>头文件\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="strippe_qualifier.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="transform.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="type_traits.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="vec_op.h">
+      <Filter>头文件\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="static_check.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="test_suits.h">
+      <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>头文件\Experiment</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

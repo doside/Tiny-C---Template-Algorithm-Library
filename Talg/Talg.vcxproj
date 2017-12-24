@@ -138,6 +138,7 @@
     <ClCompile Include="testCtStringcpp.cpp" />
     <ClCompile Include="testErase.cpp" />
     <ClCompile Include="testExString.cpp" />
+    <ClCompile Include="testFindVal.cpp" />
     <ClCompile Include="test_fold.cpp" />
     <ClCompile Include="test_FW.cpp" />
     <ClCompile Include="test_initlist.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="test_iter_op_detect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="algo.h" />
     <ClInclude Include="algorithm.h" />
     <ClInclude Include="array.h" />
     <ClInclude Include="callable_traits.h" />
@@ -165,6 +167,7 @@
     <ClInclude Include="iter_range.h" />
     <ClInclude Include="iter_call_cache.h" />
     <ClInclude Include="iter_op_detect.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="numeric.h" />
     <ClInclude Include="optional.h" />
     <ClInclude Include="select_type.h" />
@@ -173,11 +176,13 @@
     <ClInclude Include="single_list.h" />
     <ClInclude Include="slotlist.h" />
     <ClInclude Include="slot_iterator.h" />
+    <ClInclude Include="static_check.h" />
     <ClInclude Include="strippe_qualifier.h" />
     <ClInclude Include="test_suits.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="type_traits.h" />
     <ClInclude Include="utility.h" />
+    <ClInclude Include="vec_op.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

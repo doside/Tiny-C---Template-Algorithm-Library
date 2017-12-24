@@ -240,7 +240,8 @@ using ReplaceAt = Merge_s<
 	After_s<Index, T>
 >;
 
-
+template<class...Ts>
+constexpr auto countParams(Ts&&...)noexcept { return sizeof...(Ts); }
 
 
 

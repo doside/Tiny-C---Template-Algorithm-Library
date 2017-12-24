@@ -1,4 +1,4 @@
-#include "ctstring.h"
+﻿#include "ctstring.h"
 #include "initlist.h"
 #include <array>
 template<class N,class T>
@@ -21,8 +21,9 @@ namespace {
 		constexpr InitList_t<char, 3> a1{ 1 };
 		constexpr InitList_t<char, 3> a0{ };
 		//todo: constexpr InitList_t<char, 3> c{ "ab" };
-		constexpr std::array<char, 3> ar = a3.cast<std::array<char, 3>>();
-		static_assert(ar[0]==a3[0]&&ar[1]==a3[1]&&ar[2]==a3[2], "");
+		constexpr ctArray<char, 3> ar = a3.cast<InitList_t<char, 3>>();
+		static_assert(ar[0]==a3[0]&&ar[1]==a3[1]&&ar[2]==a3[2], ""); 
+		//zz clang3.8并不支持constexpr std::array::operator[] 
 		constexpr A v0{ {} };
 		constexpr A v1{ {'a'} };
 		constexpr A v2{ {'a','b'} };
@@ -35,7 +36,6 @@ namespace {
 		static_assert(a2[2] == 0, "");
 		static_assert(a0[2] == 0, "");
 
-		const char a[3]{ "ab" };
 	}
 
 

@@ -11,6 +11,9 @@
 
 
 namespace {
+#define DeclCtString(name,str) constexpr ctString<sizeof(str)> name{str}
+
+
 	using namespace Talg;
 	void test() {
 		constexpr auto str=ctString<4>{"abc"}+ctString<4>{"abc"};
@@ -18,12 +21,66 @@ namespace {
 		//constexpr auto str3 = str2.append(str2);
 		TestConstexpr<
 			str2==str2
+			,str.size()==6
 			,(str2.size()>0) //防止把>当作模板的尖括号
 			,str[0]=='a'
 			,str==str
 			,str2==str
 			,str2[6]==0
 		>{};
+		static_assert(str.find('c') == 2, "");
+		static_assert(str.search<2>("a") == 0, "");
+		static_assert(str.search<2>("a",1) == 3, "");
+		static_assert(str.search<2>("a",2) == 3, "");
+		static_assert(str.search<2>("a",3) == 3, "");
+
+		static_assert(str.search<3>("ab") == 0, "");
+		static_assert(str.search<3>("ab",1) == 3, "");
+		static_assert(str.search<3>("ab",2) == 3, "");
+		static_assert(str.search<3>("ab",3) == 3, "");
+
+		static_assert(str.search<4>("abc") == 0, "");
+		static_assert(str.search<4>("abc",1) == 3, "");
+		static_assert(str.search<4>("abc",2) == 3, "");
+		static_assert(str.search<4>("abc",3) == 3, "");
+		static_assert(str.search<4>("cab") == 2, "");
+
+		DeclCtString(long_txt, 
+			"abc acb bac bca cab cba aab aac bba bbc cca ccb ab ac bc aa bb cc"
+		);
+		//当前的拼接极限: MSVC:5个long_txt  GCC:3个long_txt
+
+		//static_assert(long_txt.search<5>("abca") == ctStringBase::npos, "");
+		static_assert(long_txt.find(0) == ctStringBase::npos, "");
+		static_assert(long_txt.search("abc") == 0, "");
+		static_assert(long_txt.search("acb") == 4, "");
+		static_assert(long_txt.search("bac") == 8, "");
+		static_assert(long_txt.search("bca") == 12, "");
+		static_assert(long_txt.search("cab") == 16, "");
+		static_assert(long_txt.search("cba") == 20, "");
+		static_assert(long_txt.search("aab") == 24, "");
+		static_assert(long_txt.search("aac") == 28, "");
+		static_assert(long_txt.search("bba") == 32, "");
+		static_assert(long_txt.search("bbc") == 36, "");
+		static_assert(long_txt.search("cca") == 40, "");
+		static_assert(long_txt.search("ccb") == 44, "");
+		static_assert(long_txt.search("ab") == 0, "");
+		static_assert(long_txt.search("ab",1) == 17, "");
+		static_assert(long_txt.search("ab",18) == 25, "");
+		static_assert(long_txt.search<4>("ac") == ctStringBase::npos, "");
+		static_assert(long_txt.search<4>("bc") == ctStringBase::npos, "");
+		static_assert(long_txt.search<4>("aa") == ctStringBase::npos, "");
+		static_assert(long_txt.search<4>("bb") == ctStringBase::npos, "");
+		static_assert(long_txt.search<4>("cc") == ctStringBase::npos, "");
+
+		constexpr auto long_long_txt = long_txt 
+			+ "aaaaab"
+			+ "ababab"
+			+ "aabaab"
+			+ "abaabb"
+		;
+		static_assert(long_long_txt.search("baabb") != 66+18+1, "");
+
 		constexpr ctArray<char, 5> val{{ 'a','b','c','d','e' }};
 		constexpr ctArray<char, 5> val2{{ 'a','b','c' }};
 		constexpr ctArray<char, 5> val3{{ 'a','b','c','\0','\0' }};
@@ -56,7 +113,6 @@ namespace {
 			}}, "");
 		static_assert(val6[5] == 'a', "");
 		static_assert(val6 == val6, "");
-		
 	}
 }
 

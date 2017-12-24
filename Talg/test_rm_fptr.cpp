@@ -21,7 +21,7 @@ struct A
 using pmd = int(A::*)();
 
 namespace {
-	static int f() {
+	int f() {
 		testSame(RemoveCvrp<fptr_fptr>, emptyfptr (int*(*)(emptyfptr)));
 		testSame(RemoveCvrp<fptr_fptr>, RemoveCvrp<emptyfptr(int*(*)(emptyfptr))>);
 		testSame(RemoveCvrp<pmd (A::*)()>, pmd());

@@ -99,7 +99,8 @@ using Seqi = SeqiImp<n, Seq<Ts...>>;
 //结果包装器,它可以自动进行递归计算(也即,+1或no_index),若计算结果为no_index则停止.
 template<class T>
 struct NextSeq {
-	static constexpr size_t value = T::value != no_index ? T::value + 1 : no_index;
+	static constexpr size_t value = T::value != no_index ? T::value + (T::value != no_index) : no_index;
+	//利用value +(T::value != no_index)来代替value + 1这样的写法从而防止编译器给出错误的溢出警告信息.
 	using type = typename T::type;
 };
 
@@ -186,6 +187,18 @@ struct ParamMatch
 			&& std::is_convertible<U,T>::value;
 	};
 };
+
+template<class T,class S>
+struct CountType_sv;
+
+template<class T,class...Ts>
+struct CountType_sv<T,Seq<T,Ts...>>:Tagi<1+CountType_sv<T,Seq<Ts...>>::value>{};
+
+template<class T,class U,class...Ts>
+struct CountType_sv<T,Seq<U,Ts...>>:CountType_sv<T,Seq<Ts...>> {};
+
+template<class T>
+struct CountType_sv<T,Seq<>>:Tagi<0>{};
 
 }//namespace Talg
 

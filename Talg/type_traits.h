@@ -25,8 +25,12 @@ namespace Talg {
 	template<class T,class Require,class U=std::enable_if_t<Require::value>>
 	using Tself = T;
 
-	template<class Base,class T>
-	using ExcludeBase = Tself<T, NotValue<std::is_base_of<Base, T>>>;
+	template<class Base,class T,
+		class U=std::enable_if_t<
+			std::is_base_of<std::decay_t<Base>, std::decay_t<T>>::value==false
+		>
+	>
+	using ExcludeBase = T;
 
 	template<class T,class U>
 	using IsDecaySame = std::is_same<std::decay_t<T>, std::decay_t<U>>;

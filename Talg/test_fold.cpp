@@ -6,8 +6,8 @@ namespace {
 	
 	
 	using namespace Talg;
-	static_assert(plus{}(1, 2) == 3, "");
-	static_assert(foldl(plus{}, 1, 2, 3) == 1+2+3, "");
+	static_assert( (plus{}(1, 2)) == 3, "");
+	static_assert(foldl(plus{}, 1, 2, 3) ==  1+2+3, "");
 	static_assert(foldl(minus{}, 1, 2, 3) == (1-2)-3, "");
 	static_assert(foldr(minus{}, 1, 2, 3) == 1-(2-3), "");
 
@@ -62,5 +62,8 @@ namespace {
 		
 		constexpr auto val4m = testFoldlNop<4>(Minus{}, 1, 2, 3, 4, 5, 6, 7, 8, 9,10);
 		static_assert(val4m == ((1 - 2 - 3 - 4) - 5 - 6 - 7) - 8 - 9 - 10, "");
+
+
+		
 	}
 }

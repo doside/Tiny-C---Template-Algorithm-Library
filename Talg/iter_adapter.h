@@ -82,6 +82,45 @@ namespace Talg {
 			return !(lhs < rhs);
 		}
 	};
+
+	template<class T>
+	[[deprecated]]struct IdentityIter:IterAdapter<IdentityIter<T>> {
+		T* ref_=nullptr;
+		using value_type		= T;
+		using reference			= T&;
+		using pointer			= T*;
+		using difference_type	= std::ptrdiff_t;
+		using iterator_category = std::random_access_iterator_tag;
+
+		constexpr IdentityIter()noexcept{}
+		constexpr IdentityIter(T* ptr)noexcept:ref_(ptr){}
+		constexpr IdentityIter(T& ptr)noexcept:ref_(&ptr){}
+
+		T& operator*() noexcept{ return *ref_; }
+		constexpr const T& operator*()const noexcept{ return *ref_; }
+		IdentityIter& operator++() noexcept{
+			return *this;
+		}
+		IdentityIter& operator+=(difference_type n) noexcept{
+			return *this;
+		}
+		bool operator==(const IdentityIter& rhs)const noexcept{ 
+			if(ref_!=nullptr&&rhs.ref_!=nullptr)
+				return true; 
+			return false;
+		}
+		bool operator<(const IdentityIter& rhs)const noexcept{ 
+			return rhs.ref_ && ref_ == nullptr;
+		}
+		explicit operator bool()const noexcept{
+			return ref_ != nullptr;
+		}
+
+		T& operator[](difference_type )noexcept { return *ref_; }
+		const T& operator[](difference_type )const noexcept{ return *ref_; }
+	};
+
+
 }
 
 
