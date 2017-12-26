@@ -73,6 +73,7 @@ struct DefaultSlotTraits {
 		\brief	为了支持BasicSignal<Ret(Ps),Traits<>>,
 				其中Traits<T>为某个DefaultSlotTraits<function<T>>的别名,
 				从而避免类似这样的冗余写法:BasicSignal<Ret(Ps),Traits<Ret(Ps)> >
+				同时也是为了方便更换function而不需要改变slottraits的实现.
 		\param	T真正的类型,一般情况下Functor就是std::function<T>,rebind之后也一样,
 				对于某些特殊情况原本Functor是std::function<void>,rebind之后变成function<T>
 		\require	要么是DefaultSlotTraits本身要么是DefaultSlotTraits<ReplaceParam<Functor, T>>;

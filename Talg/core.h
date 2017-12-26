@@ -55,7 +55,7 @@ struct ReplaceParamImp
 };
 
 
-//todo:deprecated this type.
+
 template<class T, class... Ps>
 using ReplaceParam = std::remove_pointer_t<decltype(ReplaceParamImp<Ps...>::from(std::declval<T>()))>;
 

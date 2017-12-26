@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Talg::BasicSignal&lt;R(Ps...), SlotTrait_&gt;">
+    <Position X="5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQCAEAEAAAAkAAEAAACAAAIAAAQAAAAAAAEAAA=</HashCode>
+      <FileName>slotlist.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Talg::BasicSignal&lt;void, SlotTrait&gt;">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>slotlist.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Talg::EqualableFunction&lt;Signature_&gt;">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>slotlist.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Talg::DefaultSlotTraits&lt;Functor&gt;">
+    <Position X="2.5" Y="0.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Talg::DefaultSlotTraits&lt;Functor&gt;::SlotState">
+        <TypeIdentifier>
+          <NewMemberFileName>slotlist.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Struct Name="Talg::DefaultSlotTraits&lt;Functor&gt;::State">
+        <TypeIdentifier>
+          <NewMemberFileName>slotlist.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Talg::DefaultSlotTraits&lt;Functor&gt;::SlotType">
+        <TypeIdentifier>
+          <NewMemberFileName>slotlist.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Talg::DefaultSlotTraits&lt;Functor&gt;::DefaultResCombiner">
+        <TypeIdentifier>
+          <NewMemberFileName>slotlist.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>slotlist.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
