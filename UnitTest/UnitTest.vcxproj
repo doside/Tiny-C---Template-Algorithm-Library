@@ -157,6 +157,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SingleSignal\test_basic_connection.cpp" />
     <ClCompile Include="test_algorithm.cpp" />
+    <ClCompile Include="test_maybe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h" />

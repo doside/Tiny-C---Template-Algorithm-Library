@@ -2,7 +2,7 @@
 #include <type_traits>
 #include <functional>
 #include <stdexcept>
-#include "basic_marco.h
+#include "basic_marco.h"
 #include "optional.h"
 
 
@@ -18,8 +18,7 @@ struct MaybeError:private std::function<void()>{
 
 	template<class E>
 	static MaybeError from_exception(E&& err) {
-		MaybeError res;
-		res.Base::assign([err=forward_m(exception)]{
+		MaybeError res([err=forward_m(err)]{
 			throw err;
 		});
 		return res;
@@ -39,30 +38,50 @@ struct MaybeError:private std::function<void()>{
 };
 
 template<class T>
-struct EmptyValueError:public std::logic_error{};
+struct EmptyValueError:public std::logic_error{
+	EmptyValueError():logic_error("try to access empty value."){}
+};
+
 
 //使用公有继承从而能提供直接获取异常的可能性.MaybeError是无法获取异常的.
 template<class Res,class ErrorEmiter=MaybeError>
 class Maybe:public ErrorEmiter { 
 public:
-	static_assert(std::is_reference<Res>::value, "Res shall not be rvalue reference.");
-	using ret_t = Res; //假定Res为轻量级的类似指针的可空类型
+	static_assert(std::is_reference<Res>::value==false, "Res shall not be rvalue reference.");
 	using Base = ErrorEmiter;
 private:
-	ret_t handle_;
+	Res handle_;
 public:
 	Maybe():Base([]{ throw EmptyValueError<Maybe>{}; }) {}
-	Maybe(ret_t res):Base(),handle_(res){} //此处不提供对handle_的空值检查因为那偶尔可能是所希望的情况
+	Maybe(Res res):Base(),handle_(std::move(res)){} //此处不提供对handle_的空值检查因为那偶尔可能是所希望的情况
 	Maybe(Base&& error_emiter):Base(std::move(error_emiter)),handle_(){}
 	Maybe(const Base& error_emiter):Base(error_emiter),handle_(){}
+	Maybe(Maybe&&) = default;
+	Maybe& operator=(Maybe&&) = delete;
+	Maybe(std::nullptr_t) = delete;
 
-	res_t& operator()() {
+	Res& operator()()& {
 		if (Base::operator bool()) {
 			Base::operator()(); //此处有可能抛出异常或者是其他行为.默认的MaybeError是会在此处抛出异常的
 		}
 		return handle_;
 	}
-	res_t operator()()&&{
+	Res operator()()&&{
+		if (Base::operator bool()) {
+			Base::operator()(); //此处有可能抛出异常或者是其他行为.默认的MaybeError是会在此处抛出异常的
+		}
+		return std::move(handle_);
+	}
+	const Res& operator()()const & {
+		if (Base::operator bool()) {
+			Base::operator()(); //此处有可能抛出异常或者是其他行为.默认的MaybeError是会在此处抛出异常的
+		}
+		return handle_;
+	}
+	operator Res&()&{
+		return (*this)();
+	}
+	operator Res()&&{
 		if (Base::operator bool()) {
 			Base::operator()(); //此处有可能抛出异常或者是其他行为.默认的MaybeError是会在此处抛出异常的
 		}
@@ -70,7 +89,7 @@ public:
 	}
 	explicit operator bool()const 
 	except_when(Base::operator bool()){
-		return Base::operator bool();
+		return !Base::operator bool();
 	}
 	~Maybe(){};
 };
@@ -98,8 +117,16 @@ public:
 		}
 		return *ptr_;
 	}
-	explicit operator bool()const 
-	except_when(static_cast<bool>(handle_)){
+	const Res& operator()()const{
+		if (!ptr_) {
+			throw EmptyValueError<Maybe>{};
+		}
+		if (Base::operator bool()) {
+			Base::operator()(); //此处有可能抛出异常或者是其他行为.默认的MaybeError是会在此处抛出异常的
+		}
+		return *ptr_;
+	}
+	explicit operator bool()const noexcept{
 		return ptr_;
 	}
 	~Maybe(){};

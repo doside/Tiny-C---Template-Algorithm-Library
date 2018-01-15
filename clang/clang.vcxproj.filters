@@ -13,6 +13,7 @@
     <ClCompile Include="..\Talg\super_enum.cpp" />
     <ClCompile Include="..\Talg\test_initlist.cpp" />
     <ClCompile Include="..\Talg\test_array.cpp" />
+    <ClCompile Include="..\UnitTest\test_maybe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

@@ -9,7 +9,8 @@ TEST_CASE("Test Array") {
 	Array<int, 1> i1{};
 	Array<int, 0> i0;
 	static_assert(i0.size() == 0, "");
-	CHECK(i0.at(1));
+	CHECK_THROWS(i0.at(0));
+	CHECK_THROWS(i0.at(1));
 	CHECK(i8.empty()==false);
 	static_assert(i8.size() == 8 && i1.size() == 1,"");
 	CHECK(i1.back() == i1.front());

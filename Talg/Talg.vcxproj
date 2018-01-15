@@ -155,7 +155,7 @@
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />
-    <ClInclude Include="expected.h" />
+    <ClInclude Include="maybe.h" />
     <ClInclude Include="exString.h" />
     <ClInclude Include="fold.h" />
     <ClInclude Include="find_val.h" />

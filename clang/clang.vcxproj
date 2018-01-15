@@ -46,6 +46,7 @@
     <ClCompile Include="..\Talg\test_initlist.cpp" />
     <ClCompile Include="..\Talg\test_repeat.cpp" />
     <ClCompile Include="..\Talg\test_transform.cpp" />
+    <ClCompile Include="..\UnitTest\test_maybe.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
