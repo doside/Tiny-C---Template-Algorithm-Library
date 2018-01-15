@@ -2,7 +2,7 @@
 
 #include <utility>
 #include <cstddef>
-
+#include "basic_marco.h"
 /*
 命名公约：
 ??表示零个或多个类型(例如,模板(template<class>class)不是类型,数字(size_t,int...)不是类型)
@@ -26,9 +26,6 @@ struct后面没写public的那部分表示不推荐公有使用
 namespace Talg{
 
 
-#define forward_m(...) std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
-#define except_when(...) noexcept(noexcept(__VA_ARGS__))
-#define OMIT_T(...) typename __VA_ARGS__::type
 
 template< template<class...> class Dst >
 struct TransformImp

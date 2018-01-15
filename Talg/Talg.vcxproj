@@ -150,10 +150,12 @@
     <ClInclude Include="algo.h" />
     <ClInclude Include="algorithm.h" />
     <ClInclude Include="array.h" />
+    <ClInclude Include="basic_marco.h" />
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />
+    <ClInclude Include="expected.h" />
     <ClInclude Include="exString.h" />
     <ClInclude Include="fold.h" />
     <ClInclude Include="find_val.h" />

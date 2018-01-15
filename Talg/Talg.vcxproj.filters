@@ -28,6 +28,9 @@
     <Filter Include="头文件\Experiment">
       <UniqueIdentifier>{7648e080-95e8-44a4-ab6e-5c657d0c6b43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Exception">
+      <UniqueIdentifier>{75436dcb-fda0-46d1-b6e8-865152049095}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="testErase.cpp">
@@ -175,6 +178,12 @@
     </ClInclude>
     <ClInclude Include="utility.h">
       <Filter>头文件\Experiment</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_marco.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="expected.h">
+      <Filter>头文件\Exception</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
