@@ -34,11 +34,19 @@ Transform_t<A<a,b,c,d>,B<e,f,g>>----> A<e,f,g>
 
 
 
-测试平台:
+当前支持的编译工具链:
 VS2015 update3(MSVC14)
+MINGW64 GCC4.9及后续版本。
 NDK(clang3.8 or GCC4.9)
 
 
 todo:
-移除forward_m以外的所有宏.
-添加文档.
+提供可以直接undef所有宏的头文件，并在所有使用了宏的文件的末尾使用之。
+修正single list中的assign实现，当前被严重错误地实现为copy constructor了。
+修正工程文件对具体路径的依赖，尤其是第三方库（用于编写测试）的设置。
+添加自动修正项目设置的程序或脚本。
+提供codeblock工程文件。
+提供doxygen及cmake支持
+添加文档主页面。
+添加示例。
+更换测试框架doctest为lest，重写所有测试用例。
