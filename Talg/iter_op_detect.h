@@ -9,6 +9,16 @@ namespace Talg {
 	template<class T>
 	using SeqPtr = Talg::Seq<T>*;
 
+	 template <
+		class U,
+		class=typename std::iterator_traits<U>::difference_type,
+		class=typename std::iterator_traits<U>::pointer,
+		class=typename std::iterator_traits<U>::reference,
+		class=typename std::iterator_traits<U>::value_type,
+		class=typename std::iterator_traits<U>::iterator_category
+	> 
+	std::true_type isIter(U&&);
+	std::false_type isIter(EatParam);
 
 	//调用方式has???<T>(0)
 	template<class T>

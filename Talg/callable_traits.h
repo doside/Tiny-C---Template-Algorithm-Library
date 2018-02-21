@@ -2,8 +2,6 @@
 #define CALLBLE_TRAITS_H_INCLUDED
 
 
-
-
 #include "seqop.h"
 #include "invoke_impl.h"
 #include "select_type.h"

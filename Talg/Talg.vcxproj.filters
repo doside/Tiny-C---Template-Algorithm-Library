@@ -33,40 +33,46 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="testErase.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
     <ClCompile Include="functor.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="test_fold.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="test_FW.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="test_iter_op_detect.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="test_repeat.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="test_rm_fptr.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="testCtStringcpp.cpp">
-      <Filter>源文件\test</Filter>
-    </ClCompile>
-    <ClCompile Include="testExString.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
     <ClCompile Include="super_enum.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
-    <ClCompile Include="test_initlist.cpp">
+    <ClCompile Include="Test\test_array.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
-    <ClCompile Include="testFindVal.cpp">
+    <ClCompile Include="Test\test_fold.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\test_FW.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\test_initlist.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\test_iter_op_detect.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\test_repeat.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\test_rm_fptr.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\test_transform.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\testCtStringcpp.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\testErase.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\testExString.cpp">
+      <Filter>源文件\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\testFindVal.cpp">
       <Filter>源文件\test</Filter>
     </ClCompile>
   </ItemGroup>
@@ -184,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="strip_qualifier.h">
       <Filter>头文件\CompileTime</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\test_suits.h">
+      <Filter>源文件\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

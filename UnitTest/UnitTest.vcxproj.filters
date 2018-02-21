@@ -42,6 +42,9 @@
     <ClCompile Include="test_maybe.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="algo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h">

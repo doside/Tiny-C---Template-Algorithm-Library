@@ -153,6 +153,7 @@
     <ClCompile Include="..\Talg\optional_test.cpp" />
     <ClCompile Include="..\Talg\test_array.cpp" />
     <ClCompile Include="..\Talg\test_transform.cpp" />
+    <ClCompile Include="algo.cpp" />
     <ClCompile Include="loop_emit_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SingleSignal\test_basic_connection.cpp" />

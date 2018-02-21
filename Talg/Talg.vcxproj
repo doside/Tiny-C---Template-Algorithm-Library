@@ -72,13 +72,13 @@
     <IncludePath>E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
+    <IncludePath>D:\gitroot\MetaOpLib;E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
+    <IncludePath>D:\gitroot\MetaOpLib;E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -135,16 +135,18 @@
   <ItemGroup>
     <ClCompile Include="functor.cpp" />
     <ClCompile Include="super_enum.cpp" />
-    <ClCompile Include="testCtStringcpp.cpp" />
-    <ClCompile Include="testErase.cpp" />
-    <ClCompile Include="testExString.cpp" />
-    <ClCompile Include="testFindVal.cpp" />
-    <ClCompile Include="test_fold.cpp" />
-    <ClCompile Include="test_FW.cpp" />
-    <ClCompile Include="test_initlist.cpp" />
-    <ClCompile Include="test_repeat.cpp" />
-    <ClCompile Include="test_rm_fptr.cpp" />
-    <ClCompile Include="test_iter_op_detect.cpp" />
+    <ClCompile Include="Test\testCtStringcpp.cpp" />
+    <ClCompile Include="Test\testErase.cpp" />
+    <ClCompile Include="Test\testExString.cpp" />
+    <ClCompile Include="Test\testFindVal.cpp" />
+    <ClCompile Include="Test\test_array.cpp" />
+    <ClCompile Include="Test\test_fold.cpp" />
+    <ClCompile Include="Test\test_FW.cpp" />
+    <ClCompile Include="Test\test_initlist.cpp" />
+    <ClCompile Include="Test\test_iter_op_detect.cpp" />
+    <ClCompile Include="Test\test_repeat.cpp" />
+    <ClCompile Include="Test\test_rm_fptr.cpp" />
+    <ClCompile Include="Test\test_transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algo.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="slot_iterator.h" />
     <ClInclude Include="static_check.h" />
     <ClInclude Include="strip_qualifier.h" />
+    <ClInclude Include="Test\test_suits.h" />
     <ClInclude Include="test_suits.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="type_traits.h" />

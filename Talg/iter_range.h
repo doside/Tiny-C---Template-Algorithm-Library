@@ -71,7 +71,7 @@ namespace Talg {
 			return first;
 		}
 		constexpr iterator end()const {
-			return last;
+			return last; 
 		}
 	};
 
