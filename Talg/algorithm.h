@@ -37,12 +37,15 @@ namespace Talg {
 
 	/*
 		如果键已经存在则无副作用发生.
+		/had renamed from: addKey<Map,Key,T>(Map&,const Key&,const T&)
 	*/
-	template<class Map,class Key,class T>
-	bool addKey(Map& map,const Key& key,const T& val) {
-		auto iter = map.find(key);
-		if (iter == map.end()) {
-			map[key] = val;
+	template<class Map,class Key,class...Ts>
+	bool tryInsertKey(Map& map,const Key& key,Ts&&...args) {
+		auto iter = map.lower_bound(key);
+		//precond *iter >= key
+		if (key < iter->first) {
+			//now: *iter!=key
+			map.emplace_hint(iter, forward_m(args)...);
 			return true;
 		}
 		return false;
@@ -108,47 +111,47 @@ namespace Talg {
 	}
 
 
-	template<class R,class Pred=std::less<>>
-	void sort(RandomRag<R>& range,Pred p={}) {
+	template<class U,class Pred=std::less<>>
+	void sort(Range<U>& range,Pred p={}) {
 		std::sort(std::begin(range), std::end(range),p);
 	}
 
-	template<class Rag,class Pred >
-	bool all_of(const Rag& rag, Pred&& p) {
+	template<class U,class Pred >
+	bool all_of(const Range<U>& rag, Pred&& p) {
 		return std::all_of(std::begin(rag), std::end(rag), forward_m(p));
 	}
 
-	template<class Rag,class Pred >
-	bool any_of(const Rag& rag, Pred&& p) {
+	template<class U,class Pred >
+	bool any_of(const Range<U>& rag, Pred&& p) {
 		return std::any_of(std::begin(rag), std::end(rag), forward_m(p));
 	}
 
-	template<class Rag, class Pred>
-	bool none_of(const Rag& rag, Pred&& p) {
+	template<class U, class Pred>
+	bool none_of(const Range<U>& rag, Pred&& p) {
 		return std::none_of(std::begin(rag), std::end(rag), forward_m(p));
 	}
 	
 
-	template<class Rag, class T>
-	auto count(const Rag& rag, const T &value) -> typename Rag::difference_type {
+	template<class U, class T>
+	auto count(const Range<U>& rag, const T &value) -> typename U::difference_type {
 		return std::count(std::begin(rag), std::end(rag), value);
 	}
 
-	template<class Rag, class Pred>
-	auto count_if(const Rag& rag, Pred p)-> typename Rag::difference_type {
+	template<class U, class Pred>
+	auto count_if(const Range<U>& rag, Pred p)-> typename U::difference_type {
 		return std::count_if(std::begin(rag), std::end(rag), p);
 	}
 
-	template<class Rag,class Iter>
-	void copy(const Rag& rag, Iter out) {
+	template<class U,class Iter>
+	void copy(const Range<U>& rag, Iter out) {
 		std::copy(std::begin(rag), std::end(rag), out);
 	}
-	template<class Rag,class T>
-	void fill(const Rag& rag, const T& val) {
+	template<class U,class T>
+	void fill(Range<U>& rag, const T& val) {
 		std::fill(std::begin(rag), std::end(rag), val);
 	}
-	template<class Rag,class Size,class T>
-	void fill_n(const Rag& rag,Size count,const T& val) {
+	template<class U,class Size,class T>
+	void fill_n(Range<U>& rag,Size count,const T& val) {
 		std::fill_n(std::begin(rag), count, val);
 	}
 
@@ -169,8 +172,8 @@ namespace Talg {
 		return lhs;
 	}
 
-	template<class Rag,class Iter,class F>
-	bool find_if(const Rag& rag,F func,Iter& out) {
+	template<class U,class Iter,class F>
+	bool find_if(const Range<U>& rag,F func,Iter& out) {
 		auto end = std::end(rag);
 		auto iter = std::find_if(std::begin(rag),end, func);
 		if (iter != end) {
@@ -180,8 +183,8 @@ namespace Talg {
 		return false;
 	}
 
-	template<class Rag,class Iter,class T>
-	bool find(const Rag& rag,const T& value,Iter& out) {
+	template<class U,class Iter,class T>
+	bool find(const Range<U>& rag,const T& value,Iter& out) {
 		auto end = std::end(rag);
 		auto iter = std::find(std::begin(rag),end,value);
 		if (iter != end) {
@@ -191,8 +194,8 @@ namespace Talg {
 		return false;
 	}
 	
-	template<class Rag,class Iter,class F>
-	bool hasIf(const Rag& rag,F&& func) {
+	template<class U,class Iter,class F>
+	bool hasIf(const Range<U>& rag,F&& func) {
 		for (auto&& elem : rag) {
 			if (forward_m(func)(forward_m(elem)))
 				return true;
@@ -200,8 +203,8 @@ namespace Talg {
 		return false;
 	}
 	
-	template<class Rag,class Iter,class T>
-	bool hasValue(const Rag& rag,T&& arg) {
+	template<class U,class Iter,class T>
+	bool hasValue(const Range<U>& rag,T&& arg) {
 		for (auto&& elem : rag) {
 			if (forward_m(elem) == forward_m(arg))
 				return true;

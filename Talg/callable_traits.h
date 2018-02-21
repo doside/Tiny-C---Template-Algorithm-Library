@@ -179,17 +179,6 @@ struct RepeatImp {
 	static void mapAny(F&& func, Ts&&...args){
 		forward_m(func)(forward_m(args)...);
 	}
-#if 0
-	//todo fix:
-	template<class Receiver,class F, class...Us>
-	static constexpr decltype(auto) mapCollect(Receiver&& dst,F&& func, Ts&&...args, Us&&...last){
-		return forward_m(dst)(
-					forward_m(func)(forward_m(args)...),
-					Transform< ::RepeatImp, Before_s<sizeof...(Ts), Seq<Us...>> >
-					::repeat(forward_m(func), forward_m(last)...)
-			);
-	}
-#endif
 };
 
 
@@ -210,17 +199,7 @@ void mapAny(F&& func, Ts&&...args) {
 }
 
 
-#if 0
-//todo fix:
-template<class Receiver, class F, class...Ts>
-constexpr decltype(auto) mapCollect(Receiver&& dst, F&& func, Ts&&...args) {
-	using param_parser = decltype(ShortParser{}(forward_m(func), forward_m(args)...));
-	constexpr size_t param_length = SeqSize<param_parser>::value - 1;
-	using begin = Before_s<param_length, Seq<Ts...>>;
 
-	return Transform<RepeatImp, begin>::mapCollect(forward_m(dst),forward_m(func), forward_m(args)...);
-}
-#endif
 }//namespace Talg
 #endif // !CALLBLE_TRAITS_H_INCLUDED
 
