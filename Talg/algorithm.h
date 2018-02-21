@@ -112,46 +112,46 @@ namespace Talg {
 
 
 	template<class U,class Pred=std::less<>>
-	void sort(Range<U>& range,Pred p={}) {
+	void sort(Rag<U>& range,Pred p={}) {
 		std::sort(std::begin(range), std::end(range),p);
 	}
 
-	template<class U,class Pred >
-	bool all_of(const Range<U>& rag, Pred&& p) {
+	template<class U,class Pred>
+	bool all_of(ConstRag<U>& rag, Pred&& p) {
 		return std::all_of(std::begin(rag), std::end(rag), forward_m(p));
 	}
 
-	template<class U,class Pred >
-	bool any_of(const Range<U>& rag, Pred&& p) {
+	template<class U,class Pred>
+	bool any_of(ConstRag<U>& rag, Pred&& p) {
 		return std::any_of(std::begin(rag), std::end(rag), forward_m(p));
 	}
 
 	template<class U, class Pred>
-	bool none_of(const Range<U>& rag, Pred&& p) {
+	bool none_of(ConstRag<U>& rag, Pred&& p) {
 		return std::none_of(std::begin(rag), std::end(rag), forward_m(p));
 	}
 	
 
 	template<class U, class T>
-	auto count(const Range<U>& rag, const T &value) -> typename U::difference_type {
+	auto count(ConstRag<U>& rag, const T &value) -> typename U::difference_type {
 		return std::count(std::begin(rag), std::end(rag), value);
 	}
 
 	template<class U, class Pred>
-	auto count_if(const Range<U>& rag, Pred p)-> typename U::difference_type {
+	auto count_if(ConstRag<U>& rag, Pred p)-> typename U::difference_type {
 		return std::count_if(std::begin(rag), std::end(rag), p);
 	}
 
 	template<class U,class Iter>
-	void copy(const Range<U>& rag, Iter out) {
+	void copy(ConstRag<U>& rag, Iter out) {
 		std::copy(std::begin(rag), std::end(rag), out);
 	}
 	template<class U,class T>
-	void fill(Range<U>& rag, const T& val) {
+	void fill(Rag<U>& rag, const T& val) {
 		std::fill(std::begin(rag), std::end(rag), val);
 	}
 	template<class U,class Size,class T>
-	void fill_n(Range<U>& rag,Size count,const T& val) {
+	void fill_n(Rag<U>& rag,Size count,const T& val) {
 		std::fill_n(std::begin(rag), count, val);
 	}
 
@@ -173,7 +173,7 @@ namespace Talg {
 	}
 
 	template<class U,class Iter,class F>
-	bool find_if(const Range<U>& rag,F func,Iter& out) {
+	bool find_if(ConstRag<U>& rag,F func,Iter& out) {
 		auto end = std::end(rag);
 		auto iter = std::find_if(std::begin(rag),end, func);
 		if (iter != end) {
@@ -184,7 +184,7 @@ namespace Talg {
 	}
 
 	template<class U,class Iter,class T>
-	bool find(const Range<U>& rag,const T& value,Iter& out) {
+	bool find(ConstRag<U>& rag,const T& value,Iter& out) {
 		auto end = std::end(rag);
 		auto iter = std::find(std::begin(rag),end,value);
 		if (iter != end) {
@@ -195,7 +195,7 @@ namespace Talg {
 	}
 	
 	template<class U,class Iter,class F>
-	bool hasIf(const Range<U>& rag,F&& func) {
+	bool hasIf(ConstRag<U>& rag,F&& func) {
 		for (auto&& elem : rag) {
 			if (forward_m(func)(forward_m(elem)))
 				return true;
@@ -204,7 +204,7 @@ namespace Talg {
 	}
 	
 	template<class U,class Iter,class T>
-	bool hasValue(const Range<U>& rag,T&& arg) {
+	bool hasValue(ConstRag<U>& rag,T&& arg) {
 		for (auto&& elem : rag) {
 			if (forward_m(elem) == forward_m(arg))
 				return true;

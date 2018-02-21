@@ -1,5 +1,5 @@
 #include <type_traits>
-#include "strippe_qualifier.h"
+#include "strip_qualifier.h"
 #include "test_suits.h"
 
 using namespace std;

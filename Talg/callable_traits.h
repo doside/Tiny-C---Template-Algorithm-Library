@@ -8,7 +8,7 @@
 #include "invoke_impl.h"
 #include "select_type.h"
 
-#include "strippe_qualifier.h"
+#include "strip_qualifier.h"
 #include "has_member.h"
 
 namespace Talg{

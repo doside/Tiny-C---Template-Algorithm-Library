@@ -2,7 +2,7 @@
 #define FUNCTION_WRAPPER_H_INCLUDED
 
 #include "callable_traits.h"
-#include "strippe_qualifier.h"
+#include "strip_qualifier.h"
 #include "find_val.h"
 #include "select_type.h"
 #include "has_member.h"

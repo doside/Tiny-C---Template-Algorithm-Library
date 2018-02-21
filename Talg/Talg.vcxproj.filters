@@ -158,9 +158,6 @@
     <ClInclude Include="slotlist.h">
       <Filter>头文件\Container</Filter>
     </ClInclude>
-    <ClInclude Include="strippe_qualifier.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
     <ClInclude Include="transform.h">
       <Filter>头文件\Algo</Filter>
     </ClInclude>
@@ -184,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="maybe.h">
       <Filter>头文件\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="strip_qualifier.h">
+      <Filter>头文件\CompileTime</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
