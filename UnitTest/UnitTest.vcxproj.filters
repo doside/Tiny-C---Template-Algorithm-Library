@@ -16,6 +16,9 @@
     <Filter Include="源文件\SingleSignal">
       <UniqueIdentifier>{85995472-408a-4852-aba2-c9e7f7061505}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\test_compile">
+      <UniqueIdentifier>{c8748a3b-1f5d-4edf-932b-bf9cac5ab94f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -30,13 +33,7 @@
     <ClCompile Include="..\Talg\optional_test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\Talg\test_transform.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="test_algorithm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Talg\test_array.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="test_maybe.cpp">
@@ -45,12 +42,51 @@
     <ClCompile Include="algo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_array.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_fold.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_FW.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_initlist.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_iter_op_detect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_repeat.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_transform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testErase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testExString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testFindVal.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="lazy_add.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Talg\Test\test_suits.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="源文件\test">
-      <UniqueIdentifier>{b5215769-fa2d-41e9-9e0e-70aa31b27454}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\Algo">
       <UniqueIdentifier>{c8f40ad7-6fc6-4c08-a5c6-a975f6abcc38}</UniqueIdentifier>
     </Filter>
@@ -31,54 +28,57 @@
     <Filter Include="头文件\Exception">
       <UniqueIdentifier>{75436dcb-fda0-46d1-b6e8-865152049095}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\internal_test">
+      <UniqueIdentifier>{b5215769-fa2d-41e9-9e0e-70aa31b27454}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="functor.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="super_enum.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_array.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_fold.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_FW.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_initlist.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_iter_op_detect.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_repeat.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_rm_fptr.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\test_transform.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\testCtStringcpp.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\testErase.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\testExString.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\testFindVal.cpp">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="has_member.h">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClInclude>
     <ClInclude Include="algo.h">
       <Filter>头文件\Algo</Filter>
@@ -192,10 +192,7 @@
       <Filter>头文件\CompileTime</Filter>
     </ClInclude>
     <ClInclude Include="Test\test_suits.h">
-      <Filter>源文件\test</Filter>
+      <Filter>源文件\internal_test</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

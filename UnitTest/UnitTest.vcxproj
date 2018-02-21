@@ -71,19 +71,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -151,8 +151,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Talg\optional_test.cpp" />
-    <ClCompile Include="..\Talg\test_array.cpp" />
-    <ClCompile Include="..\Talg\test_transform.cpp" />
+    <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp" />
+    <ClCompile Include="..\Talg\Test\testErase.cpp" />
+    <ClCompile Include="..\Talg\Test\testExString.cpp" />
+    <ClCompile Include="..\Talg\Test\testFindVal.cpp" />
+    <ClCompile Include="..\Talg\Test\test_array.cpp" />
+    <ClCompile Include="..\Talg\Test\test_fold.cpp" />
+    <ClCompile Include="..\Talg\Test\test_FW.cpp" />
+    <ClCompile Include="..\Talg\Test\test_initlist.cpp" />
+    <ClCompile Include="..\Talg\Test\test_iter_op_detect.cpp" />
+    <ClCompile Include="..\Talg\Test\test_repeat.cpp" />
+    <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp" />
+    <ClCompile Include="..\Talg\Test\test_transform.cpp" />
     <ClCompile Include="algo.cpp" />
     <ClCompile Include="loop_emit_test.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,6 +171,7 @@
     <ClCompile Include="test_maybe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Talg\Test\test_suits.h" />
     <ClInclude Include="doctest_ex.h" />
     <ClInclude Include="lazy_add.h" />
   </ItemGroup>

@@ -11,14 +11,23 @@ namespace Talg {
 
 	 template <
 		class U,
-		class=typename std::iterator_traits<U>::difference_type,
-		class=typename std::iterator_traits<U>::pointer,
-		class=typename std::iterator_traits<U>::reference,
-		class=typename std::iterator_traits<U>::value_type,
-		class=typename std::iterator_traits<U>::iterator_category
+		class=Talg::void_t<
+			typename std::iterator_traits<U>::difference_type,
+			typename std::iterator_traits<U>::pointer,
+			typename std::iterator_traits<U>::reference,
+			typename std::iterator_traits<U>::value_type,
+			typename std::iterator_traits<U>::iterator_category
+		>
+		//class=typename std::iterator_traits<U>::difference_type,
+		//class=typename std::iterator_traits<U>::pointer,
+		//class=typename std::iterator_traits<U>::reference,
+		//class=typename std::iterator_traits<U>::value_type,
+		//class=typename std::iterator_traits<U>::iterator_category
 	> 
-	std::true_type isIter(U&&);
-	std::false_type isIter(EatParam);
+	constexpr bool  isIter(SeqPtr<U>){ return true; }
+
+	template<class T>
+	constexpr bool  isIter(EatParam) { return false; }
 
 	//调用方式has???<T>(0)
 	template<class T>

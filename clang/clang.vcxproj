@@ -50,6 +50,12 @@
     <ClCompile Include="..\Talg\Test\test_repeat.cpp" />
     <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp" />
     <ClCompile Include="..\Talg\Test\test_transform.cpp" />
+    <ClCompile Include="..\UnitTest\algo.cpp" />
+    <ClCompile Include="..\UnitTest\loop_emit_test.cpp" />
+    <ClCompile Include="..\UnitTest\main.cpp" />
+    <ClCompile Include="..\UnitTest\test_algorithm.cpp" />
+    <ClCompile Include="..\UnitTest\test_maybe.cpp" />
+    <ClCompile Include="..\UnitTest\test_parameter.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>

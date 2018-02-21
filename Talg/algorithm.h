@@ -40,12 +40,11 @@ namespace Talg {
 		/had renamed from: addKey<Map,Key,T>(Map&,const Key&,const T&)
 	*/
 	template<class Map,class Key,class...Ts>
-	bool tryInsertKey(Map& map,const Key& key,Ts&&...args) {
+	bool tryInsertKey(Map& map,Key&& key,Ts&&...args) {
 		auto iter = map.lower_bound(key);
-		//precond *iter >= key
-		if (key < iter->first) {
+		if (bool(iter == map.end()) || bool(key < iter->first)) {
 			//now: *iter!=key
-			map.emplace_hint(iter, forward_m(args)...);
+			map.emplace_hint(iter, forward_m(key),forward_m(args)...);
 			return true;
 		}
 		return false;
@@ -207,6 +206,14 @@ namespace Talg {
 	bool hasValue(ConstRag<U>& rag,T&& arg) {
 		for (auto&& elem : rag) {
 			if (forward_m(elem) == forward_m(arg))
+				return true;
+		}
+		return false;
+	}
+	template<class U,class T>
+	bool hasKey(ConstRag<U>& rag,T&& key) {
+		for (auto&& elem : rag) {
+			if( !(elem.first<key) && !(key<elem.first) )
 				return true;
 		}
 		return false;
