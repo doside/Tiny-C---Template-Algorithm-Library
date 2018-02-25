@@ -100,16 +100,6 @@ decltype(auto) buildStrType(IdSeq<index...>&&) {
 	return R <T{}.str[index]...> {};
 }
 
-/*
-	\brief	
-	\param
-	\return
-	\note
-*/
-template<size_t N>
-struct Formater {
-
-};
 }//namespace Talg
 
 
