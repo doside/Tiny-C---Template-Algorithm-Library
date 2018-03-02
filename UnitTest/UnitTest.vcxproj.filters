@@ -19,64 +19,67 @@
     <Filter Include="源文件\test_compile">
       <UniqueIdentifier>{c8748a3b-1f5d-4edf-932b-bf9cac5ab94f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\old_test">
+      <UniqueIdentifier>{efe52707-919d-4f0a-8a2c-7dd9ce915e19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="SingleSignal\test_basic_connection.cpp">
       <Filter>源文件\SingleSignal</Filter>
     </ClCompile>
     <ClCompile Include="loop_emit_test.cpp">
       <Filter>源文件\SingleSignal</Filter>
     </ClCompile>
+    <ClCompile Include="algo.cpp">
+      <Filter>源文件\old_test</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件\old_test</Filter>
+    </ClCompile>
     <ClCompile Include="..\Talg\optional_test.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="test_algorithm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test_maybe.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="algo.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_array.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_fold.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_FW.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_initlist.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_iter_op_detect.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_maybe.cpp">
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_repeat.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_transform.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\testErase.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\testExString.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\testFindVal.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\old_test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
