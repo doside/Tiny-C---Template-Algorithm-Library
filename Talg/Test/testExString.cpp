@@ -1,7 +1,7 @@
-﻿#include "exString.h"
-#include "index_seq.h"
+﻿#include <Talg/exString.h>
+#include <Talg/index_seq.h>
 #include "test_suits.h"
-#include "callable_traits.h"
+#include <Talg/callable_traits.h>
 #include <tuple>
 #include <stdexcept>
 using namespace Talg;

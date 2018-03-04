@@ -8,12 +8,12 @@
 // authored by Fernando Luis Cacciola Carballal
 
 #include <doctest/doctest.h>
-# include <optional.h>
+#include <Talg/optional.h>
+#include <Talg/utility.h>
 # include <vector>
 # include <iostream>
 # include <functional>
 # include <complex>
-#include <utility.h>
 struct caller {
     template <class T> caller(T fun) { fun(); }
 };

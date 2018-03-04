@@ -2,6 +2,8 @@
 #include "core.h"
 #include <utility>
 #include <limits>
+#include "basic_marco_impl.h"
+
 //using std::size_t;
 namespace Talg{
 enum :size_t {
@@ -68,7 +70,7 @@ struct IndexfyImp<Seq<IdSeq<Ns>>...> {
 	using type = IdSeq<Ns...>;
 };
 template<class T>
-using Indexfy = OMIT_T(IndexfyImp<T>);
+using Indexfy = omit_t_m(IndexfyImp<T>);
 
 template<class T,class U>
 struct MergeIndexImp;
@@ -80,9 +82,9 @@ struct MergeIndexImp<IdSeq<Ns...>, IdSeq<Ms...>> {
 
 
 template<class T,class U>
-using MergeIndex = OMIT_T(MergeIndexImp<T, U>);
+using MergeIndex = omit_t_m(MergeIndexImp<T, U>);
 template<class T, class U>
-using MergeIndex_s = OMIT_T(MergeIndexImp<T, U>);
+using MergeIndex_s = omit_t_m(MergeIndexImp<T, U>);
 
 template<size_t...Ns>
 Seq<Tagi<Ns>...> makeTagiSeq(IdSeq<Ns...>&&);
@@ -92,3 +94,4 @@ using TagiSeqN = decltype(makeTagiSeq(std::make_index_sequence<N>()));
 
 
 }//namespace Talg
+#include "undef_macro.h"

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <type_traits>
-#include "core.h"
-#include "index_seq.h"
+#include <Talg/core.h>
+#include <Talg/index_seq.h>
 namespace Talg{
 
 //编译报错时可以根据Tagi<?>来计算出是第?+1对违反了is_same,并且可以根据Tagi<0>来定位宏的调用点
@@ -58,7 +58,7 @@ struct AssertIsSame<L, R> :
 
 
 //template<class T>
-//using AssertInform = OMIT_T(AssertInformImp<T>);
+//using AssertInform = omit_t_m(AssertInformImp<T>);
 #define AssertInform(msg,...)  \
 static_assert( StaticAssert<__VA_ARGS__>{},msg " "#__VA_ARGS__ );
 

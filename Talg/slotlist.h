@@ -4,6 +4,7 @@
 #include "has_member.h"
 #include "slot_iterator.h"
 #include <type_traits>
+#include "basic_marco_impl.h"
 
 namespace Talg {
 
@@ -17,7 +18,7 @@ struct EqualableFunction :std::function<Signature_> {
 private:
 	template<class F>
 	bool isEqual(const F& rhs,EnableIfT<hasEqualCompare<const F&>>*)const 
-		except_when(std::declval<const F&>()==std::declval<const F&>())
+		except_when_m(std::declval<const F&>()==std::declval<const F&>())
 	{
 		if(auto ptr = Base::template target<F>()) {
 			return *ptr==rhs;
@@ -33,7 +34,7 @@ private:
 public:
 	template<class Src,class Other>
 	bool compare(Src&&,const Other& rhs)
-		except_when(std::declval<const Src&>()==std::declval<const Other&>())
+		except_when_m(std::declval<const Src&>()==std::declval<const Other&>())
 	{
 		if(auto ptr = Base::template target<Src>()) {
 			return *ptr==rhs;
@@ -44,7 +45,7 @@ public:
 	template<class F,
 			 class = std::enable_if_t<!std::is_base_of<Base,F>::value>>
 	bool operator==(const F& rhs)const 
-		except_when(std::declval<EqualableFunction>().isEqual(rhs, 0))
+		except_when_m(std::declval<EqualableFunction>().isEqual(rhs, 0))
 	{
 		return isEqual(rhs, 0);
 	}
@@ -58,7 +59,7 @@ public:
 
 	template<class F>
 	constexpr bool operator!=(const F& rhs)const
-		except_when(std::declval<EqualableFunction<Signature_>>()==rhs)
+		except_when_m(std::declval<EqualableFunction<Signature_>>()==rhs)
 	{
 		return !operator==(rhs);
 	}
@@ -453,3 +454,4 @@ makeLockedIter(const SlotCallIterator<GetParram,Cache,Iterator>& iter,Sig& c) {
 
 }//namespace Talg
 
+#include "undef_macro.h"

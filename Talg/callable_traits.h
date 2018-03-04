@@ -1,13 +1,13 @@
 ﻿#ifndef CALLBLE_TRAITS_H_INCLUDED
 #define CALLBLE_TRAITS_H_INCLUDED
 
-
 #include "seqop.h"
 #include "invoke_impl.h"
 #include "select_type.h"
 
 #include "strip_qualifier.h"
 #include "has_member.h"
+#include "basic_marco_impl.h"
 
 namespace Talg{
 struct NoCallableTraits{};
@@ -199,5 +199,8 @@ void mapAny(F&& func, Ts&&...args) {
 
 
 }//namespace Talg
+
+#include "undef_macro.h"
+
 #endif // !CALLBLE_TRAITS_H_INCLUDED
 

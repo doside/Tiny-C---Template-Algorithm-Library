@@ -1,6 +1,7 @@
 ﻿#ifndef SEQOP_H_INCLUDED
 #define SEQOP_H_INCLUDED
 #include "core.h"
+#include "basic_marco_impl.h"
 
 namespace Talg{
 
@@ -12,12 +13,12 @@ struct Erase_frontImp<T, Seq<>> {
 };
 template<class U, class T, class...Ts, class...Us>
 struct Erase_frontImp< Seq<T, Ts...>, Seq<U, Us...> > {
-	using type = Merge_s<Seq<U>, OMIT_T(Erase_frontImp<Seq<Ts...>, Seq<Us...>>)>;
+	using type = Merge_s<Seq<U>, omit_t_m(Erase_frontImp<Seq<Ts...>, Seq<Us...>>)>;
 };
 
 template<class T, class...Ts, class...Us>
 struct Erase_frontImp< Seq<T, Ts...>, Seq<T, Us...> > {
-	using type = OMIT_T(Erase_frontImp<Seq<Ts...>, Seq<Us...>>);
+	using type = omit_t_m(Erase_frontImp<Seq<Ts...>, Seq<Us...>>);
 };
 template<class T, class...Us>
 struct Erase_frontImp< Seq<T>, Seq<T, Us...> > {
@@ -31,9 +32,9 @@ struct Erase_frontImp< Seq<U>, Seq<T, Us...> > {
 //Erase front<A(abc) B(abcdef)> is Seq<def>
 //Erase font<A(abc) B(bacdef)> is Seq<badef>
 template<class del, class from>
-using Erase_front = OMIT_T(Erase_frontImp<Seqfy<del>, Seqfy<from>>);
+using Erase_front = omit_t_m(Erase_frontImp<Seqfy<del>, Seqfy<from>>);
 template<class del, class from>
-using Erase_front_s = OMIT_T(Erase_frontImp<del, from>);
+using Erase_front_s = omit_t_m(Erase_frontImp<del, from>);
 
 
 
@@ -64,9 +65,9 @@ struct Pop_backImp<Seq<T, U>> {
 	using type = Seq<T>;
 };
 template<class T>
-using Pop_back = OMIT_T(Pop_backImp<Seqfy<T>>);
+using Pop_back = omit_t_m(Pop_backImp<Seqfy<T>>);
 template<class T>
-using Pop_back_s = OMIT_T(Pop_backImp<T>);
+using Pop_back_s = omit_t_m(Pop_backImp<T>);
 
 
 template<class T,class U>
@@ -86,9 +87,9 @@ struct HeadImp<Seq<T>> {
 	using type = T;
 };
 template<class T>
-using Head_s = OMIT_T(HeadImp<T>);
+using Head_s = omit_t_m(HeadImp<T>);
 template<class T>
-using Head = OMIT_T(HeadImp<Seqfy<T>>);
+using Head = omit_t_m(HeadImp<Seqfy<T>>);
 
 
 
@@ -97,7 +98,7 @@ template<size_t, class...>struct BeforeImp;
 template<size_t n, class T, class...Ts>
 struct BeforeImp<n, Seq<T, Ts...>> {
 	static_assert(n <= sizeof...(Ts)+1, "");
-	using type = Merge_s<Seq<T>, OMIT_T(BeforeImp<n - 1, Seq<Ts...>>)>;
+	using type = Merge_s<Seq<T>, omit_t_m(BeforeImp<n - 1, Seq<Ts...>>)>;
 };
 
 template<class T, class...Ts>
@@ -114,16 +115,16 @@ struct BeforeImp<n, Seq<>> {
 };
 
 template<size_t n, class T>
-using Before = OMIT_T(BeforeImp<n, Seqfy<T>>);
+using Before = omit_t_m(BeforeImp<n, Seqfy<T>>);
 template<size_t n, class T>
-using Before_s = OMIT_T(BeforeImp<n, T>);
+using Before_s = omit_t_m(BeforeImp<n, T>);
 
 
 
 template<size_t, class...>struct AfterImp;
 template<size_t n, class T, class...Ts>
 struct AfterImp<n, Seq<T, Ts...>> {
-	using type = OMIT_T(AfterImp<n - 1, Seq<Ts...>>);
+	using type = omit_t_m(AfterImp<n - 1, Seq<Ts...>>);
 };
 template<class T, class... Ts>
 struct AfterImp<0, Seq<T, Ts...>> {
@@ -143,9 +144,9 @@ struct AfterImp<n, Seq<>> {
 };
 
 template<size_t n, class T>
-using After = OMIT_T(AfterImp<n, Seqfy<T>>);
+using After = omit_t_m(AfterImp<n, Seqfy<T>>);
 template<size_t n, class T>
-using After_s = OMIT_T(AfterImp<n, T>);
+using After_s = omit_t_m(AfterImp<n, T>);
 //For any n,any Tuple:
 //Merge_s< Before<n,Tuple<Ts...>>,
 //         Seq<At<n,Tuple<Ts...>>>,
@@ -164,9 +165,9 @@ struct Erase_backImp<Seq<Ts...>, Seq<Us...>> {
 };
 
 template<class T,class U>
-using Erase_back_s = OMIT_T(Erase_backImp<T,U>);
+using Erase_back_s = omit_t_m(Erase_backImp<T,U>);
 template<class T, class U>
-using Erase_back = OMIT_T(Erase_backImp<T, Seqfy<U>>);
+using Erase_back = omit_t_m(Erase_backImp<T, Seqfy<U>>);
 
 //eg: RotateRight<Seq1<C,D>,Seq2<A,B,C,D>> is Seq<C,D, A,B>
 template<class Obj, class Src>
@@ -180,7 +181,7 @@ template<class...>struct type_atImp;
 
 template<class T,class...Ts>
 struct type_atImp<T, Seq<Ts...>> {
-	using type = OMIT_T(type_atImp<T, Seq<>, Seq<Ts...>>);
+	using type = omit_t_m(type_atImp<T, Seq<>, Seq<Ts...>>);
 };
 template<class T,class...Ts,class...Us>
 struct type_atImp<T, Seq<Ts...>, Seq<T, Us...>> {
@@ -197,7 +198,7 @@ struct type_atImp<T, Seq<Ts...>, Seq<T>> {
 };
 template<class T, class U, class...Ts, class...Us>
 struct type_atImp<T, Seq<Ts...>, Seq<U, Us...>> {
-	using type = OMIT_T(type_atImp<T, Seq<Ts...,U>, Seq<Us...>>);
+	using type = omit_t_m(type_atImp<T, Seq<Ts...,U>, Seq<Us...>>);
 };
 
 
@@ -209,7 +210,7 @@ struct type_atImp<T, Seq<Ts...>, Seq<U, Us...>> {
 */
 template<size_t n,class T>
 struct GenerateSeqImp {
-	using type = Merge_s<OMIT_T(GenerateSeqImp<n / 2,T>), OMIT_T(GenerateSeqImp<n - n / 2,T>)>;
+	using type = Merge_s<omit_t_m(GenerateSeqImp<n / 2,T>), omit_t_m(GenerateSeqImp<n - n / 2,T>)>;
 };
 template<class T>
 struct GenerateSeqImp<0,T> {
@@ -220,7 +221,7 @@ struct GenerateSeqImp<1,T> {
 	using type = Seq<T>;
 };
 template<size_t N,class T>
-using GenSeq_t = OMIT_T(GenerateSeqImp<N, T>);
+using GenSeq_t = omit_t_m(GenerateSeqImp<N, T>);
 
 /*
 	\brief	将序列T中的第Index个类型删除
@@ -247,6 +248,7 @@ constexpr auto countParams(Ts&&...)noexcept { return sizeof...(Ts); }
 
 }//namespace Talg
 
+#include "undef_macro.h"
 
 #endif //SEQOP_H_INCLUDED
 

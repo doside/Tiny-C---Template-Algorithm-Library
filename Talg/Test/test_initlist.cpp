@@ -1,5 +1,5 @@
-﻿#include "ctstring.h"
-#include "initlist.h"
+﻿#include <Talg/ctstring.h>
+#include <Talg/initlist.h>
 #include <array>
 template<class N,class T>
 struct TupleIter {

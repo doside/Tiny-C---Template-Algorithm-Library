@@ -176,14 +176,8 @@
     <ClInclude Include="static_check.h">
       <Filter>头文件\CompileTime</Filter>
     </ClInclude>
-    <ClInclude Include="test_suits.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
     <ClInclude Include="utility.h">
       <Filter>头文件\Experiment</Filter>
-    </ClInclude>
-    <ClInclude Include="basic_marco.h">
-      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="maybe.h">
       <Filter>头文件\Exception</Filter>
@@ -193,6 +187,15 @@
     </ClInclude>
     <ClInclude Include="Test\test_suits.h">
       <Filter>源文件\internal_test</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_marco_impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_macro.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="undef_macro.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

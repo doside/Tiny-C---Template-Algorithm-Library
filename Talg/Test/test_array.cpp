@@ -1,7 +1,7 @@
-#include "array.h"
+#include <Talg/array.h>
 #include <doctest/doctest.h>
-#include <algorithm.h>
-#include <numeric.h>
+#include <Talg/algorithm.h>
+#include <Talg/numeric.h>
 #include <map>
 using namespace Talg;
 TEST_CASE("Test Array") {

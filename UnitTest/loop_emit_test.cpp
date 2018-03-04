@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
-#include <signal_wrapper.h>
 //#include <boost/signals2.hpp>
-#include <slotlist.h>
+#include <Talg/signal_wrapper.h>
+#include <Talg/slotlist.h>
 #include <sstream>
 #include <algorithm>
 using namespace Talg;

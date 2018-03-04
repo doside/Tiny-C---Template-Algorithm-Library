@@ -1,5 +1,5 @@
-#include "core.h"
-#include "default_type.h"
+#include <Talg/core.h>
+#include <Talg/default_type.h>
 #include <map>
 #include <doctest/doctest.h>
 using namespace Talg;

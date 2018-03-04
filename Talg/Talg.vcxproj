@@ -69,16 +69,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\gitroot\MetaOpLib;E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\gitroot\MetaOpLib;E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,7 +152,8 @@
     <ClInclude Include="algo.h" />
     <ClInclude Include="algorithm.h" />
     <ClInclude Include="array.h" />
-    <ClInclude Include="basic_marco.h" />
+    <ClInclude Include="basic_macro.h" />
+    <ClInclude Include="basic_marco_impl.h" />
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
@@ -183,9 +184,9 @@
     <ClInclude Include="static_check.h" />
     <ClInclude Include="strip_qualifier.h" />
     <ClInclude Include="Test\test_suits.h" />
-    <ClInclude Include="test_suits.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="type_traits.h" />
+    <ClInclude Include="undef_macro.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="vec_op.h" />
   </ItemGroup>

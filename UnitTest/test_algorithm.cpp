@@ -1,7 +1,8 @@
 #include <doctest/doctest.h>
-#include <algorithm.h>
-#include <numeric.h>
+#include <Talg/algorithm.h>
+#include <Talg/numeric.h>
 #include <map>
+#include <Talg/basic_macro.h>
 using namespace Talg;
 struct A {
 	bool c1 = false;

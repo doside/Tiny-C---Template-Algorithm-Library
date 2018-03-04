@@ -4,7 +4,7 @@
 #include "seqop.h"
 #include <limits>
 #include <utility>
-
+#include "basic_marco_impl.h"
 
 
 
@@ -46,7 +46,7 @@ struct MultiopImp<OpImp, Seq<T, Ts...>, Seq<Us...>> {
 		//					typename MultiopImp<OpImp, Seq<Ts...>, Seq<Us...>>::index_type>;
 public:
 	using type = Merge_s<
-		OMIT_T(OpImp<T,Seq<Us...>>),
+		omit_t_m(OpImp<T,Seq<Us...>>),
 		typename MultiopImp<
 			OpImp,
 			Seq<Ts...>,
@@ -57,7 +57,7 @@ public:
 
 template<template<class...>class OpImp, class T, class...Us>
 struct MultiopImp<OpImp, Seq<T>, Seq<Us...>> {
-	using type = OMIT_T(OpImp<T, Seq<Us...>>);
+	using type = omit_t_m(OpImp<T, Seq<Us...>>);
 	using index_type = std::conditional_t<
 		OpImp<T, Seq<Us...>>::value == no_index,
 		typename OpImp<T, Seq<Us...>>::type,//IdSeq<>,
@@ -73,7 +73,7 @@ struct MultiopImp<OpImp, Seq<>, Seq<Us...>> {
 
 
 template<template<class...>class OpImp, class Var, class Konst>  //Konst means const
-using Multiop_s = OMIT_T(MultiopImp<OpImp, Var, Konst>);
+using Multiop_s = omit_t_m(MultiopImp<OpImp, Var, Konst>);
 
 template<template<class...>class OpImp, class Var, class Konst>
 using Multiop = MultiopImp<OpImp, Seqfy<Var>, Seqfy<Konst>>;
@@ -124,9 +124,9 @@ struct Find_svt<T, Seq<T>> : Seqi<0> {};
 template<class Dst, class Src>
 using Find_vt = Find_svt<Dst, Seqfy<Src>>; 
 template<class Dst, class Src>
-using Find_t = OMIT_T(Find_svt<Dst, Seqfy<Src>>);
+using Find_t = omit_t_m(Find_svt<Dst, Seqfy<Src>>);
 template<class Dst, class Src>
-using Find_ss = OMIT_T(Find_svt<Dst, Src>);
+using Find_ss = omit_t_m(Find_svt<Dst, Src>);
 
 
 
@@ -151,9 +151,9 @@ struct Find_if_svt<Pred,T, Seq<U>> :
 { };
 
 template<class Pred,class Dst, class SrcSeq>
-using Find_if_t = OMIT_T(Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>);
+using Find_if_t = omit_t_m(Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>);
 template<class Pred,class Dst, class SrcSeq>
-using Find_if_s = OMIT_T(Find_if_svt<Pred,Dst, SrcSeq>);
+using Find_if_s = omit_t_m(Find_if_svt<Pred,Dst, SrcSeq>);
 
 template<class Pred,class Dst, class SrcSeq>
 using Find_if_v = Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>;
@@ -203,5 +203,5 @@ struct CountType_sv<T,Seq<>>:Tagi<0>{};
 }//namespace Talg
 
 
-
+#include "undef_macro.h"
 

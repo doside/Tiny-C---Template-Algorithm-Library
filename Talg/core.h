@@ -2,13 +2,13 @@
 
 #include <utility>
 #include <cstddef>
-#include "basic_marco.h"
+#include "basic_marco_impl.h"
 /*
 命名公约：
 ??表示零个或多个类型(例如,模板(template<class>class)不是类型,数字(size_t,int...)不是类型)
 
 后缀不带_s表示对参数用了Seqfy,注意对 T 使用Seqfy可以保证是Seq<T>,对A<??>用则保证是Seq<??>
-不带后缀时不对输出结果类型作任何假定 有时可能等同于_t,而有时则又可能需要使用OMIT_T
+不带后缀时不对输出结果类型作任何假定 有时可能等同于_t,而有时则又可能需要使用omit_t_m
 
 _s表示输入一定是Seq<??>,输出如果在语义上不可能存在返回多个类型的话那么结果就是 T, 否则结果是Seq<??>或Seq<T>
 _n表示返回::index_type 一般是IdSeq<...>
@@ -142,16 +142,16 @@ struct MergeImp<Seq<Ts...>, Seq<Others...>>
 	using type = Seq<Ts..., Others...>;
 };
 template<class first, class second>
-using Merge = OMIT_T(MergeImp<Seqfy<first>, Seqfy<second> >);
+using Merge = omit_t_m(MergeImp<Seqfy<first>, Seqfy<second> >);
 template<class T, class U>
-using Merge_s = OMIT_T(MergeImp<T, U>);
+using Merge_s = omit_t_m(MergeImp<T, U>);
 
 
 template<class...>struct ReverseImp;
 
 template<class T, class...Ts>
 struct ReverseImp<Seq<T, Ts...>> {
-	using type = Merge_s<OMIT_T(ReverseImp<Seq<Ts...>>), Seq<T> >;
+	using type = Merge_s<omit_t_m(ReverseImp<Seq<Ts...>>), Seq<T> >;
 };
 template<class T>
 struct ReverseImp<Seq<T>> {
@@ -159,9 +159,9 @@ struct ReverseImp<Seq<T>> {
 };
 
 template<class T>
-using Reverse = OMIT_T(ReverseImp<Seqfy<T>>);
+using Reverse = omit_t_m(ReverseImp<Seqfy<T>>);
 template<class obj>
-using Reverse_s = OMIT_T(ReverseImp<obj>);
+using Reverse_s = omit_t_m(ReverseImp<obj>);
 
 
 
@@ -220,5 +220,6 @@ struct OrValue<T>:std::integral_constant<bool, T::value>{
 };
 
 
-}//namespace Talg
 
+}//namespace Talg
+#include "undef_macro.h"

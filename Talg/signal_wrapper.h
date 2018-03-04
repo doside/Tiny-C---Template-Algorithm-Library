@@ -2,6 +2,7 @@
 #define SIGNAL_WRAPPER_H_INCLUDED
 
 #include "function_wrapper.h"
+#include "basic_marco_impl.h"
 
 namespace Talg{
 /*
@@ -29,7 +30,7 @@ public:
 	*/
 	template<class F>
 	SignalWrapper& operator+=(F&& func) 
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
+		except_when_m(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func))))
 	{
 		Base::connect(makeFunctor<ftype>(forward_m(func)));
 		return *this;
@@ -48,7 +49,7 @@ public:
 	*/
 	template<class F>
 	SignalWrapper& operator-=(F&& func)
-		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func))))
+		except_when_m(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func))))
 	{
 		Base::disconnect(makeFunctor<ftype>(forward_m(func)));
 		return *this;
@@ -62,13 +63,13 @@ public:
 	*/
 	template<class... Fs>
 	decltype(auto) disconnect(Fs&&... func)
-		except_when(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func)...)))
+		except_when_m(std::declval<Base&>().disconnect(makeFunctor<ftype>(forward_m(func)...)))
 	{
 		return Base::disconnect(makeFunctor<ftype>(forward_m(func)...));
 	}
 	template<class... Fs>
 	decltype(auto) disconnect_one(Fs&&... func)
-		except_when(std::declval<Base&>().disconnect_one(makeFunctor<ftype>(forward_m(func)...)))
+		except_when_m(std::declval<Base&>().disconnect_one(makeFunctor<ftype>(forward_m(func)...)))
 	{
 		return Base::disconnect_one(makeFunctor<ftype>(forward_m(func)...));
 	}
@@ -81,7 +82,7 @@ public:
 	*/
 	template<class... Fs>
 	decltype(auto) connect(Fs&&... func) 
-		except_when(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func)...)))
+		except_when_m(std::declval<Base&>().connect(makeFunctor<ftype>(forward_m(func)...)))
 	{
 		return Base::connect(makeFunctor<ftype>(forward_m(func)...));
 	}
@@ -99,13 +100,15 @@ public:
 	}
 
 	decltype(auto) disconnect_all()
-		except_when(std::declval<Base&>().disconnect_all())
+		except_when_m(std::declval<Base&>().disconnect_all())
 	{
 		return Base::disconnect_all();
 	}
 };
 
 }//namespace Talg
+
+#include "undef_macro.h"
 
 #endif // !SIGNAL_WRAPPER_H_INCLUDED
 

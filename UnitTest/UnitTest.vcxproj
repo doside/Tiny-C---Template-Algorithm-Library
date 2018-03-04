@@ -71,19 +71,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib;D:\gitroot\MetaOpLib\UnitTest;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);E:\dow_lib\headeronly;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

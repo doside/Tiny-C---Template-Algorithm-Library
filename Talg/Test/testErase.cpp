@@ -1,8 +1,8 @@
-#include "core.h"
+#include <Talg/core.h>
 #include "test_suits.h"
 #include <tuple>
-#include "seqop.h"
-#include "find_val.h"
+#include <Talg/seqop.h>
+#include <Talg/find_val.h>
 
 using namespace Talg;
 

@@ -9,8 +9,11 @@
 #include <map>
 #include <cassert>
 
-#include "test_suits.h"
+#include "test/test_suits.h"
 #include "slotlist.h"
+
+#include "basic_macro.h"
+
 
 //#include <boost\signals2.hpp>
 using namespace Talg;

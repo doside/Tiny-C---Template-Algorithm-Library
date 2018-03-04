@@ -1,6 +1,6 @@
-#include "type_traits.h"
-#include "core.h"
-#include "iter_op_detect.h"
+#include <Talg/type_traits.h>
+#include <Talg/core.h>
+#include <Talg/iter_op_detect.h>
 
 using namespace Talg;
 

@@ -1,7 +1,7 @@
-#include "fold.h"
-#include "select_type.h"
-#include "functional.h" //for plus minus
-
+#include <Talg/fold.h>
+#include <Talg/select_type.h>
+#include <Talg/functional.h> //for plus minus
+#include <Talg/basic_macro.h>
 namespace {
 	
 	

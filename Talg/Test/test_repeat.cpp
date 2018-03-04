@@ -1,6 +1,7 @@
-﻿#include "callable_traits.h"
-#include "test_suits.h"
+﻿#include "test_suits.h"
 #include <iostream>
+#include <Talg/callable_traits.h>
+#include <Talg/basic_macro.h>
 using namespace Talg;
 struct Printor
 {

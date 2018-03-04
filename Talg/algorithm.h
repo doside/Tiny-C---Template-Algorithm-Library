@@ -4,6 +4,7 @@
 #include "iter_range.h"
 #include <algorithm>
 #include <vector>
+#include "basic_marco_impl.h"
 
 namespace Talg {
 	
@@ -220,4 +221,5 @@ namespace Talg {
 	}
 }
 
+#include "undef_macro.h"
 

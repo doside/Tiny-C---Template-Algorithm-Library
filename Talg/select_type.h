@@ -8,6 +8,7 @@
 #include "seqop.h"
 #include "invoke_impl.h"
 #include "index_seq.h"
+#include "basic_marco_impl.h"
 
 namespace Talg{
 
@@ -24,7 +25,7 @@ namespace Talg{
 */
 template<size_t n>
 struct IgnoreSeqImp {
-	using type = Merge_s<OMIT_T(IgnoreSeqImp<n / 2>), OMIT_T(IgnoreSeqImp<n - n / 2>)>;
+	using type = Merge_s<omit_t_m(IgnoreSeqImp<n / 2>), omit_t_m(IgnoreSeqImp<n - n / 2>)>;
 };
 template<>
 struct IgnoreSeqImp<0> {
@@ -40,7 +41,7 @@ struct IgnoreSeqImp<1> {
 	\brief	产生n个EatParam组成的序列
 */
 template<size_t n>
-using IgnoreSeq = OMIT_T(IgnoreSeqImp<n>);
+using IgnoreSeq = omit_t_m(IgnoreSeqImp<n>);
 
 
 /*
@@ -147,14 +148,14 @@ struct AtImp<n, Seq<Ts...>> {
 	\param	\n index
 */
 template<size_t n, class T>
-using At_s = OMIT_T(AtImp<n, T>);
+using At_s = omit_t_m(AtImp<n, T>);
 
 /*
 	\brief	将 ???<???>转为Seq<???> 返回???中的第n个类型
 	\param	\n index
 */
 template<size_t n, class T>
-using At = OMIT_T(AtImp<n, Seqfy<T>>);
+using At = omit_t_m(AtImp<n, Seqfy<T>>);
 
 /*
 	\brief	把函子施加到前n个参数
@@ -362,4 +363,4 @@ using Partion = Partion_s<N, Seqfy<T>>;
 
 #endif // ! SELECT_TYPE_H_INCLUDED
 
-
+#include "undef_macro.h"

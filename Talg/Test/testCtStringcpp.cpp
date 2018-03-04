@@ -2,12 +2,12 @@
 
 //已弃坑
 
-#include "ctstring.h"
-#include "exString.h"
-#include "type_traits.h"
+#include <Talg/ctstring.h>
+#include <Talg/exString.h>
+#include <Talg/type_traits.h>
 #include "test_suits.h"
-#include "fold.h"
-#include "functional.h" //for logic_and
+#include <Talg/fold.h>
+#include <Talg/functional.h> //for logic_and
 
 
 namespace {

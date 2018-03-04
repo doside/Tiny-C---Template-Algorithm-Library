@@ -2,6 +2,7 @@
 #include <type_traits>
 #include <memory>	//for std::addressof
 #include "core.h"
+#include "basic_marco_impl.h"
 
 #if 0
 template<bool is_void=true>
@@ -269,4 +270,4 @@ class CacheRes_safe<R&&>: public RefWrapper<R&&>{ };
 
 #endif
 
-
+#include "undef_macro.h"

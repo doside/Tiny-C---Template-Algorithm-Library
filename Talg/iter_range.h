@@ -1,6 +1,8 @@
 #pragma once
 #include <iterator> //for std::iterator_traits
 #include <type_traits>
+#include "basic_marco_impl.h"
+
 namespace Talg {
 	
 	template<class Iter>
@@ -49,3 +51,4 @@ namespace Talg {
 		return Range<typename Container::iterator>(forward_m(rag));
 	}
 }
+#include "undef_macro.h"

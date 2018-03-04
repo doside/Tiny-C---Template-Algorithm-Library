@@ -1,5 +1,6 @@
 ﻿#include <doctest/doctest.h>
-#include <slotlist.h>
+#include <Talg/slotlist.h>
+#include <Talg/basic_macro.h>
 using namespace Talg;
 	namespace test {
 		struct A

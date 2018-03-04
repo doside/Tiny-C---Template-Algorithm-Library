@@ -1,7 +1,7 @@
-﻿#include "function_wrapper.h"
+﻿#include <Talg/function_wrapper.h>
+#include <Talg/slotlist.h>
 #include <string>
 #include "test_suits.h"
-#include "slotlist.h"
 namespace {
 	using namespace Talg;
 	using UserSlotTraits = DefaultSlotTraits<std::function<void(int)>>;

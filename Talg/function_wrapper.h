@@ -9,6 +9,8 @@
 #include <type_traits>	
 #include <tuple>
 #include <memory>
+#include "basic_marco_impl.h"
+
 namespace Talg{
 
 
@@ -120,7 +122,7 @@ public:
 		class= std::enable_if_t< hasEqualCompare<const T&,const U&>::value >
 	>
 	constexpr bool operator==(const FunctorImp<U,StandarType>& rhs)const
-		except_when(std::declval<T>()== std::declval<U>())
+		except_when_m(std::declval<T>()== std::declval<U>())
 		//->decltype(std::declval<const T&>()== std::declval<const U&>())
 	{
 
@@ -294,6 +296,8 @@ decltype(auto) makeFunctor(std::shared_ptr<T> ptr,MemPtr pmd) {
 
 
 }////namespace Talg
+
+#include "undef_macro.h"
 
 #endif //FUNCTION_WRAPPER_H_INCLUDED
 

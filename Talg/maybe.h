@@ -2,9 +2,8 @@
 #include <type_traits>
 #include <functional>
 #include <stdexcept>
-#include "basic_marco.h"
-#include "optional.h"
-
+#include <Talg/optional.h>
+#include <Talg/basic_macro.h>
 
 struct MaybeError:private std::function<void()>{
 	using Base = std::function<void()>;
@@ -88,7 +87,7 @@ public:
 		return std::move(handle_);
 	}
 	explicit operator bool()const 
-	except_when(Base::operator bool()){
+	except_when_m(Base::operator bool()){
 		return !Base::operator bool();
 	}
 	~Maybe(){};
@@ -134,6 +133,6 @@ public:
 
 
 
-
+#include "undef_macro.h"
 
 

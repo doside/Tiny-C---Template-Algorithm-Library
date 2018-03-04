@@ -6,6 +6,7 @@
 #include "fold.h"
 #include "functional.h"
 #include "initlist.h"
+#include "basic_marco_impl.h"
 
 namespace Talg{
 
@@ -187,4 +188,8 @@ namespace Talg{
 	constexpr auto makeCtString(const char(&str)[N]) {
 		return ctString<N>(str);
 	}
+
+
 }//namespace Talg
+
+#include "undef_macro.h"

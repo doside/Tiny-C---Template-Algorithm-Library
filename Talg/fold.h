@@ -1,5 +1,6 @@
 #pragma once
 #include "seqop.h"
+#include "basic_marco_impl.h"
 
 namespace Talg {
 	template<class F,class T,class U>
@@ -93,3 +94,7 @@ namespace Talg {
 		);
 	}
 }
+
+#include "undef_macro.h"
+
+

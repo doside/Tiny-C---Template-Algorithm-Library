@@ -1,7 +1,7 @@
 ﻿#include <doctest/doctest.h>
-#include <algorithm.h>
+#include <Talg/algorithm.h>
 #include <memory>
-#include <maybe.h>
+#include <Talg/maybe.h>
 using namespace Talg;
 namespace {
 
