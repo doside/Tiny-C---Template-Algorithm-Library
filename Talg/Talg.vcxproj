@@ -169,7 +169,7 @@
     <ClInclude Include="initlist.h" />
     <ClInclude Include="invoke_impl.h" />
     <ClInclude Include="iter_adapter.h" />
-    <ClInclude Include="iter_range.h" />
+    <ClInclude Include="range.h" />
     <ClInclude Include="iter_call_cache.h" />
     <ClInclude Include="iter_op_detect.h" />
     <ClInclude Include="matrix.h" />
