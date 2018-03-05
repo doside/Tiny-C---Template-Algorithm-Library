@@ -36,9 +36,6 @@
     <ClCompile Include="functor.cpp">
       <Filter>源文件\internal_test</Filter>
     </ClCompile>
-    <ClCompile Include="super_enum.cpp">
-      <Filter>源文件\internal_test</Filter>
-    </ClCompile>
     <ClCompile Include="Test\test_array.cpp">
       <Filter>源文件\internal_test</Filter>
     </ClCompile>

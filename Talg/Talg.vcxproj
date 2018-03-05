@@ -134,7 +134,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="functor.cpp" />
-    <ClCompile Include="super_enum.cpp" />
     <ClCompile Include="Test\testCtStringcpp.cpp" />
     <ClCompile Include="Test\testErase.cpp" />
     <ClCompile Include="Test\testExString.cpp" />

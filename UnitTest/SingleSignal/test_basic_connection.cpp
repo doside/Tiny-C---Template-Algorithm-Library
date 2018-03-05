@@ -45,7 +45,7 @@ TEST_CASE("Connection Test") {
 	};
 	
 	static_assert(sizeof(make_f(callback1)) == 1, "");
-	static_assert(sizeof(make_f(test_fptr)) == 4, "");
+	static_assert(sizeof(make_f(test_fptr)) == sizeof &test_fptr, "");
 	require(make_f(callback1) == make_f(callback1));
 	require(make_f(callback1) != make_f(test_fptr));
 	if (test_fptr2 != &test_fptr) {

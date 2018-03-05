@@ -1,7 +1,7 @@
 #pragma once
 #include <numeric>
 #include <utility>  //for std::forward
-#include "iter_range.h"
+#include "range.h"
 
 namespace Talg {
 	template<class ForwardRange, class T=typename ForwardRange::value>
