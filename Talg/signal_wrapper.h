@@ -2,7 +2,7 @@
 #define SIGNAL_WRAPPER_H_INCLUDED
 
 #include "function_wrapper.h"
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 namespace Talg{
 /*

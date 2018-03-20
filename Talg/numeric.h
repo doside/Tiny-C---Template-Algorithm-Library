@@ -5,7 +5,7 @@
 
 namespace Talg {
 	template<class ForwardRange, class T=typename ForwardRange::value>
-	void iota(const ForwardRange& rag, T&& value=T()) {
+	void iota(ForwardRange& rag, T&& value=T()) {
 		std::iota(rag.begin(), rag.end(), std::forward<T>(value));
 	}
 

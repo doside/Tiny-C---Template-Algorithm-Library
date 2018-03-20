@@ -4,7 +4,7 @@
 #include "range.h"
 #include <algorithm>
 #include <vector>
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 namespace Talg {
 	

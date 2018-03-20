@@ -152,8 +152,9 @@
     <ClInclude Include="algorithm.h" />
     <ClInclude Include="array.h" />
     <ClInclude Include="basic_macro.h" />
-    <ClInclude Include="basic_marco_impl.h" />
+    <ClInclude Include="basic_macro_impl.h" />
     <ClInclude Include="callable_traits.h" />
+    <ClInclude Include="constexpr_extend.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />

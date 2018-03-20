@@ -1,6 +1,6 @@
 #pragma once
 #include "core.h"
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 namespace Talg {
 	struct logical_and {

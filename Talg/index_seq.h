@@ -2,7 +2,7 @@
 #include "core.h"
 #include <utility>
 #include <limits>
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 //using std::size_t;
 namespace Talg{

@@ -4,7 +4,7 @@
 #include "has_member.h"
 #include "slot_iterator.h"
 #include <type_traits>
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 namespace Talg {
 

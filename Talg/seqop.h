@@ -1,7 +1,7 @@
 ﻿#ifndef SEQOP_H_INCLUDED
 #define SEQOP_H_INCLUDED
 #include "core.h"
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 namespace Talg{
 

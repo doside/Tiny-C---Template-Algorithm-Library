@@ -3,7 +3,7 @@
 #include <stdexcept>	//runtime_error
 #include "core.h"
 #include "type_traits.h"
-#include "basic_marco_impl.h"
+#include "basic_macro_impl.h"
 
 namespace Talg {
 
