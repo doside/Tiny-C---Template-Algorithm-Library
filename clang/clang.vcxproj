@@ -50,6 +50,7 @@
     <ClCompile Include="..\Talg\Test\test_repeat.cpp" />
     <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp" />
     <ClCompile Include="..\Talg\Test\test_transform.cpp" />
+    <ClCompile Include="..\Talg\test_trampoline.cpp" />
     <ClCompile Include="..\UnitTest\algo.cpp" />
     <ClCompile Include="..\UnitTest\loop_emit_test.cpp" />
     <ClCompile Include="..\UnitTest\main.cpp" />
@@ -103,7 +104,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -117,35 +118,35 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\MetaOpLib\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <UseMultiToolTask>true</UseMultiToolTask>
-    <IncludePath>E:\dow_lib\headeronly;E:\program\project\VS\Talg\Talg;$(IncludePath)</IncludePath>
+    <IncludePath>E:\dow_lib\headeronly;D:\gitroot\Talg</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

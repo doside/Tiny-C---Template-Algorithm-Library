@@ -31,6 +31,9 @@
     <Filter Include="源文件\internal_test">
       <UniqueIdentifier>{b5215769-fa2d-41e9-9e0e-70aa31b27454}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\macro">
+      <UniqueIdentifier>{7b208e9f-ed91-457c-96ee-109dbfa32622}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="functor.cpp">
@@ -70,6 +73,9 @@
       <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\testFindVal.cpp">
+      <Filter>源文件\internal_test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_trampoline.cpp">
       <Filter>源文件\internal_test</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,20 +188,20 @@
     <ClInclude Include="Test\test_suits.h">
       <Filter>源文件\internal_test</Filter>
     </ClInclude>
-    <ClInclude Include="basic_macro.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="undef_macro.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="range.h">
       <Filter>头文件\Container</Filter>
     </ClInclude>
-    <ClInclude Include="constexpr_extend.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="basic_macro.h">
+      <Filter>头文件\macro</Filter>
     </ClInclude>
     <ClInclude Include="basic_macro_impl.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\macro</Filter>
+    </ClInclude>
+    <ClInclude Include="undef_macro.h">
+      <Filter>头文件\macro</Filter>
+    </ClInclude>
+    <ClInclude Include="constexpr_extend.h">
+      <Filter>头文件\CompileTime</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

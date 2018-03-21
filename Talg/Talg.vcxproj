@@ -146,6 +146,7 @@
     <ClCompile Include="Test\test_repeat.cpp" />
     <ClCompile Include="Test\test_rm_fptr.cpp" />
     <ClCompile Include="Test\test_transform.cpp" />
+    <ClCompile Include="test_trampoline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algo.h" />
