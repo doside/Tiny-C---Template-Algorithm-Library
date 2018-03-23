@@ -22,7 +22,7 @@ namespace {
 	TEST_CASE("Test for AsAlias"){
 		using Alloc=std::allocator<std::pair<const int, int>>;
 		As<std::map<int, int, default_t,Alloc>> v;
-		v[2] = 3;
+		v[2] = 3;         
 		CHECK(v[2] == 3);
 		staticCheck<
 			std::is_same<

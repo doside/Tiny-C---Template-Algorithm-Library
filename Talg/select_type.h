@@ -359,8 +359,15 @@ using Partion_s = typename PartionImp<N, T>::type;
 template<size_t N,class T>
 using Partion = Partion_s<N, Seqfy<T>>;
 
+
+template<class T>
+using Tail_s = At_s < countSeqSize(T{}) - 1, T > ;
+template<class T>
+using Tail_t = Tail_s<Seqfy<T>>;
+
+
 }//namespace Talg
 
-#endif // ! SELECT_TYPE_H_INCLUDED
-
 #include "undef_macro.h"
+
+#endif // ! SELECT_TYPE_H_INCLUDED

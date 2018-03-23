@@ -89,7 +89,9 @@ struct HeadImp<Seq<T>> {
 template<class T>
 using Head_s = omit_t_m(HeadImp<T>);
 template<class T>
-using Head = omit_t_m(HeadImp<Seqfy<T>>);
+using Head_t = omit_t_m(HeadImp<Seqfy<T>>);
+
+
 
 
 

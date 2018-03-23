@@ -19,8 +19,8 @@ namespace Talg{
 template<class T,class S>
 struct FindParam {
 private:
-	using Id1 = Find_if_svt<ParamMatch, T, S>;
-	using Id2 = Find_if_svt<ParamConvertMatch, T, S>;
+	using Id1 = FindIf_svt<SameAndConvertibleTo<T>, S>;
+	using Id2 = FindIf_svt<ConvertibleTo<T>, S>;
 public:
 	static constexpr size_t value =Id1::value!=no_index?Id1::value:Id2::value;
 	using type = std::conditional_t<Id1::value != no_index,typename Id1::type,typename Id2::type>;

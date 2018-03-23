@@ -189,20 +189,12 @@ struct NotValue :std::integral_constant<bool, !T::value> {
 	constexpr operator bool()const noexcept { return this->value; }
 };
 
-template<class T,class...Ts>
-struct AndValue: std::integral_constant< bool, T::value && AndValue<Ts...>::value > {
-	constexpr AndValue()noexcept = default;
-	constexpr operator bool()const noexcept {
-		return this->value;
-	}
-};
-template<class T>
-struct AndValue<T>:std::integral_constant<bool, T::value>{
-	constexpr AndValue()noexcept = default;
-	constexpr operator bool()const noexcept {
-		return this->value;
-	}
-};
+
+template<class...> struct AndValue : std::true_type { };
+template<class T> struct AndValue<T> : T { };
+template<class T, class...Ts>
+struct AndValue<T, Ts...> 
+    : std::conditional_t<bool(T::value), AndValue<Ts...>, T> {};
 
 template<class T,class...Ts>
 struct OrValue: std::integral_constant< bool, T::value || OrValue<Ts...>::value > {

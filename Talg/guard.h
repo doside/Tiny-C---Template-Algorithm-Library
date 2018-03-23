@@ -1,20 +1,44 @@
-#pragma once
+﻿#pragma once
 #include <memory>
 #include <stdexcept>
+#include <functional>
 #include <type_traits>
+#include <Talg/tag_type.h>
+#include <Talg/select_type.h>
 #include <Talg/basic_macro_impl.h>
 
 namespace Talg{
-	template<class F>
-	class Guard:public std::decay_t<F> {
+	/*!
+		\brief	RAII范式的资源守卫
+		\note	使用了deduce_t作为参数后可以直接通过makeit<Guard<>>([]{...});
+				构造出一个guard而无需显式写出F
+	*/
+	template<class...Fs>
+	class Guard:public std::decay_t<Head_t<Fs...>> {
 	public:
-		using Base=std::decay_t<F>;
+		using Base=std::decay_t<Head_t<Fs...>>;
+		using Tag = Tail_t<Fs...>;
 		bool dimiss = false;
 	public:
 		Base& base()noexcept { return *this; }
 		template<class T>
 		Guard(T&& f)noexcept(std::is_nothrow_constructible<F,T&&>::value)
-			:Base(forward_m(f)){}
+			:Base(forward_m(f)){
+			static_assert(noexcept(f()), "析构函数中不可抛出异常");
+		}
+		
+		template<class T>
+		Guard(T&& f,weak_except_t)noexcept(std::is_nothrow_constructible<F,T&&>::value)
+			:Base(forward_m(f)){ }
+		/*!
+			\brief
+			\param
+			\return
+			\note	可能有严重效率损失.
+		*/
+		template<class T>
+		Guard(T&& f,with_check_t)noexcept(std::is_nothrow_constructible<F,T&&>::value)
+			:Base(forward_m(f)){ }
 
 		Guard(Guard&& rhs)noexcept(std::is_nothrow_move_constructible<F>::value)
 			:Base(std::move(rhs.base())){ 
@@ -31,11 +55,30 @@ namespace Talg{
 			return *this;
 		}
 
+		static auto& reporter() {
+			static std::function<void()> on_err([]{});
+			return on_err;
+		}
+		template<class F>
+		static auto& onError(F&& func) {
+			static_assert(noexcept(std::forward<F>(func)()), "");
+			return reporter() = func;
+		}
 		~Guard() {
-			//static_assert(noexcept(func()), "");
+			//防御性编程,同时尽可能不牺牲效率.
+			
 			if (dimiss)
 				return;
-			base()();
+			if (noexcept(base()())||std::is_same<Tag,weak_except_t>::value) {
+				base()();
+			} else {
+				try {
+					base()();
+				}
+				catch(...){
+					reporter()();
+				}
+			}
 		}
 	};
 	

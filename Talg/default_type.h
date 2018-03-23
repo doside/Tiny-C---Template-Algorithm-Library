@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "core.h"
 #include "find_val.h"
+#include "tag_type.h"
 
 namespace Talg {
 
-	struct default_t{};
+	
 
 	template<class T,class...Ts>
 	struct AsImp {
@@ -66,3 +67,7 @@ namespace Talg {
 
 
 }//namespace Talg
+
+
+
+

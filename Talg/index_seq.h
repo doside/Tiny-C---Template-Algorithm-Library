@@ -9,7 +9,6 @@ namespace Talg{
 enum :size_t {
 	no_index = std::numeric_limits<size_t>::max() //抑制VC的警告C4307max() - 1
 };
-struct NoType :public Seq<NoType> {};
 
 template<size_t... nums>
 using IdSeq = std::index_sequence<nums...>;

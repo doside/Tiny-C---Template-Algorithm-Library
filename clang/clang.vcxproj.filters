@@ -1,31 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\Talg\functor.cpp" />
-    <ClCompile Include="..\Talg\optional_test.cpp" />
-    <ClCompile Include="..\Talg\super_enum.cpp" />
-    <ClCompile Include="test.cpp" />
-    <ClCompile Include="..\Talg\Test\test_array.cpp" />
-    <ClCompile Include="..\Talg\Test\test_fold.cpp" />
-    <ClCompile Include="..\Talg\Test\test_FW.cpp" />
-    <ClCompile Include="..\Talg\Test\test_initlist.cpp" />
-    <ClCompile Include="..\Talg\Test\test_iter_op_detect.cpp" />
-    <ClCompile Include="..\Talg\Test\test_repeat.cpp" />
-    <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp" />
-    <ClCompile Include="..\Talg\Test\test_transform.cpp" />
-    <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp" />
-    <ClCompile Include="..\Talg\Test\testErase.cpp" />
-    <ClCompile Include="..\Talg\Test\testExString.cpp" />
-    <ClCompile Include="..\Talg\Test\testFindVal.cpp" />
-    <ClCompile Include="..\UnitTest\algo.cpp" />
-    <ClCompile Include="..\UnitTest\loop_emit_test.cpp" />
-    <ClCompile Include="..\UnitTest\main.cpp" />
-    <ClCompile Include="..\UnitTest\test_algorithm.cpp" />
-    <ClCompile Include="..\UnitTest\test_maybe.cpp" />
-    <ClCompile Include="..\UnitTest\test_parameter.cpp" />
-    <ClCompile Include="..\Talg\test_trampoline.cpp" />
+    <ClCompile Include="..\Talg\Test\test_fold.cpp">
+      <Filter>test\call</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_repeat.cpp">
+      <Filter>test\call</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp">
+      <Filter>test\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_array.cpp">
+      <Filter>test\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_initlist.cpp">
+      <Filter>test\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testExString.cpp">
+      <Filter>test\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnitTest\test_parameter.cpp">
+      <Filter>test\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_iter_op_detect.cpp">
+      <Filter>test\signal_slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_FW.cpp">
+      <Filter>test\signal_slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\test_trampoline.cpp">
+      <Filter>test\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_transform.cpp">
+      <Filter>test\sugar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnitTest\test_maybe.cpp">
+      <Filter>test\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnitTest\test_algorithm.cpp">
+      <Filter>test\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp">
+      <Filter>test\function</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testErase.cpp">
+      <Filter>test\compile_time_algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\testFindVal.cpp">
+      <Filter>test\compile_time_algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnitTest\algo.cpp">
+      <Filter>test\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnitTest\loop_emit_test.cpp">
+      <Filter>test\signal_slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\functor.cpp">
+      <Filter>test\function</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\optional_test.cpp">
+      <Filter>test\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnitTest\main.cpp">
+      <Filter>test\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\super_enum.cpp">
+      <Filter>test\experimet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Talg\Test\call.cpp">
+      <Filter>test\call</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Talg\Test\test_suits.h" />
+    <Filter Include="test">
+      <UniqueIdentifier>{6ab484dd-a835-47a0-984c-380f40260a09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\call">
+      <UniqueIdentifier>{5fb8054e-a34a-481a-833b-aeab539beb53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\constexpr">
+      <UniqueIdentifier>{39f2446f-6b64-4fe4-82b9-aba0d198ce00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\signal_slot">
+      <UniqueIdentifier>{2e4bff49-0709-4328-a6a8-75a3df354dec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\sugar">
+      <UniqueIdentifier>{376d9a58-da6b-42ff-8dba-6315f873e015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\runtime">
+      <UniqueIdentifier>{34cb2d42-604d-4175-8ad1-cab371a2ed10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\function">
+      <UniqueIdentifier>{c0578866-23da-4b95-ae56-24b39b38ce9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\compile_time_algo">
+      <UniqueIdentifier>{6b0fe05b-31e3-4b31-9921-c042c5c063b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\experimet">
+      <UniqueIdentifier>{d34dc21b-af15-4989-8ffd-5dadbd145dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\deprecated">
+      <UniqueIdentifier>{e256ecd3-cb9d-43fd-ab16-88023a2b3488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\runtime\guard">
+      <UniqueIdentifier>{9c23431e-ac0f-4f07-ae25-c170452b25b5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Talg\Test\test_suits.h">
+      <Filter>test\deprecated</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
