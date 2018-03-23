@@ -245,5 +245,8 @@
     <ClInclude Include="type_traits.h">
       <Filter>头文件\compileTime\traits</Filter>
     </ClInclude>
+    <ClInclude Include="tag_type.h">
+      <Filter>头文件\compileTime\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

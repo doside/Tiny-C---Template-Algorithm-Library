@@ -189,6 +189,7 @@
     <ClInclude Include="slot_iterator.h" />
     <ClInclude Include="static_check.h" />
     <ClInclude Include="strip_qualifier.h" />
+    <ClInclude Include="tag_type.h" />
     <ClInclude Include="Test\test_suits.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="type_traits.h" />
