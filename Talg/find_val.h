@@ -3,10 +3,11 @@
 #include "index_seq.h"
 #include "seqop.h"
 #include <limits>
+#include <type_traits>
 #include <utility>
 #include "basic_macro_impl.h"
 
-
+///todo: this file has too much complicated meta class,should reimplement those at all.
 
 
 namespace Talg{
@@ -106,90 +107,192 @@ struct NextSeq {
 
 
 
+/*
+	\brief	在一个序列Src中寻找一个类型Target
+	\tparam	\Target 要找的类型. \Src 一个类型序列Seq<...>,里面可能含有Target.
+	\note	let 
+				S=Seq<Ts...>  
+				Res=Find_svt<T,S>
+			than Merge_s<
+				Before_s<Res::value,S>,
+				Res::type
+			> is same as Seq<Ts...>.
+*/
+template<class Target, class Src>struct Find_svt;
 
-template<class, class>struct Find_svt;
-
+/*!
+	\brief	偏特化,当前的类型序列中的第一个即是要找的类型
+	\tparam \T 要找的类型.
+	\note	Seqi<0,Ts...>包含下标信息(要找的类型是在类型序列中是第几个类型)
+			以及查找到的类型的后面还有哪些类型(Ts...),这可以用于继续接下来的其他操作.
+*/
 template<class T, class...Ts>
 struct Find_svt<T, Seq<T, Ts...>> : Seqi<0, Ts...> {};
 
+/*!
+	\brief	偏特化,当前的类型序列中的第一个不是要找的类型
+	\tparam \T 要找的类型.
+	\note NextSeq会自动地把接下来的结果往上传递.
+*/
 template<class T, class U, class...Ts>
 struct Find_svt<T, Seq<U, Ts...>> :NextSeq<Find_svt<T, Seq<Ts...>>> {};
 
-template<class T, class U>
-struct Find_svt<T, Seq<U>> :Seqi<no_index, NoType> {};
 
+
+/*!
+	\brief	偏特化,当前的类型序列没有要找的类型
+	\tparam \T 要找的类型.
+	\note	no_index表示没有索引
+*/
+template<class T, class U>
+struct Find_svt<T, Seq<U>> :Seqi<no_index> {};
+
+
+/*!
+	\brief	偏特化,要找的类型在当前的类型序列的最后.
+	\tparam \T 要找的类型.
+	\note	Seqi<0> 表示后续没有别的类型了,0表示索引,它会正确地往上传递并递增成正确的值.
+*/
 template<class T>
 struct Find_svt<T, Seq<T>> : Seqi<0> {};
 
+/*!
+	\brief	相比于Find_svt增加了自动Seqfy的功能
+	
+			原本Find_svt要求被遍历的序列必须是Seq<...>,
+			但是Find_vt消除了这个要求.
+	\tparam \Dst要找的类型 \Src被遍历的类型序列
+	\return 既有被查找的类型的索引,也有在其后的类型序列作为类型信息．
+*/
 template<class Dst, class Src>
 using Find_vt = Find_svt<Dst, Seqfy<Src>>; 
-template<class Dst, class Src>
-using Find_t = omit_t_m(Find_svt<Dst, Seqfy<Src>>);
+
+
+
+
+/*!
+	\brief	相比于Find_svt,直接返回类型,也即无法得知索引.
+			避免写出typename Find_svt<...>::type
+	\tparam \Dst要找的类型 \Src被遍历的类型序列
+	\return Seq<...>
+	\todo: 是否废弃该类型?
+*/
 template<class Dst, class Src>
 using Find_ss = omit_t_m(Find_svt<Dst, Src>);
 
+/*!
+	\brief	相比于Find_ss增加了自动Seqfy的功能
+			原本Find_ss要求被遍历的序列必须是Seq<...>,
+			但是Find_t消除了这个要求.
+	\tparam \Dst要找的类型 \Src被遍历的类型序列
+	\return Seq<...>
+	\todo: 是否废弃该类型?
+*/
+template<class Dst, class Src>
+using Find_t = omit_t_m(Find_svt<Dst, Seqfy<Src>>);
+
+
+/*!
+	\brief	在类型序列中查找某个符合判定子的类型
+			find type U in TypeSeq so that Pred<T,U>==true
+	\tparam	\Pred 判定子,\TypeSeq类型序列.
+	\return	Seqi<id,Ts...> 其中Ts...是找到的类型之后的所有类型,id是索引.
+			Given TypeSeq == Seq<As...,U,Bs...>,
+				find type U in TypeSeq so that PushBack<Pred,U> == true
+				and return Seqi<sizeof...(As),Bs...>
+*/
+template<class Pred,class TypeSeq>struct FindIf_svt{};
 
 
 
-
-template<class,class, class>struct Find_if_svt;
-
-template<class Pred,class T, class U,class...Ts>
-struct Find_if_svt<Pred,T, Seq<U, Ts...>> : 
-	std::conditional_t< Pred::template pred<T,U>::value,
+/*!
+	\brief	偏特化,判断第一个类型是否符合判定子
+			specialized for predicate the first type in the type sequence.
+	\tparam	\Pred	判定子	predicator,
+			\TypeSeq	类型序列	type sequence.
+	\return	Seqi<id,Ts...> 其中Ts...是找到的类型之后的所有类型,id是索引.
+			Given TypeSeq == Seq<As...,U,Bs...>,
+				find type U in TypeSeq so that PushBack<Pred,U> == true
+				and return Seqi<sizeof...(As),Bs...>
+*/
+template<class Pred,class U,class...Ts>
+struct FindIf_svt<Pred,Seq<U, Ts...>> : 
+	std::conditional_t< 
+		Pred::template pred<U>::value,
 		Seqi<0, Ts...>,
-		NextSeq< Find_if_svt<Pred,T,Seq<Ts...>>>
+		NextSeq< 
+			FindIf_svt<Pred,Seq<Ts...>>
+		>
 	>
 { };
 
-template<class Pred,class T, class U>
-struct Find_if_svt<Pred,T, Seq<U>> :
-	std::conditional_t< Pred::template pred<T, U>::value,
-		Seqi<0>,
-		Seqi<no_index, NoType>
-	>
-{ };
+/*!
+	\brief	偏特化用于终止递归以及保证 FindIf_svt<Pred, Seq<>>总是Seqi<no_index>
+			specialized for stop the recurrence.
+	\tparam	\Pred	判定子	predicator
+	\return	Seqi<no_index>
+	\note	no_index表示找不到
+*/
+template<class Pred>
+struct FindIf_svt<Pred, Seq<>> : Seqi<no_index>{ };
 
-template<class Pred,class Dst, class SrcSeq>
-using Find_if_t = omit_t_m(Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>);
-template<class Pred,class Dst, class SrcSeq>
-using Find_if_s = omit_t_m(Find_if_svt<Pred,Dst, SrcSeq>);
+template<class Pred,class SrcSeq>
+using FindIf_t = omit_t_m(FindIf_svt<Pred,Seqfy<SrcSeq>>);
+template<class Pred,class SrcSeq>
+using FindIf_s = omit_t_m(FindIf_svt<Pred,SrcSeq>);
 
-template<class Pred,class Dst, class SrcSeq>
-using Find_if_v = Find_if_svt<Pred,Dst, Seqfy<SrcSeq>>;
+template<class Pred,class SrcSeq>
+using FindIf_v = FindIf_svt<Pred,Seqfy<SrcSeq>>;
 
 
-struct ParamConvertMatch
-{
-	template<class T, class U>
-	struct pred{
-		static constexpr bool value = std::is_convertible<U,T>::value;
-	};
+/*!
+	\brief	给定一个模式类型Pattern,
+			ConvertibleTo<Pattern>的pred模板可以判断某个目标类型是否能转换为模式类型.
+			predicate a type Target whether is convertible to Pattern type.
+	\tparam \Pattern 模式类型 the pattern type, 
+*/
+template<class Pattern>
+struct ConvertibleTo{ 
+	template<class Target>
+	using pred = std::is_convertible<Target, Pattern>;
 };
 
-struct ConvertThenMatch
-{
-	template<class T, class U>
-	struct pred{
-		static constexpr bool value = std::is_convertible<T,U>::value;
-	};
+
+
+/*!
+	\brief	给定一个模式类型,ConvertibleFrom类的pred模板可以
+			判断某个目标类型是否可以从模式类型转换得来.
+			Given a Pattern type,predicate a type Target 
+			whether Pattern type could convert to Target
+	\tparam \Pattern 模式类型 the pattern type, 
+*/
+template<class Pattern>
+struct ConvertibleFrom { 
+	template<class Target>
+	using pred = std::is_convertible<Pattern, Target>;
 };
 
-struct ParamMatch
-{
-	/*
-		\brief	在一个序列中找到U,判断其是否与T相等
-		\param	T 
-	*/
-	template<class T, class U>
-	struct pred{
-		static constexpr bool value = std::is_same<std::decay_t<U>, std::decay_t<T>>::value
-			&& std::is_convertible<U,T>::value;
-	};
+
+
+/*!
+	\brief	给定一个模式类型,SameAndConvertibleTo类的pred模板可以
+			判断某个目标类型是否与模式类型相同且能转换为模式类型.
+			Given a Pattern type,predicate a type Target 
+				whether is the same as Pattern and whether is convertible to Pattern type.
+	\tparam \Pattern 模式类型 the pattern type, 
+*/
+template<class Pattern>
+struct SameAndConvertibleTo {
+	template<class Target>
+	using pred = 
+		AndValue<
+			std::is_same< std::decay_t<Target>, std::decay_t<Pattern> >,
+			std::is_convertible<Target, Pattern>
+		>;
 };
 
 template<class T,class S>
-struct CountType_sv;
+struct CountType_sv{};
 
 template<class T,class...Ts>
 struct CountType_sv<T,Seq<T,Ts...>>:Tagi<1+CountType_sv<T,Seq<Ts...>>::value>{};

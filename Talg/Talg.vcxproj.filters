@@ -13,26 +13,53 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Algo">
-      <UniqueIdentifier>{c8f40ad7-6fc6-4c08-a5c6-a975f6abcc38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\CompileTime">
-      <UniqueIdentifier>{946a5f72-c9d5-46d8-ad2d-98da4e09e5c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Container">
-      <UniqueIdentifier>{39ab0507-a6c0-44b3-9967-db13a875ac23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Experiment">
-      <UniqueIdentifier>{7648e080-95e8-44a4-ab6e-5c657d0c6b43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Exception">
-      <UniqueIdentifier>{75436dcb-fda0-46d1-b6e8-865152049095}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\internal_test">
       <UniqueIdentifier>{b5215769-fa2d-41e9-9e0e-70aa31b27454}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\macro">
       <UniqueIdentifier>{7b208e9f-ed91-457c-96ee-109dbfa32622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\TestSuits">
+      <UniqueIdentifier>{8b3c8209-84c2-4cf4-b837-7f11fe9a171b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\runtime">
+      <UniqueIdentifier>{89a2ba1b-5caf-40d3-952c-a59333f5f395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\experiment">
+      <UniqueIdentifier>{7648e080-95e8-44a4-ab6e-5c657d0c6b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\exception">
+      <UniqueIdentifier>{75436dcb-fda0-46d1-b6e8-865152049095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\container">
+      <UniqueIdentifier>{39ab0507-a6c0-44b3-9967-db13a875ac23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime">
+      <UniqueIdentifier>{946a5f72-c9d5-46d8-ad2d-98da4e09e5c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime\function">
+      <UniqueIdentifier>{77388ce5-df3c-4429-9594-404111352854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\algo">
+      <UniqueIdentifier>{c8f40ad7-6fc6-4c08-a5c6-a975f6abcc38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\runtime\guard">
+      <UniqueIdentifier>{4b7e5b3c-fa63-4608-b493-113a72527dc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime\algo">
+      <UniqueIdentifier>{1b3cae78-1a94-45e2-b875-301f9cb3b86e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime\core">
+      <UniqueIdentifier>{5beefeb9-3dcd-43bd-a9c7-b94f7c2ed6a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime\sugar">
+      <UniqueIdentifier>{4e9d9dbd-e532-4abc-8199-0dbcce97dedd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime\traits">
+      <UniqueIdentifier>{088ed0f2-67a7-472f-8c4f-021e86da39f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\compileTime\constexpr">
+      <UniqueIdentifier>{513397cb-2218-45a2-971a-701fa158f06c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -78,118 +105,67 @@
     <ClCompile Include="test_trampoline.cpp">
       <Filter>源文件\internal_test</Filter>
     </ClCompile>
+    <ClCompile Include="Test\call.cpp">
+      <Filter>源文件\internal_test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="has_member.h">
       <Filter>源文件\internal_test</Filter>
     </ClInclude>
     <ClInclude Include="algo.h">
-      <Filter>头文件\Algo</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="algorithm.h">
-      <Filter>头文件\Algo</Filter>
-    </ClInclude>
-    <ClInclude Include="callable_traits.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="core.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="ctstring.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="default_type.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="exString.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="find_val.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="fold.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="function_wrapper.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="functional.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="initlist.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="index_seq.h">
-      <Filter>头文件\CompileTime</Filter>
-    </ClInclude>
-    <ClInclude Include="invoke_impl.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="iter_adapter.h">
-      <Filter>头文件\Algo</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="iter_call_cache.h">
-      <Filter>头文件\Algo</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="numeric.h">
-      <Filter>头文件\Algo</Filter>
-    </ClInclude>
-    <ClInclude Include="iter_op_detect.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="array.h">
-      <Filter>头文件\Container</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="matrix.h">
-      <Filter>头文件\Container</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="optional.h">
-      <Filter>头文件\Container</Filter>
-    </ClInclude>
-    <ClInclude Include="select_type.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="signal_wrapper.h">
-      <Filter>头文件\Container</Filter>
-    </ClInclude>
-    <ClInclude Include="seqop.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="single_list.h">
-      <Filter>头文件\Container</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="slot_iterator.h">
-      <Filter>头文件\Container</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="slotlist.h">
-      <Filter>头文件\Container</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="transform.h">
-      <Filter>头文件\Algo</Filter>
-    </ClInclude>
-    <ClInclude Include="type_traits.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="vec_op.h">
-      <Filter>头文件\Algo</Filter>
-    </ClInclude>
-    <ClInclude Include="static_check.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\algo</Filter>
     </ClInclude>
     <ClInclude Include="utility.h">
-      <Filter>头文件\Experiment</Filter>
+      <Filter>头文件\experiment</Filter>
     </ClInclude>
     <ClInclude Include="maybe.h">
-      <Filter>头文件\Exception</Filter>
-    </ClInclude>
-    <ClInclude Include="strip_qualifier.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\exception</Filter>
     </ClInclude>
     <ClInclude Include="Test\test_suits.h">
       <Filter>源文件\internal_test</Filter>
     </ClInclude>
     <ClInclude Include="range.h">
-      <Filter>头文件\Container</Filter>
+      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="basic_macro.h">
       <Filter>头文件\macro</Filter>
@@ -200,8 +176,74 @@
     <ClInclude Include="undef_macro.h">
       <Filter>头文件\macro</Filter>
     </ClInclude>
+    <ClInclude Include="benchmark.h">
+      <Filter>头文件\TestSuits</Filter>
+    </ClInclude>
+    <ClInclude Include="call.h">
+      <Filter>头文件\compileTime\function</Filter>
+    </ClInclude>
+    <ClInclude Include="guard.h">
+      <Filter>头文件\runtime\guard</Filter>
+    </ClInclude>
+    <ClInclude Include="makeit.h">
+      <Filter>头文件\compileTime\sugar</Filter>
+    </ClInclude>
+    <ClInclude Include="default_type.h">
+      <Filter>头文件\compileTime\sugar</Filter>
+    </ClInclude>
+    <ClInclude Include="find_val.h">
+      <Filter>头文件\compileTime\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="fold.h">
+      <Filter>头文件\compileTime\function</Filter>
+    </ClInclude>
+    <ClInclude Include="function_wrapper.h">
+      <Filter>头文件\compileTime\function</Filter>
+    </ClInclude>
+    <ClInclude Include="functional.h">
+      <Filter>头文件\compileTime\function</Filter>
+    </ClInclude>
+    <ClInclude Include="exString.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="ctstring.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>头文件\compileTime\core</Filter>
+    </ClInclude>
+    <ClInclude Include="index_seq.h">
+      <Filter>头文件\compileTime\core</Filter>
+    </ClInclude>
+    <ClInclude Include="seqop.h">
+      <Filter>头文件\compileTime\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="initlist.h">
+      <Filter>头文件\compileTime\sugar</Filter>
+    </ClInclude>
+    <ClInclude Include="callable_traits.h">
+      <Filter>头文件\compileTime\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="invoke_impl.h">
+      <Filter>头文件\compileTime\function</Filter>
+    </ClInclude>
+    <ClInclude Include="iter_op_detect.h">
+      <Filter>头文件\compileTime\traits</Filter>
+    </ClInclude>
     <ClInclude Include="constexpr_extend.h">
-      <Filter>头文件\CompileTime</Filter>
+      <Filter>头文件\compileTime\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="static_check.h">
+      <Filter>头文件\compileTime\sugar</Filter>
+    </ClInclude>
+    <ClInclude Include="select_type.h">
+      <Filter>头文件\compileTime\sugar</Filter>
+    </ClInclude>
+    <ClInclude Include="strip_qualifier.h">
+      <Filter>头文件\compileTime\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="type_traits.h">
+      <Filter>头文件\compileTime\traits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

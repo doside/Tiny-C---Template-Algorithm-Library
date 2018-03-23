@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Test\call.cpp" />
     <ClCompile Include="functor.cpp" />
     <ClCompile Include="Test\testCtStringcpp.cpp" />
     <ClCompile Include="Test\testErase.cpp" />
@@ -154,11 +155,15 @@
     <ClInclude Include="array.h" />
     <ClInclude Include="basic_macro.h" />
     <ClInclude Include="basic_macro_impl.h" />
+    <ClInclude Include="benchmark.h" />
+    <ClInclude Include="call.h" />
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="constexpr_extend.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />
+    <ClInclude Include="guard.h" />
+    <ClInclude Include="makeit.h" />
     <ClInclude Include="maybe.h" />
     <ClInclude Include="exString.h" />
     <ClInclude Include="fold.h" />

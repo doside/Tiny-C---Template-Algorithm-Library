@@ -97,7 +97,7 @@ template<size_t, class...>struct BeforeImp;
 
 template<size_t n, class T, class...Ts>
 struct BeforeImp<n, Seq<T, Ts...>> {
-	static_assert(n <= sizeof...(Ts)+1, "");
+	//static_assert(n <= sizeof...(Ts)+1, "");
 	using type = Merge_s<Seq<T>, omit_t_m(BeforeImp<n - 1, Seq<Ts...>>)>;
 };
 
