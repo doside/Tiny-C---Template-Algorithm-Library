@@ -22,5 +22,10 @@ namespace Talg {
 
 	//要求实现方一定提供检查.
 	struct with_check_t{};
+
+	//用于形容某种特化的一般情况
+	//用于需要一个tag而不管它是什么,
+	//反正不同于别的就可
+	struct trival_case_t{};
 }
 
