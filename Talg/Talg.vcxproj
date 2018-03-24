@@ -159,10 +159,12 @@
     <ClInclude Include="call.h" />
     <ClInclude Include="callable_traits.h" />
     <ClInclude Include="constexpr_extend.h" />
+    <ClInclude Include="const_if.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />
     <ClInclude Include="guard.h" />
+    <ClInclude Include="header_template.h" />
     <ClInclude Include="makeit.h" />
     <ClInclude Include="maybe.h" />
     <ClInclude Include="exString.h" />
@@ -192,8 +194,10 @@
     <ClInclude Include="tag_type.h" />
     <ClInclude Include="Test\test_suits.h" />
     <ClInclude Include="transform.h" />
+    <ClInclude Include="apply.h" />
     <ClInclude Include="type_traits.h" />
     <ClInclude Include="undef_macro.h" />
+    <ClInclude Include="UniquePtr.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="vec_op.h" />
   </ItemGroup>
