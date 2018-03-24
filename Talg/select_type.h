@@ -25,6 +25,7 @@ namespace Talg{
 */
 template<size_t n>
 struct IgnoreSeqImp {
+	static_assert(n < (size_t(1)<< 15), "");
 	using type = Merge_s<omit_t_m(IgnoreSeqImp<n / 2>), omit_t_m(IgnoreSeqImp<n - n / 2>)>;
 };
 template<>
@@ -359,11 +360,6 @@ using Partion_s = typename PartionImp<N, T>::type;
 template<size_t N,class T>
 using Partion = Partion_s<N, Seqfy<T>>;
 
-
-template<class T>
-using Tail_s = At_s < countSeqSize(T{}) - 1, T > ;
-template<class T>
-using Tail_t = Tail_s<Seqfy<T>>;
 
 
 }//namespace Talg

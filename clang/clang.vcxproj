@@ -39,6 +39,7 @@
     <ClCompile Include="..\Talg\optional_test.cpp" />
     <ClCompile Include="..\Talg\super_enum.cpp" />
     <ClCompile Include="..\Talg\Test\call.cpp" />
+    <ClCompile Include="..\Talg\Test\guard_test.cpp" />
     <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp" />
     <ClCompile Include="..\Talg\Test\testErase.cpp" />
     <ClCompile Include="..\Talg\Test\testExString.cpp" />

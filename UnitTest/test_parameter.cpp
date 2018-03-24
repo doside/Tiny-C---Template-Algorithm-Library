@@ -1,5 +1,5 @@
 ﻿#include "lazy_add.h"
-#include <parameter.h>
+#include <Talg/parameter.h>
 namespace {
 	UseName;
 	template<class...Ts>

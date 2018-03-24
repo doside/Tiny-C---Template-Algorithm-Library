@@ -70,6 +70,9 @@
     <ClCompile Include="..\Talg\Test\call.cpp">
       <Filter>test\call</Filter>
     </ClCompile>
+    <ClCompile Include="..\Talg\Test\guard_test.cpp">
+      <Filter>test\runtime\guard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="test">

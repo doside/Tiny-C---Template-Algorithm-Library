@@ -10,6 +10,8 @@ namespace Talg {
 	
 	struct default_t{};
 
+	struct no_head_t{}; //Head_s
+	struct no_tail_t{}; //Tail_s
 	/*!
 		\brief	用于表示弱异常约束.也即,某函数在一定条件下会抛出异常,
 				但是当前可以约定这条件不成立,于是可以将该函数视为noexcept,

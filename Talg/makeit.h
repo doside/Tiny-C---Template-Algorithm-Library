@@ -19,13 +19,11 @@ namespace Talg {
 	*/
 	template<class P,class S>
 	struct MakeDeduce_st<P,S> {
-		enum :size_t{
-			index = Find_vt<deduce_t,S>::value,
-			seq_len = CountSeqSize<S>::value,
 
-			explicit_count = index==no_index? seq_len : index,
-		};
-		static_assert(seq_len >= index, "");
+		static constexpr size_t	index = Find_vt<deduce_t, S>::value;
+		static constexpr size_t	seq_len = CountSeqSize<S>::value;
+		static constexpr size_t	explicit_count = index == no_index ? seq_len : index;
+
 		
 		using type	=	Merge_s<
 			Before_s<explicit_count,S>,

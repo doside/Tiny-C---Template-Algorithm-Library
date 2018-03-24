@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="Test\call.cpp" />
     <ClCompile Include="functor.cpp" />
+    <ClCompile Include="Test\guard_test.cpp" />
     <ClCompile Include="Test\testCtStringcpp.cpp" />
     <ClCompile Include="Test\testErase.cpp" />
     <ClCompile Include="Test\testExString.cpp" />

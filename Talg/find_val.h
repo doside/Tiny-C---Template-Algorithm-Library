@@ -118,7 +118,7 @@ struct NextSeq {
 				Res::type
 			> is same as Seq<Ts...>.
 */
-template<class Target, class Src>struct Find_svt;
+template<class Target, class Src>struct Find_svt{};
 
 /*!
 	\brief	偏特化,当前的类型序列中的第一个即是要找的类型
@@ -144,8 +144,8 @@ struct Find_svt<T, Seq<U, Ts...>> :NextSeq<Find_svt<T, Seq<Ts...>>> {};
 	\tparam \T 要找的类型.
 	\note	no_index表示没有索引
 */
-template<class T, class U>
-struct Find_svt<T, Seq<U>> :Seqi<no_index> {};
+template<class T>
+struct Find_svt<T, Seq<>> :Seqi<no_index> {};
 
 
 /*!

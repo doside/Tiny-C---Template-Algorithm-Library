@@ -1,6 +1,7 @@
 ﻿#ifndef SEQOP_H_INCLUDED
 #define SEQOP_H_INCLUDED
-#include "core.h"
+#include <Talg/core.h>
+#include <Talg/tag_type.h>
 #include "basic_macro_impl.h"
 
 namespace Talg{
@@ -77,14 +78,14 @@ using PushFront = Merge<T, U>;
 
 
 template<class T>
-struct HeadImp;
+struct HeadImp{};
 template<class T, class... Ts>
 struct HeadImp<Seq<T, Ts...>> {
 	using type = T;
 };
-template<class T>
-struct HeadImp<Seq<T>> {
-	using type = T;
+template<>
+struct HeadImp<Seq<>> {
+	using type = no_head_t;
 };
 template<class T>
 using Head_s = omit_t_m(HeadImp<T>);
@@ -93,6 +94,25 @@ using Head_t = omit_t_m(HeadImp<Seqfy<T>>);
 
 
 
+template<class...>struct TailImp;
+template<class T,class...Ts>
+struct TailImp<Seq<T, Ts...>>
+	:TailImp<Seq<Ts...>> {};
+
+template<class T>
+struct TailImp<Seq<T>>{
+	using type = T;
+};
+template<>
+struct TailImp<Seq<>> {
+	using type = no_tail_t;
+};
+
+template<class S>
+using Tail_s = typename TailImp<S>::type;
+
+template<class S>
+using Tail_t = typename TailImp<Seqfy<S>>::type;
 
 
 template<size_t, class...>struct BeforeImp;

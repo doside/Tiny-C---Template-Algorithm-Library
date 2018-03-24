@@ -1,5 +1,6 @@
 #pragma once
 #include "core.h"
+#include <type_traits>
 #include "basic_macro_impl.h"
 
 namespace Talg {
@@ -35,6 +36,9 @@ namespace Talg {
 			return forward_m(lhs) == forward_m(rhs);
 		}
 	};
+
+	template<class T,class U>
+	using isDecaySame = std::is_same<std::decay_t<T>, std::decay_t<U>>;
 }
 
 #include "undef_macro.h"

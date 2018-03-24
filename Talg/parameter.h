@@ -2,7 +2,9 @@
 #include "seqop.h"
 #include "select_type.h"
 #include "utility.h"
+#include <Talg/functional.h>
 #include <iterator>
+#include <Talg/basic_macro_impl.h>
 
 namespace Talg {
 
@@ -145,7 +147,7 @@ namespace Talg {
 		template<class...Args>
 		constexpr InitList(Args&&...args)
 		:dat(forward_m(args)...){
-			static_assert(staticCheck<AndValue<is_decay_same<T, Args>...> >(), "Each Ts should be the same type.");
+			static_assert(staticCheck<AndValue<IsDecaySame<T, Args>...> >(), "Each Ts should be the same type.");
 		}
 		
 		template<size_t N>
@@ -163,3 +165,6 @@ namespace Talg {
 
 
 }
+
+#include <Talg/undef_macro.h>
+
