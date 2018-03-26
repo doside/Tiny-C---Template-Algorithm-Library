@@ -135,7 +135,6 @@
   <ItemGroup>
     <ClCompile Include="Test\call.cpp" />
     <ClCompile Include="functor.cpp" />
-    <ClCompile Include="Test\guard_test.cpp" />
     <ClCompile Include="Test\testCtStringcpp.cpp" />
     <ClCompile Include="Test\testErase.cpp" />
     <ClCompile Include="Test\testExString.cpp" />
@@ -153,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="algo.h" />
     <ClInclude Include="algorithm.h" />
+    <ClInclude Include="any_ptr.h" />
     <ClInclude Include="array.h" />
     <ClInclude Include="basic_macro.h" />
     <ClInclude Include="basic_macro_impl.h" />
@@ -178,6 +178,7 @@
     <ClInclude Include="initlist.h" />
     <ClInclude Include="invoke_impl.h" />
     <ClInclude Include="iter_adapter.h" />
+    <ClInclude Include="printer.h" />
     <ClInclude Include="range.h" />
     <ClInclude Include="iter_call_cache.h" />
     <ClInclude Include="iter_op_detect.h" />

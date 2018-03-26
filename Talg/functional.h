@@ -37,8 +37,6 @@ namespace Talg {
 		}
 	};
 
-	template<class T,class U>
-	using isDecaySame = std::is_same<std::decay_t<T>, std::decay_t<U>>;
 }
 
 #include "undef_macro.h"

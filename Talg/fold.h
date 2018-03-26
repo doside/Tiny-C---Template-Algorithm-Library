@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "seqop.h"
 #include "basic_macro_impl.h"
 
@@ -8,6 +8,12 @@ namespace Talg {
 		return forward_m(func)(forward_m(lhs),forward_m(rhs));
 	}
 	
+
+	/*!
+		\brief	右fold,从最后的参数开始计算一直折叠到第一个
+		\return	func(arg,func(args[0](func(args[1],func(args[2]...))))
+		\example	foldr(minus{},1,2,3,4)==1-(2-(3-4))
+	*/
 	template<class F,class T,class...Ts>
 	constexpr decltype(auto) foldr(F&& func,T&&arg,Ts&&...args) {
 		return forward_m(func)(
@@ -23,6 +29,11 @@ namespace Talg {
 		return forward_m(func)(forward_m(lhs),forward_m(rhs));
 	}
 
+	/*!
+		\brief	左fold,从第一个参数开始计算一直折叠到最后一个
+		\return	func(func(func(arg,args[0]),args[1])...,args[n-1])
+		\example	foldl(+,1,2,3,4)==(((1+2)+3)+4)
+	*/
 	template<class F,class T,class U,class...Ts>
 	constexpr decltype(auto) foldl(F&& func,T&&lhs,U&& rhs,Ts&&...args) {
 		return foldl(

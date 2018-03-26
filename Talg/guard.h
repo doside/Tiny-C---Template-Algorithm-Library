@@ -8,6 +8,7 @@
 #include <Talg/basic_macro_impl.h>
 
 namespace Talg{
+
 	/*!
 		\brief	RAII惯用法 资源守卫
 		\note	使用了deduce_t作为参数后可以直接通过makeit<Guard<>>([]{...});
@@ -22,22 +23,17 @@ namespace Talg{
 		Base& base()noexcept { return *this; }
 
 		template<class T>
-		Guard(T&& f,trival_case_t={})noexcept(std::is_nothrow_constructible<Base,T&&>::value)
+		Guard(T&& f,Tag={})noexcept(std::is_nothrow_constructible<Base,T&&>::value)
 			:Base(forward_m(f)){
-			static_assert(noexcept(f()),
+			static_assert(
+					std::is_same<std::decay_t<Tag>,weak_except_t>::value
+				||	std::is_same<std::decay_t<Tag>,with_check_t>::value
+				||	noexcept(f()),
 				"f is called within Guard::~Guard, and f is not noexcept but "
 				"the destructor shall be noexcept; So "
 				"you should use other tag to init Guard or use a noexcept functor init Guard."
 				);
 		}
-		template<class T>
-		Guard(T&& f,weak_except_t)noexcept(std::is_nothrow_constructible<Base,T&&>::value)
-			:Base(forward_m(f)){ }
-	 
-		template<class T>
-		Guard(T&& f,with_check_t)noexcept(std::is_nothrow_constructible<Base,T&&>::value)
-			:Base(forward_m(f)){ }
-
 		Guard(Guard&& rhs)noexcept(std::is_nothrow_move_constructible<Base>::value)
 			:Base(std::move(rhs.base())){ 
 			dismiss = rhs.dismiss;

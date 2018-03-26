@@ -81,6 +81,9 @@
     <ClCompile Include="..\Talg\Test\testFindVal.cpp">
       <Filter>源文件\old_test</Filter>
     </ClCompile>
+    <ClCompile Include="..\Talg\Test\guard_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doctest_ex.h">

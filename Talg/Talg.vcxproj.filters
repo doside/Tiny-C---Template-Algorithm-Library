@@ -49,9 +49,6 @@
     <Filter Include="头文件\compileTime\algo">
       <UniqueIdentifier>{1b3cae78-1a94-45e2-b875-301f9cb3b86e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\compileTime\core">
-      <UniqueIdentifier>{5beefeb9-3dcd-43bd-a9c7-b94f7c2ed6a3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\compileTime\sugar">
       <UniqueIdentifier>{4e9d9dbd-e532-4abc-8199-0dbcce97dedd}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,12 @@
     </Filter>
     <Filter Include="头文件\runtime\smart_ptr">
       <UniqueIdentifier>{367195c5-d42a-411c-89a5-75884e6705b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\runtime\format">
+      <UniqueIdentifier>{577da046-88e7-4c51-8f99-b0edd8ed0b75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\core">
+      <UniqueIdentifier>{5beefeb9-3dcd-43bd-a9c7-b94f7c2ed6a3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -109,9 +112,6 @@
       <Filter>源文件\internal_test</Filter>
     </ClCompile>
     <ClCompile Include="Test\call.cpp">
-      <Filter>源文件\internal_test</Filter>
-    </ClCompile>
-    <ClCompile Include="Test\guard_test.cpp">
       <Filter>源文件\internal_test</Filter>
     </ClCompile>
   </ItemGroup>
@@ -216,10 +216,10 @@
       <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="core.h">
-      <Filter>头文件\compileTime\core</Filter>
+      <Filter>头文件\core</Filter>
     </ClInclude>
     <ClInclude Include="index_seq.h">
-      <Filter>头文件\compileTime\core</Filter>
+      <Filter>头文件\core</Filter>
     </ClInclude>
     <ClInclude Include="seqop.h">
       <Filter>头文件\compileTime\algo</Filter>
@@ -252,7 +252,7 @@
       <Filter>头文件\compileTime\traits</Filter>
     </ClInclude>
     <ClInclude Include="tag_type.h">
-      <Filter>头文件\compileTime\core</Filter>
+      <Filter>头文件\core</Filter>
     </ClInclude>
     <ClInclude Include="const_if.h">
       <Filter>头文件\compileTime\constexpr</Filter>
@@ -264,7 +264,13 @@
       <Filter>头文件\runtime\smart_ptr</Filter>
     </ClInclude>
     <ClInclude Include="header_template.h">
-      <Filter>头文件\compileTime\core</Filter>
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="printer.h">
+      <Filter>头文件\runtime\format</Filter>
+    </ClInclude>
+    <ClInclude Include="any_ptr.h">
+      <Filter>头文件\runtime\smart_ptr</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

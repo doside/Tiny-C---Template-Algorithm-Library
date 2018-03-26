@@ -68,6 +68,7 @@ namespace Talg {
 	static auto makeit(Ts&&...args) {
 		return  Transform_t<T, MakeDeduce_t<Seq<std::decay_t<Ts>...>, T> >(forward_m(args)...);
 	}
+
 }
 
 #include <Talg/undef_macro.h>
