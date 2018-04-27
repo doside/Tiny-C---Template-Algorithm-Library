@@ -27,9 +27,13 @@ namespace Talg {
 	using IsDecaySame = std::is_same<std::decay_t<T>, std::decay_t<U>>;
 
 	template<class Base,class T>
-	using WhenNoBase = std::enable_if_t<std::is_base_of<Base, T>::value>;
+	using WhenNoBaseOf = std::enable_if_t<!std::is_base_of<Base, T>::value>;
+	template<class Base,class T>
+	using WhenBaseOf = std::enable_if_t<std::is_base_of<Base, T>::value>;
 	template<class U,class T>
 	using WhenDecaySame = std::enable_if_t<IsDecaySame<T, U>::value>;
+	template<class T,class U>
+	using WhenNoDecaySame = std::enable_if_t<!IsDecaySame<T, U>::value>;
 	
 	template<class Require,class T>
 	using Constrait = T;
@@ -62,12 +66,12 @@ namespace Talg {
 					template<class...Ts>
 					ctor(ExcludeBase<Base,Ts&&>...)
 					means:
-					template<class...Ts,class=WhenNoBase<Ts,Base>>
+					template<class...Ts,class=WhenNoBaseOf<Ts,Base>>
 					ctor(Ts&&...)
 
 		\note	已经废弃,此做法有明显缺陷,应该改为:
 				template<class...Ts>
-				ctor(Constrait<WhenNoBase<Ts,Base>,Ts&&>...args)
+				ctor(Constrait<WhenNoBaseOf<Ts,Base>,Ts&&>...args)
 	*/
 	template<class Base,class T,
 		class U=std::enable_if_t<

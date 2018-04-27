@@ -7,7 +7,7 @@
 namespace Talg {
 
 	template<class T>
-	using SeqPtr = Talg::Seq<T>*;
+	using SeqPtr = Seq<T>*;
 
 	 template <
 		class U,

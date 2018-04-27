@@ -43,7 +43,18 @@ namespace Talg {
 		);
 	}
 
-
+	template<class F,class T,class U,class...Ts>
+	constexpr decltype(auto) foldLL(F&& func,T&&res,U&& rhs,Ts&&...args) {
+		return foldLL(
+			forward_m(func), 
+			forward_m(func)(forward_m(res), forward_m(rhs),forward_m(args)...),
+			forward_m(args)...
+		);
+	}
+	template<class F,class T,class U>
+	constexpr decltype(auto) foldLL(F&& func,T&& res) {
+		return forward_m(res);
+	}
 
 
 	template<class...Ts>

@@ -73,6 +73,9 @@
     <ClCompile Include="..\Talg\Test\guard_test.cpp">
       <Filter>test\runtime\guard</Filter>
     </ClCompile>
+    <ClCompile Include="..\UnitTest\test_chrono_io.cpp">
+      <Filter>test\runtime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="test">

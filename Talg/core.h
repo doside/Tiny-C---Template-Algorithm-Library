@@ -196,22 +196,14 @@ template<class T, class...Ts>
 struct AndValue<T, Ts...> 
     : std::conditional_t<bool(T::value), AndValue<Ts...>, T> {};
 
-template<class T,class...Ts>
-struct OrValue: std::integral_constant< bool, T::value || OrValue<Ts...>::value > {
-	constexpr OrValue()noexcept = default;
-	constexpr operator bool()const noexcept {
-		return this->value;
-	}
-};
-template<class T>
-struct OrValue<T>:std::integral_constant<bool, T::value>{
-	constexpr OrValue()noexcept = default;
-	constexpr operator bool()const noexcept {
-		return this->value;
-	}
-};
 
+template<class...> struct OrValue : std::false_type { };
+template<class B1> struct OrValue<B1> : B1 { };
+template<class B1, class... Bn>
+struct OrValue<B1, Bn...> 
+    : std::conditional_t<bool(B1::value), B1, OrValue<Bn...>>  { };
 
 
 }//namespace Talg
 #include "undef_macro.h"
+

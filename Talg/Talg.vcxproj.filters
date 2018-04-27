@@ -272,5 +272,11 @@
     <ClInclude Include="any_ptr.h">
       <Filter>头文件\runtime\smart_ptr</Filter>
     </ClInclude>
+    <ClInclude Include="chrono_io.h">
+      <Filter>头文件\runtime\format</Filter>
+    </ClInclude>
+    <ClInclude Include="member_detect.h">
+      <Filter>头文件\compileTime\traits</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

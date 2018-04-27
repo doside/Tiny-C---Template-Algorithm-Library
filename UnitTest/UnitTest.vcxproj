@@ -93,6 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/d2cgsummary %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,6 +170,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SingleSignal\test_basic_connection.cpp" />
     <ClCompile Include="test_algorithm.cpp" />
+    <ClCompile Include="test_chrono_io.cpp" />
     <ClCompile Include="test_maybe.cpp" />
   </ItemGroup>
   <ItemGroup>

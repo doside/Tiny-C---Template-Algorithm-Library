@@ -159,6 +159,7 @@
     <ClInclude Include="benchmark.h" />
     <ClInclude Include="call.h" />
     <ClInclude Include="callable_traits.h" />
+    <ClInclude Include="chrono_io.h" />
     <ClInclude Include="constexpr_extend.h" />
     <ClInclude Include="const_if.h" />
     <ClInclude Include="core.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="initlist.h" />
     <ClInclude Include="invoke_impl.h" />
     <ClInclude Include="iter_adapter.h" />
+    <ClInclude Include="member_detect.h" />
     <ClInclude Include="printer.h" />
     <ClInclude Include="range.h" />
     <ClInclude Include="iter_call_cache.h" />

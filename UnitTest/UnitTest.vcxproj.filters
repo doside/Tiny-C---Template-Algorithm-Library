@@ -22,6 +22,9 @@
     <Filter Include="源文件\old_test">
       <UniqueIdentifier>{efe52707-919d-4f0a-8a2c-7dd9ce915e19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\io">
+      <UniqueIdentifier>{ed43c09e-38f1-41b3-b084-1ea81264e0f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SingleSignal\test_basic_connection.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="..\Talg\Test\guard_test.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test_chrono_io.cpp">
+      <Filter>源文件\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
