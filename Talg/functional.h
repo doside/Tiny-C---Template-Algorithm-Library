@@ -30,12 +30,7 @@ namespace Talg {
 			return forward_m(lhs) - forward_m(rhs);
 		}
 	};
-	struct equal_to {
-		template<class T,class U>
-		constexpr decltype(auto) operator()(T&& lhs, U&& rhs)const {
-			return forward_m(lhs) == forward_m(rhs);
-		}
-	};
+	using equal_to = std::equal_to<void>;
 
 }
 

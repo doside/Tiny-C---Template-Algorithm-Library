@@ -1,10 +1,11 @@
 ﻿#pragma once
-#include "iter_op_detect.h"
+#include <Talg/iter_op_detect.h>
 #include <type_traits>	//declval
-#include "range.h"
+#include <Talg/range.h>
 #include <algorithm>
 #include <vector>
-#include "basic_macro_impl.h"
+#include <functional>
+#include <Talg/basic_macro_impl.h>
 
 namespace Talg {
 	
@@ -219,7 +220,38 @@ namespace Talg {
 		}
 		return false;
 	}
+
+	
+	struct IsAllEqualImp {
+
+		//在noexcept中的递归调用无法被clang查找到名称
+		template<class T,class U,class...Ts>
+		constexpr bool operator()(T&& lhs,U&& rhs,Ts&&...args)const
+		except_when_m(
+			forward_m(lhs)==forward_m(rhs)&& IsAllEqualImp{}(forward_m(rhs),forward_m(args)...)
+		)
+		{
+			return lhs == rhs && operator()(forward_m(rhs), forward_m(args)...);
+		}
+
+
+		template<class T,class U>
+		constexpr bool operator()(T&& lhs,U&& rhs) const
+		noexcept(
+			noexcept(forward_m(lhs)==forward_m(rhs))
+		)
+		{
+			return lhs == rhs;
+		}
+	};
+	template<class...Ts>
+	constexpr bool isAllEqual(Ts&&...args) 
+	except_when_m(IsAllEqualImp{}(forward_m(args)...))
+	{
+		return IsAllEqualImp{}(forward_m(args)...);
+	}
+	
 }
 
-#include "undef_macro.h"
+#include <Talg/undef_macro.h>
 
