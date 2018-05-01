@@ -80,8 +80,8 @@ template<class...Ts>struct LongFirstCall;
 	\tparam	Ts...当前的重载的参数 
 */
 template<class...Ts>
-struct LongFirstCall<Seq<Ts...>> :public LongFirstCall<Pop_back_s<Seq<Ts...>>> {
-	using LongFirstCall<Pop_back_s<Seq<Ts...>>>::pcall;
+struct LongFirstCall<Seq<Ts...>> :public LongFirstCall<PopBack_s<Seq<Ts...>>> {
+	using LongFirstCall<PopBack_s<Seq<Ts...>>>::pcall;
 	using self = LongFirstCall<Seq<Ts...>>;
 
 	//Us&&...的目的是让所有pcall都能以同样的方式调用
@@ -118,8 +118,11 @@ struct LongParser
 			)
 	  );
 
-	template<class F,class...Us,int = 0>
-	Seq<> operator()(F&& f,Us&&...);	//用...的话会使得某些编译器引发意外的警告(如GCC). 
+	//template<class F,class...Us>
+	//Seq<> operator()(F&& f,EatParam,Us&&...);	//用...的话会使得某些编译器引发意外的警告(如GCC). 
+	//
+	//template<class F>
+	//Seq<> operator()(F&& f,EatParam);	//用...的话会使得某些编译器引发意外的警告(如GCC). 
 };
 
 
@@ -213,11 +216,32 @@ struct ShortParser
 			(ShortFirstCall<Seq<First>, Ts...>*)nullptr,
 				forward_m(f), forward_m(arg0), forward_m(args)...
 			));
-	template<class F>
-	Seq<> operator()(F&&...);
+	//template<class F>
+	//Seq<> operator()(F&&...);
 };
 
 
+template<class...Ts>
+constexpr decltype(auto) tryApplyShort(Ts&&...args) 
+except_when_m(Transform<GetImp, 
+		PopFront_s<decltype(ShortParser{}(forward_m(args)...))>
+	>::applyFrontImp(forward_m(args)...)
+)
+{
+	using ParamSeq = PopFront_s<decltype(ShortParser{}(forward_m(args)...))>;
+	return Transform<GetImp, ParamSeq>::applyFrontImp(forward_m(args)...);
+}
+
+template<class...Ts>
+constexpr decltype(auto) tryApplyLong(Ts&&...args) 
+except_when_m(Transform<GetImp, 
+		PopFront_s<decltype(LongParser{}(forward_m(args)...))>
+	>::applyFrontImp(forward_m(args)...)
+)
+{
+	using ParamSeq = PopFront_s<decltype(LongParser{}(forward_m(args)...))> ;
+	return Transform<GetImp, ParamSeq>::applyFrontImp(forward_m(args)...);
+}
 
 template<class F, class...Ts>
 void mapAny(F&& func, Ts&&...args);

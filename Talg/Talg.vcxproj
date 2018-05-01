@@ -147,6 +147,7 @@
     <ClCompile Include="Test\test_repeat.cpp" />
     <ClCompile Include="Test\test_rm_fptr.cpp" />
     <ClCompile Include="Test\test_transform.cpp" />
+    <ClCompile Include="Test\test_try_apply.cpp" />
     <ClCompile Include="test_trampoline.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +167,7 @@
     <ClInclude Include="ctstring.h" />
     <ClInclude Include="default_type.h" />
     <ClInclude Include="guard.h" />
-    <ClInclude Include="header_template.h" />
+    <ClInclude Include="header_template.txt.cxx" />
     <ClInclude Include="makeit.h" />
     <ClInclude Include="maybe.h" />
     <ClInclude Include="exString.h" />

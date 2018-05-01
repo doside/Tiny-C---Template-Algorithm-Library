@@ -52,6 +52,7 @@
     <ClCompile Include="..\Talg\Test\test_repeat.cpp" />
     <ClCompile Include="..\Talg\Test\test_rm_fptr.cpp" />
     <ClCompile Include="..\Talg\Test\test_transform.cpp" />
+    <ClCompile Include="..\Talg\Test\test_try_apply.cpp" />
     <ClCompile Include="..\Talg\test_trampoline.cpp" />
     <ClCompile Include="..\UnitTest\algo.cpp" />
     <ClCompile Include="..\UnitTest\loop_emit_test.cpp" />
