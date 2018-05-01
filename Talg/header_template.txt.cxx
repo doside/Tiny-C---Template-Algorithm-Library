@@ -15,3 +15,12 @@ namespace Talg{
 #include <Talg/undef_macro.h>
 
 
+
+
+#include <Talg/core.h>
+#include <Talg/basic_macro.h>
+using namespace Talg;
+
+
+
+#include <Talg/undef_macro.h>
