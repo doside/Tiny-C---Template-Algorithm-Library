@@ -49,26 +49,33 @@ template<class Obj, class Src>
 using RotateLeft_s = Merge_s<Erase_front_s<Obj, Src>, Obj>;
 
 
-
-
-
-template<class >struct Pop_backImp;
-template<class T, class...Ts>
-struct Pop_backImp<Seq<T, Ts...>> {
-	using type = Merge_s<Seq<T>, typename Pop_backImp<Ts...>::type>;
+template<class...>struct PopFrontImp;
+template<class T, class...Ts>struct PopFrontImp<Seq<T, Ts...>> {
+	using type = Seq<Ts...>;
 };
 template<class T>
-struct Pop_backImp<Seq<T>> {
+using PopFront = omit_t_m(PopFrontImp<Seqfy<T>>);
+
+template<class T>
+using PopFront_s = omit_t_m(PopFrontImp<T>);
+
+template<class >struct PopBackImp;
+template<class T, class...Ts>
+struct PopBackImp<Seq<T, Ts...>> {
+	using type = Merge_s<Seq<T>, typename PopBackImp<Ts...>::type>;
+};
+template<class T>
+struct PopBackImp<Seq<T>> {
 	using type = Seq<>;
 };
 template<class T, class U>
-struct Pop_backImp<Seq<T, U>> {
+struct PopBackImp<Seq<T, U>> {
 	using type = Seq<T>;
 };
 template<class T>
-using Pop_back = omit_t_m(Pop_backImp<Seqfy<T>>);
+using PopBack = omit_t_m(PopBackImp<Seqfy<T>>);
 template<class T>
-using Pop_back_s = omit_t_m(Pop_backImp<T>);
+using PopBack_s = omit_t_m(PopBackImp<T>);
 
 
 template<class T,class U>
