@@ -216,8 +216,8 @@ struct ShortParser
 			(ShortFirstCall<Seq<First>, Ts...>*)nullptr,
 				forward_m(f), forward_m(arg0), forward_m(args)...
 			));
-	//template<class F>
-	//Seq<> operator()(F&&...);
+	template<class F>
+	auto operator()(F&& f)->Seq<decltype(forward_m(f)())>;
 };
 
 
