@@ -87,7 +87,7 @@ public:
 		return std::move(handle_);
 	}
 	explicit operator bool()const 
-	except_when_m(Base::operator bool()){
+	except_when_m(std::declval<Base&>().operator bool()){
 		return !Base::operator bool();
 	}
 	~Maybe(){};
