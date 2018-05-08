@@ -40,7 +40,6 @@
     <ClCompile Include="..\Talg\super_enum.cpp" />
     <ClCompile Include="..\Talg\Test\call.cpp" />
     <ClCompile Include="..\Talg\Test\guard_test.cpp" />
-    <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp" />
     <ClCompile Include="..\Talg\Test\testErase.cpp" />
     <ClCompile Include="..\Talg\Test\testExString.cpp" />
     <ClCompile Include="..\Talg\Test\testFindVal.cpp" />
@@ -60,7 +59,6 @@
     <ClCompile Include="..\UnitTest\test_algorithm.cpp" />
     <ClCompile Include="..\UnitTest\test_chrono_io.cpp" />
     <ClCompile Include="..\UnitTest\test_maybe.cpp" />
-    <ClCompile Include="..\UnitTest\test_parameter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Talg\Test\test_suits.h" />

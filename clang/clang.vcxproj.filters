@@ -7,9 +7,6 @@
     <ClCompile Include="..\Talg\Test\test_repeat.cpp">
       <Filter>test\call</Filter>
     </ClCompile>
-    <ClCompile Include="..\Talg\Test\testCtStringcpp.cpp">
-      <Filter>test\constexpr</Filter>
-    </ClCompile>
     <ClCompile Include="..\Talg\Test\test_array.cpp">
       <Filter>test\constexpr</Filter>
     </ClCompile>
@@ -17,9 +14,6 @@
       <Filter>test\constexpr</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\testExString.cpp">
-      <Filter>test\constexpr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\UnitTest\test_parameter.cpp">
       <Filter>test\constexpr</Filter>
     </ClCompile>
     <ClCompile Include="..\Talg\Test\test_iter_op_detect.cpp">
