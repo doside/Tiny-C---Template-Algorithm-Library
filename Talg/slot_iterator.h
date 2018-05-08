@@ -98,7 +98,7 @@ public:
 			State state(Base::prev_, con);
 			auto guard=iter->lock(state);
 			has_locked = true;
-			return call(Base::cache,iter);
+			return Base::call(Base::cache,iter);
 		}
 		return Base::operator*();
 	}
