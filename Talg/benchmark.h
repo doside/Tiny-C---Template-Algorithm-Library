@@ -24,7 +24,7 @@ namespace Talg {
 			\return	the duration of the clock.
 		*/
 		template<class Func,class...Fixture>
-		auto operator()(Func&& func,size_t iter_cnt,Fixture&&...fixtures) {
+		static auto operator()(Func&& func,size_t iter_cnt,Fixture&&...fixtures) {
 			forEach(forward_m(fixtures)...);
 			auto prev = Clock::now();
 			forward_m(func)();
