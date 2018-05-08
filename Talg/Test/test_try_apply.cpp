@@ -1,9 +1,10 @@
-
+﻿
 #include <Talg/core.h>
 #include <Talg/callable_traits.h>
 #include <Talg/algorithm.h>
 #include <Talg/basic_macro.h>
 using namespace Talg;
+
 
 namespace {
 
@@ -15,19 +16,23 @@ namespace {
 		constexpr int operator()(int a,int b)const noexcept{ return a+b; }
 	};
 
-	void test_param_deduce() {
-		constexpr auto res = tryApplyLong(F{}, 1000, 2000);
+	void test_param_deduce(){
+		constexpr auto res = tryApplyLong(F{}, 1000, 2000,1,2,3);
 		static_assert( isAllEqual(res,1000 + 2000,F{}(1000,2000)), "");
-
 		constexpr auto char_value = tryApplyLong(F{}, 'a');
 		static_assert(isAllEqual(char_value,F{}('a'),'0'),"");
-
+		
 		constexpr auto fval = tryApplyLong(F{});
 		static_assert(isAllEqual(fval,F{}(),0.0),"");
 
+		{
+			constexpr auto fval_short = tryApplyShort(F{});
+			static_assert(isAllEqual(fval_short,F{}(),0.0),"");
+		}
 
-	}
-
+	};
+	
+	
 
 
 
